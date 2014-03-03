@@ -7,9 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "AKTabBarController.h"
+#import "LoginViewController.h"
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
+@property (strong, nonatomic) AKTabBarController * akTabBarController;
+@property (strong, nonatomic) UINavigationController *navigataController;
 
 @end

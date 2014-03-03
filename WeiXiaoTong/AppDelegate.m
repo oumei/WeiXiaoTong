@@ -8,13 +8,32 @@
 
 #import "AppDelegate.h"
 
+
+
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    
+    
+    //[ControlCenter makeKeyAndVisible];
+    
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
     self.window.backgroundColor = [UIColor whiteColor];
+    
+    LoginViewController *login = [[LoginViewController alloc]initWithNibName:@"LoginViewController" bundle:nil];
+    
+    self.navigataController = [[UINavigationController alloc]initWithRootViewController:login];
+    self.window.rootViewController = self.navigataController;
+    login = nil;
+    self.navigataController = nil;
+    
+//    UIDevice *device = [UIDevice currentDevice];//创建设备对象
+//    NSUUID *deviceUID = device.identifierForVendor;
+//    NSString *str = deviceUID.UUIDString;
+//    NSLog(@"%@",str); // 输出设备id
+    
     [self.window makeKeyAndVisible];
     return YES;
 }
