@@ -12,6 +12,7 @@
 @interface GoodSearchViewController : CommonViewController<UITableViewDataSource,UITableViewDelegate,CategoryCellDelegate>
 {
     NSArray *_categorys;
+    NSIndexPath *_lastIndexPath;
 }
 @property (weak, nonatomic) IBOutlet UITableView *table;
 

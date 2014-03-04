@@ -310,6 +310,12 @@
 		35A68BE518C1D53700E17F8C /* DetailsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 35A68BE418C1D53700E17F8C /* DetailsCell.m */; };
 		35A68BE718C1D54200E17F8C /* DetailsCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 35A68BE618C1D54200E17F8C /* DetailsCell.xib */; };
 		35A68BF018C234DD00E17F8C /* StyledPageControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 35A68BEF18C234DD00E17F8C /* StyledPageControl.m */; };
+		35A77F9D18C5B0FC0028D391 /* MerchantsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 35A77F9C18C5B0FC0028D391 /* MerchantsCell.m */; };
+		35A77F9F18C5B10B0028D391 /* MerchantsCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 35A77F9E18C5B10B0028D391 /* MerchantsCell.xib */; };
+		35A77FA318C621220028D391 /* CheckApplicationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 35A77FA118C621220028D391 /* CheckApplicationViewController.m */; };
+		35A77FA418C621220028D391 /* CheckApplicationViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 35A77FA218C621220028D391 /* CheckApplicationViewController.xib */; };
+		35A77FA718C622620028D391 /* CheckApplicationCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 35A77FA618C622620028D391 /* CheckApplicationCell.m */; };
+		35A77FAB18C6227C0028D391 /* CheckApplicationCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 35A77FAA18C6227C0028D391 /* CheckApplicationCell.xib */; };
 		35A878F518BDAF5000EDC246 /* CommonViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 35A878DD18BDAF5000EDC246 /* CommonViewController.m */; };
 		35A878F618BDAF5000EDC246 /* HWConnect.m in Sources */ = {isa = PBXBuildFile; fileRef = 35A878DF18BDAF5000EDC246 /* HWConnect.m */; };
 		35A878F718BDAF5000EDC246 /* IO.m in Sources */ = {isa = PBXBuildFile; fileRef = 35A878E418BDAF5000EDC246 /* IO.m */; };
@@ -738,6 +744,15 @@
 		35A68BE618C1D54200E17F8C /* DetailsCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DetailsCell.xib; sourceTree = "<group>"; };
 		35A68BEE18C234DD00E17F8C /* StyledPageControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StyledPageControl.h; sourceTree = "<group>"; };
 		35A68BEF18C234DD00E17F8C /* StyledPageControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StyledPageControl.m; sourceTree = "<group>"; };
+		35A77F9B18C5B0FC0028D391 /* MerchantsCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MerchantsCell.h; sourceTree = "<group>"; };
+		35A77F9C18C5B0FC0028D391 /* MerchantsCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MerchantsCell.m; sourceTree = "<group>"; };
+		35A77F9E18C5B10B0028D391 /* MerchantsCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MerchantsCell.xib; sourceTree = "<group>"; };
+		35A77FA018C621220028D391 /* CheckApplicationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CheckApplicationViewController.h; sourceTree = "<group>"; };
+		35A77FA118C621220028D391 /* CheckApplicationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CheckApplicationViewController.m; sourceTree = "<group>"; };
+		35A77FA218C621220028D391 /* CheckApplicationViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CheckApplicationViewController.xib; sourceTree = "<group>"; };
+		35A77FA518C622620028D391 /* CheckApplicationCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CheckApplicationCell.h; sourceTree = "<group>"; };
+		35A77FA618C622620028D391 /* CheckApplicationCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CheckApplicationCell.m; sourceTree = "<group>"; };
+		35A77FAA18C6227C0028D391 /* CheckApplicationCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CheckApplicationCell.xib; sourceTree = "<group>"; };
 		35A878DC18BDAF5000EDC246 /* CommonViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommonViewController.h; sourceTree = "<group>"; };
 		35A878DD18BDAF5000EDC246 /* CommonViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommonViewController.m; sourceTree = "<group>"; };
 		35A878DE18BDAF5000EDC246 /* HWConnect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HWConnect.h; sourceTree = "<group>"; };
@@ -1215,6 +1230,15 @@
 				35A1F94618BB2E4400702B74 /* HomeViewController.h */,
 				35A1F94718BB2E4400702B74 /* HomeViewController.m */,
 				35A1F94818BB2E4400702B74 /* HomeViewController.xib */,
+				35A77F9B18C5B0FC0028D391 /* MerchantsCell.h */,
+				35A77F9C18C5B0FC0028D391 /* MerchantsCell.m */,
+				35A77F9E18C5B10B0028D391 /* MerchantsCell.xib */,
+				35A77FA018C621220028D391 /* CheckApplicationViewController.h */,
+				35A77FA118C621220028D391 /* CheckApplicationViewController.m */,
+				35A77FA218C621220028D391 /* CheckApplicationViewController.xib */,
+				35A77FA518C622620028D391 /* CheckApplicationCell.h */,
+				35A77FA618C622620028D391 /* CheckApplicationCell.m */,
+				35A77FAA18C6227C0028D391 /* CheckApplicationCell.xib */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -1727,6 +1751,7 @@
 				35A57B3618B9DA5000339A66 /* xiangqing_on.png in Resources */,
 				35A1F8F918BB226800702B74 /* 茶叶超市-图标（黑）.png in Resources */,
 				35A1F8C818BB226800702B74 /* 分享底板.png in Resources */,
+				35A77FA418C621220028D391 /* CheckApplicationViewController.xib in Resources */,
 				35A57B1118B9DA5000339A66 /* button_over.png in Resources */,
 				35A1F8DB18BB226800702B74 /* 整件（选中状态）.png in Resources */,
 				35A1F8C518BB226800702B74 /* 减号.png in Resources */,
@@ -1743,6 +1768,7 @@
 				35A1F90518BB226800702B74 /* 上传图片（底框）.png in Resources */,
 				35A57B1318B9DA5000339A66 /* button_yd_over.png in Resources */,
 				35A1F8E618BB226800702B74 /* 购买数量（底板）.png in Resources */,
+				35A77FAB18C6227C0028D391 /* CheckApplicationCell.xib in Resources */,
 				35A1F8CE18BB226800702B74 /* 加入购物车按钮.png in Resources */,
 				35A1F92018BB226800702B74 /* 搜索历史.png in Resources */,
 				35A1F89F18BB226800702B74 /* 升价（未选中状态）.png in Resources */,
@@ -1846,6 +1872,7 @@
 				35A1F90318BB226800702B74 /* 首页-图标（黑）.png in Resources */,
 				35A1F8B218BB226800702B74 /* 更多底框（未选中状态）.png in Resources */,
 				35A1F8FE18BB226800702B74 /* 顶三儿-广场（黑）.png in Resources */,
+				35A77F9F18C5B10B0028D391 /* MerchantsCell.xib in Resources */,
 				35A1F8BB18BB226800702B74 /* 随便看看（未选中状态）.png in Resources */,
 				35A1F8B518BB226800702B74 /* 登录.png in Resources */,
 				35A57B2D18B9DA5000339A66 /* seach_on.png in Resources */,
@@ -1943,6 +1970,7 @@
 				35A1F85118BB226800702B74 /* UINavigationBar+Custom.m in Sources */,
 				35A57B9718BA186D00339A66 /* LeiXing.m in Sources */,
 				35A57BC218BA25E300339A66 /* ResultModel.m in Sources */,
+				35A77FA318C621220028D391 /* CheckApplicationViewController.m in Sources */,
 				35A68B7E18C1AB8700E17F8C /* UIImage+WebP.m in Sources */,
 				35A1F94E18BB2ED600702B74 /* GoodSearchViewController.m in Sources */,
 				35A68B7618C1AB8700E17F8C /* SDWebImageDecoder.m in Sources */,
@@ -1963,6 +1991,7 @@
 				35A878F618BDAF5000EDC246 /* HWConnect.m in Sources */,
 				35A68B7D18C1AB8700E17F8C /* UIImage+MultiFormat.m in Sources */,
 				35A879CD18BE343700EDC246 /* AFHTTPRequestOperation.m in Sources */,
+				35A77F9D18C5B0FC0028D391 /* MerchantsCell.m in Sources */,
 				35A57B7918BA152C00339A66 /* Chip.m in Sources */,
 				35A68BF018C234DD00E17F8C /* StyledPageControl.m in Sources */,
 				35A57BAD18BA228900339A66 /* BaseData.m in Sources */,
@@ -1995,6 +2024,7 @@
 				35A1F88C18BB226800702B74 /* UINavigationController+AKTabBarController.m in Sources */,
 				35A1F97118BB675900702B74 /* LoginViewController.m in Sources */,
 				35A879B718BE31A900EDC246 /* AFHttp.m in Sources */,
+				35A77FA718C622620028D391 /* CheckApplicationCell.m in Sources */,
 				35A68B7918C1AB8700E17F8C /* SDWebImageManager.m in Sources */,
 				35A879D018BE343700EDC246 /* AFNetworkReachabilityManager.m in Sources */,
 				35A1F88B18BB226800702B74 /* AKTabBarView.m in Sources */,

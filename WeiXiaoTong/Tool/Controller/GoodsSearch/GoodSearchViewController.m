@@ -64,7 +64,14 @@
 
 - (void)selecte:(UIButton *)sender IndexPath:(NSIndexPath *)indexPath
 {
-    
+    if (_lastIndexPath == nil) {
+        _lastIndexPath = indexPath;
+    }else{
+        CategoryCell *cell = (CategoryCell *)[self.table cellForRowAtIndexPath:_lastIndexPath];
+        [cell.categoryBtn setSelected:NO];
+        _lastIndexPath = nil;
+        _lastIndexPath = indexPath;
+    }
     [sender setSelected:YES];
 }
 

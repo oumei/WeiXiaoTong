@@ -7,7 +7,13 @@
 //
 
 #import "CommonViewController.h"
+#import "MerchantsCell.h"
 
-@interface HomeViewController : CommonViewController
+@interface HomeViewController : CommonViewController<UITableViewDataSource,UITableViewDelegate,MerchantsCellDelegate>
+{
+    NSMutableArray *_friendsMutArr;
+}
+@property (weak, nonatomic) IBOutlet UITableView *table;
+@property (weak, nonatomic) IBOutlet UIButton *addNewMer;
 
 @end

@@ -215,6 +215,16 @@
                     //*****************页面跳转*************************************//
                     [self.view endSynRequestSignal];
                     [ControlCenter makeKeyAndVisible];
+                }else{
+                    UILabel *lable = [[UILabel alloc]initWithFrame:CGRectMake(40, 350, 240, 20)];
+                    lable.backgroundColor = [UIColor blackColor];
+                    lable.text = [objectVoDic valueForKey:@"msg"];
+                    lable.textAlignment = NSTextAlignmentCenter;
+                    lable.textColor = [UIColor whiteColor];
+                    
+                    [self.view addSubview:lable];
+                    [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(hideCollectionLable:) userInfo:lable repeats:NO];
+                    lable = nil;
                 }
             } failureBlock:^(NSError *error, NSString *responseString) {
                 //
