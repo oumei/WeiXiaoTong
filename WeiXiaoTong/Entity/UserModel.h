@@ -11,16 +11,16 @@
 @interface UserModel : NSObject
 {
     NSString *_uname;
-    int _psd;
-    NSString *_tell;
+    NSString *psd;
+    int _tell;
     NSString *_uuid;
 }
 @property(nonatomic,copy)NSString *uname;
-@property(nonatomic,assign)int psd;
-@property(nonatomic,copy)NSString *tell;
+@property(nonatomic,copy)NSString *psd;
+@property(nonatomic,assign)int tell;
 @property(nonatomic,copy)NSString *uuid;
 + (UserModel *)shareCurrentUser;
 + (void)clearCurrrentUser;
-- (id)initWithUname:(NSString *)aUname psd:(int)aPsd tell:(NSString *)aTell uuid:(NSString *)aUuid;
+- (id)initWithUname:(NSString *)aUname psd:(NSString *)aPsd tell:(int)aTell uuid:(NSString *)aUuid;
 
 @end

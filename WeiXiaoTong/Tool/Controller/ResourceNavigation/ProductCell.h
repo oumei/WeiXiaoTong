@@ -11,6 +11,7 @@
 @protocol ProductCellDelegate <NSObject>
 
 - (void)checkDetail:(UIButton *)sender IndexPath:(NSIndexPath *)indexPath;
+- (void)collection:(UIButton *)sender IndexPath:(NSIndexPath *)indexPath;
 
 @end
 

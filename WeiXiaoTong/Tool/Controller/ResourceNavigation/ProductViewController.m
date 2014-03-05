@@ -8,12 +8,12 @@
 
 #import "ProductViewController.h"
 #import "HttpService.h"
-#import "UserModel.h"
 #import "JSON.h"
 #import "UIImageView+downLoadImage.h"
 #import "ChanPin.h"
 #import "DetailsViewController.h"
 #import "UIImageView+WebCache.h"
+#import "UserEntity.h"
 
 @interface ProductViewController ()
 
@@ -55,9 +55,9 @@ static int page = 1;
 
 - (void)downMoreData:(id)sender
 {
-    UserModel *user = [UserModel shareCurrentUser];
+    UserEntity *user = [UserEntity shareCurrentUe];
     
-    [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": GET_CHANPIN_BY_DANGKOU,@"page":[NSString stringWithFormat:@"%d",page],@"dangkou":self.title,@"uname": user.uname,@"uuid": user.uuid} completionBlock:^(id object) {
+    [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": GET_CHANPIN_BY_DANGKOU,@"page":[NSString stringWithFormat:@"%d",page],@"dangkou":self.title,@"uname": user.userName,@"uuid": user.uuid} completionBlock:^(id object) {
         
         NSDictionary *ovoDic = [[object valueForKey:@"ovo"] JSONValue];
         if ([[ovoDic valueForKey:@"code"] intValue] == 0) {
@@ -147,6 +147,17 @@ static int page = 1;
     detailsViewController = nil;
     chanPin = nil;
     dic = nil;
+}
+
+- (void)collection:(UIButton *)sender IndexPath:(NSIndexPath *)indexPath
+{
+//    UserModel *user = [UserModel shareCurrentUser];
+//    ChanPin *chanPin = [self.cpsArr objectAtIndex:indexPath.row];
+//    [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": COLLECT_CHANPIN,@"cpid": [NSString stringWithFormat:@"%d",chanPin.cpid],@"price": [NSString stringWithFormat:@"%d",chanPin.price],@"uname": user.uname,@"uuid": user.uuid} completionBlock:^(id object) {
+//        //
+//    } failureBlock:^(NSError *error, NSString *responseString) {
+//        //
+//    }];
 }
 
 - (void)didReceiveMemoryWarning

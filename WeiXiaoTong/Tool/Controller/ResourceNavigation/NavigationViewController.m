@@ -7,14 +7,13 @@
 //
 
 #import "NavigationViewController.h"
-#import "ObjectVo.h"
 #import "Link.h"
 #import "AKTabBarController.h"
 #import "ProductViewController.h"
 #import "HttpService.h"
 #import "JSON.h"
 #import "ChanPin.h"
-#import "UserModel.h"
+#import "UserEntity.h"
 
 @interface NavigationViewController ()
 
@@ -66,9 +65,9 @@
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-    UserModel *user = [UserModel shareCurrentUser];
+    UserEntity *user = [UserEntity shareCurrentUe];
     Link *link = [self.linksArr objectAtIndex:indexPath.row];
-    [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": GET_CHANPIN_BY_DANGKOU,@"page":@"0",@"dangkou":link.name,@"uname": user.uname,@"uuid": user.uuid} completionBlock:^(id object) {
+    [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": GET_CHANPIN_BY_DANGKOU,@"page":@"0",@"dangkou":link.name,@"uname": user.userName,@"uuid": user.uuid} completionBlock:^(id object) {
         
         NSDictionary *ovoDic = [[object valueForKey:@"ovo"] JSONValue];
         NSLog(@"ovoallkey=%@",[ovoDic allKeys]);

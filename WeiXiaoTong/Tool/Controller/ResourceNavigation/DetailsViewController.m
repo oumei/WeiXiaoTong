@@ -43,6 +43,7 @@
 #import "ObjectVo.h"
 #import "BaseData.h"
 
+
 @interface DetailsViewController ()
 
 @end

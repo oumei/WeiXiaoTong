@@ -21,7 +21,10 @@
 
 - (IBAction)collection:(id)sender
 {
-    
+    if (self.delegate && [self.delegate respondsToSelector:@selector(collection:IndexPath:)])
+    {
+        [self.delegate performSelector:@selector(collection:IndexPath:) withObject:sender withObject:self.indexPath];
+    }
 }
 
 - (IBAction)details:(id)sender

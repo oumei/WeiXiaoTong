@@ -10,6 +10,7 @@
 #import "CheckApplicationCell.h"
 
 @interface CheckApplicationViewController : CommonViewController<UITableViewDataSource,UITableViewDelegate,CheckApplicationCellDelegate>
+@property (copy, nonatomic) NSMutableArray *afs;
 @property (weak, nonatomic) IBOutlet UITableView *table;
-
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil afs:(NSMutableArray *)afs;
 @end

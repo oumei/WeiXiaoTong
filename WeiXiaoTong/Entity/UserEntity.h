@@ -42,5 +42,22 @@
 @property(nonatomic,copy)NSString *firends;
 @property(nonatomic,assign)int tableName;
 
++ (UserEntity *)shareCurrentUe;
++ (void)clearCurrrentUe;
+- (id)initWithUname:(NSString *)aUname
+                psd:(NSString *)aPsd
+               tell:(int)aTell
+               uuid:(NSString *)aUuid
+                 id:(int)aId
+              xzStr:(NSString *)aXzStr
+            xzCount:(int)aXzCount
+                 qx:(int)aQx
+              state:(int)aState
+          resetUuid:(int)aResetUuid
+              daoqi:(int)aDaoqi
+       registerTime:(NSString *)aRegisterTime
+              level:(int)aLevel
+            firends:(NSString *)aFirends
+          tableName:(int)aTableName;
 
 @end

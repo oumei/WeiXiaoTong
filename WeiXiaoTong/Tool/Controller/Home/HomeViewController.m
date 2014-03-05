@@ -11,13 +11,13 @@
 #import "UINavigationBar+Custom.h"
 #import "HWSDK.h"
 #import "LoginViewController.h"
-#import "ObjectVo.h"
 #import "UserEntity.h"
 #import "HttpService.h"
-#import "UserModel.h"
 #import "JSON.h"
 #import "Friend.h"
 #import "CheckApplicationViewController.h"
+#import "AddMerchantsViewController.h"
+#import "ApplyFriend.h"
 
 @interface HomeViewController ()
 
@@ -39,17 +39,16 @@
     [super viewDidLoad];
     [self initUI];
     _friendsMutArr = [[NSMutableArray alloc]init];
-    UserModel *user = [UserModel shareCurrentUser];
+    UserEntity *user = [UserEntity shareCurrentUe];
     
-    [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": GET_FRIENDS,@"uname": user.uname,@"uuid": user.uuid} completionBlock:^(id object) {
+    [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": GET_FRIENDS,@"uname": user.userName,@"uuid": user.uuid} completionBlock:^(id object) {
         
         NSString *ovo = [object valueForKey:@"ovo"];
         NSDictionary *ovoDic = [ovo JSONValue];
-        NSLog(@"ovo = %@",ovo);
-        NSLog(@"ovoallkey = %@",[ovoDic allKeys]);
+//        NSLog(@"ovo = %@",ovo);
+//        NSLog(@"ovoallkey = %@",[ovoDic allKeys]);
         if ([[ovoDic valueForKey:@"code"] intValue] == 0) {
             NSArray *friends = [ovoDic valueForKey:@"friends"];
-            //NSArray *friendsArr = [friends JSONValue];
             NSMutableArray *mutArr = [[NSMutableArray alloc]init];
             for (int i = 0; i < friends.count; i++) {
                 NSDictionary *dic = [friends objectAtIndex:i];
@@ -88,17 +87,61 @@
 
 - (IBAction)addNewMerchants:(id)sender
 {
-    ObjectVo *object = [ObjectVo shareCurrentObjectVo];
-    NSLog(@"ue=%@",[object valueForKey:@"ue"]);
-    UserEntity *ue = [[UserEntity alloc]init];
-    for (NSString *key in [[object valueForKey:@"ue"] allKeys]) {
-        [ue setValue:[[object valueForKey:@"ue"] valueForKey:key] forKey:key];
-    }
+    UserEntity *ue = [UserEntity shareCurrentUe];
     if (ue.level > 0) {
-        CheckApplicationViewController *checkApplicationViewController = [[CheckApplicationViewController alloc]initWithNibName:@"CheckApplicationViewController" bundle:nil];
-        [checkApplicationViewController setHidesBottomBarWhenPushed:YES];
-        [self.navigationController pushViewController:checkApplicationViewController animated:YES];
-        checkApplicationViewController = nil;
+        
+        [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": GET_APPLY_FRIENDS,@"uname": ue.userName,@"uuid": ue.uuid} completionBlock:^(id object) {
+            NSLog(@"object = %@",object);
+            NSString *ovo = [object valueForKey:@"ovo"];
+            NSDictionary *ovoDic = [ovo JSONValue];
+            if ([[ovoDic valueForKey:@"code"] intValue] == 0) {
+                NSArray *afs = [ovoDic valueForKey:@"afs"];
+                if (afs.count > 0) {
+                    NSMutableArray *mutArr = [[NSMutableArray alloc]init];
+                    for (int i = 0; i < afs.count; i++) {
+                        NSDictionary *dic = [afs objectAtIndex:i];
+                        ApplyFriend *af = [[ApplyFriend alloc]init];
+                        for (NSString *key in [dic allKeys]) {
+                            [af setValue:[dic valueForKey:key] forKey:key];
+                        }
+                        [mutArr addObject:af];
+                        af = nil;
+                    }
+                    CheckApplicationViewController *checkApplicationViewController = [[CheckApplicationViewController alloc]initWithNibName:@"CheckApplicationViewController" bundle:nil afs:mutArr];
+                    [checkApplicationViewController setHidesBottomBarWhenPushed:YES];
+                    [self.navigationController pushViewController:checkApplicationViewController animated:YES];
+                    checkApplicationViewController = nil;
+                    mutArr = nil;
+                    afs = nil;
+                }else{
+                    UILabel *lable = [[UILabel alloc]initWithFrame:CGRectMake(50, 200, 220, 20)];
+                    lable.backgroundColor = [UIColor blackColor];
+                    lable.text = @"暂无商家申请！";
+                    lable.textAlignment = NSTextAlignmentCenter;
+                    lable.textColor = [UIColor whiteColor];
+                    [self.view addSubview:lable];
+                    [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(hideCollectionLable:) userInfo:lable repeats:NO];
+                    lable = nil;
+                }
+            }else{
+                UILabel *lable = [[UILabel alloc]initWithFrame:CGRectMake(40, 200, 240, 20)];
+                lable.backgroundColor = [UIColor blackColor];
+                lable.text = [ovoDic valueForKey:@"msg"];
+                lable.textAlignment = NSTextAlignmentCenter;
+                lable.textColor = [UIColor whiteColor];
+                [self.view addSubview:lable];
+                [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(hideCollectionLable:) userInfo:lable repeats:NO];
+                lable = nil;
+            }
+            
+        } failureBlock:^(NSError *error, NSString *responseString) {
+            //
+        }];
+        
+    }else if(ue.qx == 0){
+        AddMerchantsViewController *addMerchantsViewController = [[AddMerchantsViewController alloc]initWithNibName:@"AddMerchantsViewController" bundle:nil];
+        [self.navigationController pushViewController:addMerchantsViewController animated:YES];
+        addMerchantsViewController = nil;
     }
 }
 
@@ -129,6 +172,13 @@
 
 - (void)deleted:(UIButton *)sender IndexPath:(NSIndexPath *)indexPath
 {
+    UserEntity *user = [UserEntity shareCurrentUe];
+     Friend *friend = [_friendsMutArr objectAtIndex:indexPath.row];
+    [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": DELETE_FRIENDS,@"fname":friend.userName,@"uname": user.userName,@"uuid":user.uuid} completionBlock:^(id object) {
+        //
+    } failureBlock:^(NSError *error, NSString *responseString) {
+        //
+    }];
     [_friendsMutArr removeObjectAtIndex:indexPath.row];
     [self.table reloadData];
 }
@@ -147,12 +197,7 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    ObjectVo *object = [ObjectVo shareCurrentObjectVo];
-    NSLog(@"ue=%@",[object valueForKey:@"ue"]);
-    UserEntity *ue = [[UserEntity alloc]init];
-    for (NSString *key in [[object valueForKey:@"ue"] allKeys]) {
-        [ue setValue:[[object valueForKey:@"ue"] valueForKey:key] forKey:key];
-    }
+    UserEntity *ue = [UserEntity shareCurrentUe];
     if (ue.level > 0) {
         [self.addNewMer setTitle:@"  查看用户申请列表" forState:0];
     }

@@ -350,6 +350,9 @@
 		35A942E118C07C4B00533758 /* UIImageView+downLoadImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 35A942E018C07C4B00533758 /* UIImageView+downLoadImage.m */; };
 		35A942E518C0E44500533758 /* DetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 35A942E318C0E44500533758 /* DetailsViewController.m */; };
 		35A942E618C0E44500533758 /* DetailsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 35A942E418C0E44500533758 /* DetailsViewController.xib */; };
+		35AAB28E18C6F46A003ECCE1 /* AddMerchantsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 35AAB28C18C6F46A003ECCE1 /* AddMerchantsViewController.m */; };
+		35AAB28F18C6F46A003ECCE1 /* AddMerchantsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 35AAB28D18C6F46A003ECCE1 /* AddMerchantsViewController.xib */; };
+		35AAB29218C6FC98003ECCE1 /* CDTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 35AAB29118C6FC98003ECCE1 /* CDTextView.m */; };
 		35C9D48518BC64F60033F599 /* UserModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 35C9D48418BC64F60033F599 /* UserModel.m */; };
 /* End PBXBuildFile section */
 
@@ -822,6 +825,11 @@
 		35A942E218C0E44500533758 /* DetailsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DetailsViewController.h; sourceTree = "<group>"; };
 		35A942E318C0E44500533758 /* DetailsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DetailsViewController.m; sourceTree = "<group>"; };
 		35A942E418C0E44500533758 /* DetailsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DetailsViewController.xib; sourceTree = "<group>"; };
+		35AAB28B18C6F46A003ECCE1 /* AddMerchantsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddMerchantsViewController.h; sourceTree = "<group>"; };
+		35AAB28C18C6F46A003ECCE1 /* AddMerchantsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddMerchantsViewController.m; sourceTree = "<group>"; };
+		35AAB28D18C6F46A003ECCE1 /* AddMerchantsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AddMerchantsViewController.xib; sourceTree = "<group>"; };
+		35AAB29018C6FC98003ECCE1 /* CDTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDTextView.h; sourceTree = "<group>"; };
+		35AAB29118C6FC98003ECCE1 /* CDTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDTextView.m; sourceTree = "<group>"; };
 		35C9D48318BC64F60033F599 /* UserModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserModel.h; sourceTree = "<group>"; };
 		35C9D48418BC64F60033F599 /* UserModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserModel.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -875,6 +883,8 @@
 		35A1F71818BB226700702B74 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				35AAB29018C6FC98003ECCE1 /* CDTextView.h */,
+				35AAB29118C6FC98003ECCE1 /* CDTextView.m */,
 				35A68BEE18C234DD00E17F8C /* StyledPageControl.h */,
 				35A68BEF18C234DD00E17F8C /* StyledPageControl.m */,
 				35A1F71918BB226700702B74 /* UINavigationBar+Custom.h */,
@@ -1239,6 +1249,9 @@
 				35A77FA518C622620028D391 /* CheckApplicationCell.h */,
 				35A77FA618C622620028D391 /* CheckApplicationCell.m */,
 				35A77FAA18C6227C0028D391 /* CheckApplicationCell.xib */,
+				35AAB28B18C6F46A003ECCE1 /* AddMerchantsViewController.h */,
+				35AAB28C18C6F46A003ECCE1 /* AddMerchantsViewController.m */,
+				35AAB28D18C6F46A003ECCE1 /* AddMerchantsViewController.xib */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -1739,6 +1752,7 @@
 				35A57B0F18B9DA5000339A66 /* button_noborder_over.png in Resources */,
 				35A1F8FB18BB226800702B74 /* 顶三儿-发布（白）.png in Resources */,
 				35A1F91418BB226800702B74 /* 分割线.png in Resources */,
+				35AAB28F18C6F46A003ECCE1 /* AddMerchantsViewController.xib in Resources */,
 				35A1F89918BB226800702B74 /* 头像资讯标题底框.png in Resources */,
 				35A57B1518B9DA5000339A66 /* exit_on.png in Resources */,
 				35A57B0718B9DA5000339A66 /* back_on.png in Resources */,
@@ -1962,6 +1976,7 @@
 				35A1F88D18BB226800702B74 /* UIViewController+AKTabBarController.m in Sources */,
 				35A1F96C18BB4E5500702B74 /* RegisterViewController.m in Sources */,
 				35A879D418BE343700EDC246 /* AFURLResponseSerialization.m in Sources */,
+				35AAB28E18C6F46A003ECCE1 /* AddMerchantsViewController.m in Sources */,
 				35A68B7418C1AB8700E17F8C /* SDImageCache.m in Sources */,
 				35A57BE718BA40AF00339A66 /* SBJsonBase.m in Sources */,
 				35A1F88718BB226800702B74 /* AKTab.m in Sources */,
@@ -2041,6 +2056,7 @@
 				35A879CF18BE343700EDC246 /* AFHTTPSessionManager.m in Sources */,
 				35A68B7518C1AB8700E17F8C /* SDWebImageCompat.m in Sources */,
 				35A878F918BDAF5000EDC246 /* NSString+MD5_32.m in Sources */,
+				35AAB29218C6FC98003ECCE1 /* CDTextView.m in Sources */,
 				35A879B018BE1CF500EDC246 /* NavigationViewController.m in Sources */,
 				35A57B6A18BA0EAC00339A66 /* ChanPin.m in Sources */,
 				35A942DE18C07BA800533758 /* BIDImageOperation.m in Sources */,

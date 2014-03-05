@@ -47,7 +47,7 @@
     }
 }
 
-- (id)initWithUname:(NSString *)aUname psd:(int)aPsd tell:(NSString *)aTell uuid:(NSString *)aUuid
+- (id)initWithUname:(NSString *)aUname psd:(NSString *)aPsd tell:(int)aTell uuid:(NSString *)aUuid
 {
     if (self = [super init])
     {
@@ -63,8 +63,8 @@
 {
     
     [encoder encodeObject:self.uname forKey:@"uname"];
-    [encoder encodeInt:self.psd forKey:@"psd"];
-    [encoder encodeObject:self.tell forKey:@"tell"];
+    [encoder encodeObject:self.psd forKey:@"psd"];
+    [encoder encodeInt:self.tell forKey:@"tell"];
     [encoder encodeObject:self.uuid forKey:@"uuid"];
     
 }
@@ -74,8 +74,8 @@
     
     if (self = [super init]) {
         self.uname = [decoder decodeObjectForKey:@"uname"];
-        self.psd = [decoder decodeIntForKey:@"psd"];
-        self.tell = [decoder decodeObjectForKey:@"tell"];
+        self.psd = [decoder decodeObjectForKey:@"psd"];
+        self.tell = [decoder decodeIntForKey:@"tell"];
         self.uuid = [decoder decodeObjectForKey:@"uuid"];
         
     }

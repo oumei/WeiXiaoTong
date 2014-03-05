@@ -11,20 +11,25 @@
 
 //接口参数
 #define CONFIG                        @"config"
-#define GET_CHANPIN                   @"getChanPin"
-#define GET_CHANPIN_BY_ID             @"getChanPinById"
-#define GET_CHANPIN_BY_DANGKOU        @"getChanPinByDangkou"
-#define DOWNLOAD                      @"download"
-#define USER_LOGIN                    @"userLogin"
-#define USER_REGISTER                 @"userRegister"
-#define FIND_SOURCE_USERS             @"findSourceUsers"
+#define GET_CHANPIN                   @"getChanPin"              /**查询自己的产品*/
+#define GET_CHANPIN_BY_ID             @"getChanPinById"          /**根据ID查询产品*/
+#define GET_CHANPIN_BY_DANGKOU        @"getChanPinByDangkou"     /**查询档口产品*/
+#define DOWNLOAD                      @"download"                /**下载产品*/
+#define USER_LOGIN                    @"userLogin"               /**用户登录*/
+#define USER_REGISTER                 @"userRegister"            /**用户注册*/
+#define FIND_SOURCE_USERS             @"findSourceUsers"         /**查询合作商用户*/
 
-#define ALLOW_FRIEND                  @"allowFriend"
-#define DECLINE_FRIEND                @"declineFriend"
-#define ADD_FRIEND                    @"addFriend"
-#define GET_FRIENDS                   @"getFriends"
-#define DELETE_FRIENDS                @"deleteFriends"
-#define GET_APPLY_FRIENDS             @"getApplyFriends"
+#define ALLOW_FRIEND                  @"allowFriend"             /**同意好友*/
+#define DECLINE_FRIEND                @"declineFriend"           /**拒绝好友*/
+#define ADD_FRIEND                    @"addFriend"               /**添加好友*/
+#define GET_FRIENDS                   @"getFriends"              /**获取好友列表*/
+#define DELETE_FRIENDS                @"deleteFriends"           /**删除好友*/
+#define GET_APPLY_FRIENDS             @"getApplyFriends"         /**获取好友申请列表*/
+
+#define GET_SELF_CHANPIN              @"getSelfChanPin"          /**查询自己的产品*/
+#define UPDATE_SELF_CHANPIN_PRICE     @"updateSelfChanpinPrice"  /**修改自己产品价格*/
+#define CHANGE_TABLE                  @"changeTable"
+#define COLLECT_CHANPIN               @"CollectChanPin"          /**收藏产品*/
 
 //url
 #define DEFAULT_URL                   @"http://115.28.17.18:8080/service/interface.do"
@@ -33,43 +38,7 @@
 #define IMAGE_URL_BY_TN(ID,W,H,PICS) [NSString stringWithFormat:@"http://115.28.17.18:8080/service/showPic.do?cpid=%d&lunbo=1&setW=%.0f&setH=%.0f&index=%d",ID,W,H,PICS]
 #define IMAGE_URL_BY_TN_ID(TN,ID,W,H,PICS) [NSString stringWithFormat:@"http://115.28.17.18:8080/service/showPic.do?cpid=%d-%d&lunbo=1&setW=%.0f&setH=%.0f&index=%d",TN,ID,W,H,PICS]
 
-//public final static String CONFIG = "config";
-///**查询产品*/
-//public final static String GET_CHANPIN = "getChanPin";
-///**查询自己的产品*/
-//public final static String GET_SELF_CHANPIN = "getSelfChanPin";
-///**修改自己产品价格*/
-//public final static String UPDATE_SELF_CHANPIN_PRICE = "updateSelfChanpinPrice";
-///**根据ID查询产品*/
-//public final static String GET_CHANPIN_BY_ID = "getChanPinById";
-///**查询档口产品*/
-//public final static String GET_CHANPIN_BY_DANGKOU = "getChanPinByDangkou";
-///**下载产品*/
-//public final static String DOWNLOAD = "download";
-//
-//public final static String USER_LOGIN = "userLogin";
-//
-//public final static String CHANGE_TABLE="changeTable";
-//
-//public final static String USER_REGISTER = "userRegister";
-///**查询合作商用户*/
-//public final static String FIND_SOURCE_USERS="findSourceUsers";
-//
-////	--------------------------好友模块--------------------------------
-///**收藏产品*/
-//public final static String COLLECT_CHANPIN="CollectChanPin";
-///**同意好友*/
-//public final static String ALLOW_FRIEND="allowFriend";
-///**拒绝好友*/
-//public final static String DECLINE_FRIEND="declineFriend";
-///**添加好友*/
-//public final static String ADD_FRIEND="addFriend";
-///**获取好友列表*/
-//public final static String GET_FRIENDS="getFriends";
-///**删除好友*/
-//public final static String DELETE_FRIENDS="deleteFriends";
-///**获取好友申请列表*/
-//public final static String GET_APPLY_FRIENDS="getApplyFriends";
+
 
 
 

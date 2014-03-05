@@ -132,7 +132,7 @@
         return;
     }
     
-    if (![self.uname.text isEqualToString:@""] && ![self.psd.text isEqualToString:@""] && self.uname.text.length >= 6 && self.psd.text.length >= 6){
+    if (![[self.uname.text stringByReplacingOccurrencesOfString:@" " withString:@""]isEqualToString:@""] && ![[self.psd.text stringByReplacingOccurrencesOfString:@" " withString:@""] isEqualToString:@""] && self.uname.text.length >= 6 && self.psd.text.length >= 6){
         
         //*****************************网络判断***************************************//
         if ([Reachability reachabilityForInternetConnection].currentReachabilityStatus == NotReachable && [Reachability reachabilityForLocalWiFi].currentReachabilityStatus == NotReachable)
@@ -169,7 +169,30 @@
 //                        NSLog(@"value=%@",[objectVoDic valueForKey:key]);
                         
                         if ([key isEqualToString:@"baseData"] || [key isEqualToString:@"ue"]) {
-                            
+                            if ([key isEqualToString:@"ue"]){
+                                
+                                NSDictionary *ueDic = [objectVoDic valueForKey:key];
+                                [UserEntity clearCurrrentUe];
+                                UserEntity *ue = [UserEntity shareCurrentUe];
+                                for (NSString *uekey in [ueDic allKeys]) {
+                                    if ([[ueDic valueForKey:uekey] isKindOfClass:[NSString class]]) {
+                                        [ue setValue:[ueDic valueForKey:uekey] forKey:uekey];
+                                    }else{
+                                        [ue setValue:[NSString stringWithFormat:@"%d",[[ueDic valueForKey:uekey] intValue]] forKey:uekey];
+                                    }
+//                                    [ue setValue:[ueDic valueForKey:uekey] forKey:uekey];
+                                }
+                                
+                                // 将个人信息全部持久化到documents中，可通过ue的单例获取登录了的用户的个人信息
+                                NSMutableData *mData = [[NSMutableData alloc]init];
+                                NSKeyedArchiver *archiver=[[NSKeyedArchiver alloc] initForWritingWithMutableData:mData];
+                                [archiver encodeObject:ue forKey:@"ueInfo"];
+                                [archiver finishEncoding];
+                                NSString *ueInfoPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/ueInfo.txt"];
+                                [mData writeToFile:ueInfoPath atomically:YES];
+                                mData = nil;
+                                ue = nil;
+                            }
                             
 //                            NSDictionary *baseDataDic = [objectVoDic valueForKey:key];
 ////                            BaseData *baseData = [[BaseData alloc]init];
@@ -259,7 +282,7 @@
     [super viewWillAppear:YES];
     UserModel *user = [UserModel shareCurrentUser];
     self.uname.text = user.uname;
-    self.psd.text = [NSString stringWithFormat:@"%d",user.psd];
+    self.psd.text = user.psd;
     
     if ([Reachability reachabilityForInternetConnection].currentReachabilityStatus == NotReachable && [Reachability reachabilityForLocalWiFi].currentReachabilityStatus == NotReachable)
     {
