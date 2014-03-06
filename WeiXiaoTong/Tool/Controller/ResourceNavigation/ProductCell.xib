@@ -81,8 +81,10 @@
                 </subviews>
             </tableViewCellContentView>
             <connections>
+                <outlet property="collection" destination="B11-f1-NjU" id="E7r-Cb-Lgt"/>
                 <outlet property="cost" destination="qXM-Ie-Hyr" id="v8t-i8-Fwl"/>
                 <outlet property="describe" destination="fhm-q2-jDB" id="Fyd-wv-2s6"/>
+                <outlet property="detail" destination="YBN-H1-8xh" id="pqT-Ed-Xu4"/>
                 <outlet property="image" destination="ZRf-Fw-7t0" id="zeA-pY-tdJ"/>
                 <outlet property="name" destination="wvG-vr-2Er" id="mdD-mG-hPs"/>
                 <outlet property="serialNum" destination="RST-Ys-y3X" id="MdF-nl-eYG"/>

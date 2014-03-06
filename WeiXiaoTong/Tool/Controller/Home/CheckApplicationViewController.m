@@ -11,6 +11,7 @@
 #import "HttpService.h"
 #import "UserEntity.h"
 #import "JSON.h"
+#import "UIView+SynRequestSignal.h"
 
 @interface CheckApplicationViewController ()
 
@@ -47,6 +48,8 @@
     if (cell == nil) {
         cell = [[[NSBundle mainBundle] loadNibNamed:@"CheckApplicationCell" owner:self options:nil] lastObject];
     }
+    cell.delegate = self;
+    cell.indexPath = indexPath;
     ApplyFriend *af = [self.afs objectAtIndex:indexPath.row];
     cell.userName.text = [NSString stringWithFormat:@"(%d)",af.applyId];
     cell.validationMsg.text = [NSString stringWithFormat:@"验证消息：%@",af.message];
@@ -66,6 +69,7 @@
 #pragma mark - checkApplication delegate -
 - (void)refuse:(UIButton *)sender IndexPath:(NSIndexPath *)indexPath
 {
+    [self.view showWithType:0 Title:@"正在拒绝好友请求..."];
     ApplyFriend *af = [self.afs objectAtIndex:indexPath.row];
     UserEntity *ue = [UserEntity shareCurrentUe];
     [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": DECLINE_FRIEND,@"afid":[NSString stringWithFormat:@"%d",af.Id],@"uname":ue.userName,@"uuid":ue.uuid} completionBlock:^(id object) {
@@ -73,9 +77,12 @@
         NSString *ovo = [object valueForKey:@"ovo"];
         NSDictionary *ovoDic = [ovo JSONValue];
         if ([[ovoDic valueForKey:@"code"] intValue] == 0) {
-            
-            [self.afs removeObjectAtIndex:indexPath.row];
+            NSMutableArray *arr = [[NSMutableArray alloc]initWithArray:self.afs];
+            [arr removeObjectAtIndex:indexPath.row];
+            self.afs = arr;
             [self.table reloadData];
+            [self.view endSynRequestSignal];
+            arr = nil;
             
             UILabel *lable = [[UILabel alloc]initWithFrame:CGRectMake(100, 200, 120, 20)];
             lable.backgroundColor = [UIColor blackColor];
@@ -85,6 +92,7 @@
             [self.view addSubview:lable];
             [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(hideCollectionLable:) userInfo:lable repeats:NO];
             lable = nil;
+            
         }else{
             UILabel *lable = [[UILabel alloc]initWithFrame:CGRectMake(40, 200, 240, 20)];
             lable.backgroundColor = [UIColor blackColor];
@@ -103,13 +111,56 @@
 
 - (void)agree:(UIButton *)sender IndexPath:(NSIndexPath *)indexPath
 {
-    
+    [self.view showWithType:0 Title:@"正在同意好友请求..."];
+    ApplyFriend *af = [self.afs objectAtIndex:indexPath.row];
+    UserEntity *ue = [UserEntity shareCurrentUe];
+    [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": ALLOW_FRIEND,@"afid":[NSString stringWithFormat:@"%d",af.Id],@"uname":ue.userName,@"uuid":ue.uuid} completionBlock:^(id object) {
+        NSLog(@"ob = %@",object);
+        NSString *ovo = [object valueForKey:@"ovo"];
+        NSDictionary *ovoDic = [ovo JSONValue];
+        if ([[ovoDic valueForKey:@"code"] intValue] == 0) {
+            NSMutableArray *arr = [[NSMutableArray alloc]initWithArray:self.afs];
+            [arr removeObjectAtIndex:indexPath.row];
+            self.afs = arr;
+            [self.table reloadData];
+            [self.view endSynRequestSignal];
+            arr = nil;
+            
+            UILabel *lable = [[UILabel alloc]initWithFrame:CGRectMake(100, 200, 120, 20)];
+            lable.backgroundColor = [UIColor blackColor];
+            lable.text = @"操作成功";
+            lable.textAlignment = NSTextAlignmentCenter;
+            lable.textColor = [UIColor whiteColor];
+            [self.view addSubview:lable];
+            [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(hideCollectionLable:) userInfo:lable repeats:NO];
+            lable = nil;
+            
+        }else{
+            UILabel *lable = [[UILabel alloc]initWithFrame:CGRectMake(40, 200, 240, 20)];
+            lable.backgroundColor = [UIColor blackColor];
+            lable.text = [ovoDic valueForKey:@"msg"];
+            lable.textAlignment = NSTextAlignmentCenter;
+            lable.textColor = [UIColor whiteColor];
+            [self.view addSubview:lable];
+            [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(hideCollectionLable:) userInfo:lable repeats:NO];
+            lable = nil;
+        }
+        
+    } failureBlock:^(NSError *error, NSString *responseString) {
+        //
+    }];
+
 }
 
 - (void)hideCollectionLable:(NSTimer *)aTimer
 {
     UILabel *lable = [aTimer userInfo];
     lable.hidden = YES;
+}
+
+- (void)reloadTableData:(NSIndexPath *)indexPath
+{
+    
 }
 
 - (void)didReceiveMemoryWarning

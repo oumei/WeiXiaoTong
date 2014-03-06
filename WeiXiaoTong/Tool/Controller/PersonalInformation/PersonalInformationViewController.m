@@ -10,6 +10,7 @@
 #import "UIViewController+AKTabBarController.h"
 #import "UINavigationBar+Custom.h"
 #import "ControlCenter.h"
+#import "UserEntity.h"
 
 @interface PersonalInformationViewController ()
 
@@ -31,6 +32,11 @@
     [super viewDidLoad];
     
     [self.navigationController.navigationBar setBackgroundImage:[self image]];
+    
+    UserEntity *ue = [UserEntity shareCurrentUe];
+    self.userName.text = ue.userName;
+    self.level.text = [NSString stringWithFormat:@"用户等级：%d",ue.level];
+    self.mersNum.text = [NSString stringWithFormat:@"商家数量上限："];
     
 }
 

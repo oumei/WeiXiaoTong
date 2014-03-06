@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>05687706-3309-4D36-899F-DFC8FB4C3A85</string>
+	<key>IDESourceControlProjectName</key>
+	<string>WeiXiaoTong</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>5419A8F2-40F8-4CC2-A5E3-E2DB6CF6B0B0</key>
+		<string>https://github.com/oumei/WeiXiaoTong.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>WeiXiaoTong.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>5419A8F2-40F8-4CC2-A5E3-E2DB6CF6B0B0</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/oumei/WeiXiaoTong.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>5419A8F2-40F8-4CC2-A5E3-E2DB6CF6B0B0</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>5419A8F2-40F8-4CC2-A5E3-E2DB6CF6B0B0</string>
+			<key>IDESourceControlWCCName</key>
+			<string>WeiXiaoTong</string>
+		</dict>
+	</array>
+</dict>
+</plist>

@@ -9,5 +9,10 @@
 #import "CommonViewController.h"
 
 @interface PersonalInformationViewController : CommonViewController
+@property (weak, nonatomic) IBOutlet UILabel *userName;
+@property (weak, nonatomic) IBOutlet UILabel *current;
+@property (weak, nonatomic) IBOutlet UILabel *validityTime;
+@property (weak, nonatomic) IBOutlet UILabel *level;
+@property (weak, nonatomic) IBOutlet UILabel *mersNum;
 
 @end

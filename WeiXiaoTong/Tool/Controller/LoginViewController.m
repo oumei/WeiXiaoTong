@@ -149,7 +149,7 @@
             //NSLog(@"无网络连接");
         }else{
             //**************************有网络的操作**************************************//
-            [self.view showWithType:0 Title:@"正在登录,请稍等..."];
+            [self.view showWithType:0 Title:@"正在登录,请稍候..."];
             //UserModel *user = [UserModel shareCurrentUser];
             //oumeil,123456,123456,18826483794
             //204220CE-384B-4D31-8834-FF39365A8E77
@@ -180,7 +180,6 @@
                                     }else{
                                         [ue setValue:[NSString stringWithFormat:@"%d",[[ueDic valueForKey:uekey] intValue]] forKey:uekey];
                                     }
-//                                    [ue setValue:[ueDic valueForKey:uekey] forKey:uekey];
                                 }
                                 
                                 // 将个人信息全部持久化到documents中，可通过ue的单例获取登录了的用户的个人信息
@@ -193,29 +192,6 @@
                                 mData = nil;
                                 ue = nil;
                             }
-                            
-//                            NSDictionary *baseDataDic = [objectVoDic valueForKey:key];
-////                            BaseData *baseData = [[BaseData alloc]init];
-////                            baseData.pps = [NSArray array];
-//////                            for (NSString *bdkey in [baseDataDic allKeys]) {
-//////                                
-//////                                [baseData setValue:[baseDataDic valueForKey:bdkey] forKey:bdkey];
-//////                            }
-////                            NSLog(@"baseData = %@",baseData);
-//                            [objectVo setValue:baseDataDic forKey:key];
-//
-////                            [objectVo setValue:baseData forKey:key];
-//                            //baseData = nil;
-//                            
-//                        }else if ([key isEqualToString:@"ue"]){
-//                        
-//                            NSDictionary *ueDic = [objectVoDic valueForKey:key];
-//                            UserEntity *ue = [[UserEntity alloc]init];
-//                            for (NSString *uekey in [ueDic allKeys]) {
-//                                [ue setValue:[ueDic valueForKey:uekey] forKey:uekey];
-//                            }
-//                            [objectVo setValue:ue forKey:key];
-//                            //ue = nil;
                             
                             [objectVo setValue:[objectVoDic valueForKey:key] forKey:key];
                         }else{
@@ -248,6 +224,7 @@
                     [self.view addSubview:lable];
                     [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(hideCollectionLable:) userInfo:lable repeats:NO];
                     lable = nil;
+                    [self.view endSynRequestSignal];
                 }
             } failureBlock:^(NSError *error, NSString *responseString) {
                 //

@@ -24,5 +24,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *describe;
 @property (weak, nonatomic) IBOutlet UILabel *serialNum;
 @property (weak, nonatomic) IBOutlet UILabel *time;
+@property (weak, nonatomic) IBOutlet UIButton *collection;
+@property (weak, nonatomic) IBOutlet UIButton *detail;
 
 @end

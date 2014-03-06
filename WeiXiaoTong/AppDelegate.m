@@ -34,6 +34,7 @@
 //    NSString *str = deviceUID.UUIDString;
 //    NSLog(@"%@",str); // 输出设备id
     
+    
     [self.window makeKeyAndVisible];
     return YES;
 }

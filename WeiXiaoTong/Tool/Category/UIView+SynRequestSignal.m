@@ -10,8 +10,7 @@
 
 
 #define TIP_WIDTH 200
-#define TIP_HEIGHT 35
-#define SPINNER_INDEX 0
+#define TIP_HEIGHT 70
 #define TITLE_INDEX 1
 #define SCREEN_HEIGHT [UIScreen mainScreen].bounds.size.height
 #define SCREEN_WIDTH [UIScreen mainScreen].bounds.size.width
@@ -28,16 +27,18 @@ static UIView *tip = nil;
         tip.backgroundColor = [UIColor blackColor];
         tip.tag = 2000;
         
-        UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
-        spinner.frame = CGRectMake(0, 0, 35, 35);
-        [tip addSubview:spinner];
-        spinner = nil;
+        UIImageView *icon = [[UIImageView alloc]initWithFrame:CGRectMake(5, 5, 60, 60)];
+        icon.image = [UIImage imageNamed:@"ic_launcher.png"];
+        [tip addSubview:icon];
+        icon = nil;
         
-        UILabel *title = [[UILabel alloc] initWithFrame:CGRectMake(35, 0, 150, 35)];
+        UILabel *title = [[UILabel alloc] initWithFrame:CGRectMake(70, 15, 130, 40)];
         title.backgroundColor = [UIColor clearColor];
-        title.textAlignment = NSTextAlignmentCenter;
+        title.font = [UIFont systemFontOfSize:14];
+        title.lineBreakMode = UILineBreakModeWordWrap;
+        title.numberOfLines = 2;
         title.textColor = [UIColor whiteColor];
-        title.adjustsFontSizeToFitWidth = YES;
+        //title.adjustsFontSizeToFitWidth = YES;
         [tip addSubview:title];
         title = nil;
     }
@@ -54,14 +55,11 @@ static UIView *tip = nil;
     }
     tip.frame = CGRectMake((SCREEN_WIDTH - TIP_WIDTH)/2, tipY, TIP_WIDTH, TIP_HEIGHT);
     [(UILabel *)[[tip subviews] objectAtIndex:TITLE_INDEX] setText:aTitle];
-    [(UIActivityIndicatorView *)[[tip subviews] objectAtIndex:SPINNER_INDEX] startAnimating];
     [self addSubview:tip];
 }
 
 - (void)endSynRequestSignal
 {
-    [(UIActivityIndicatorView *)[[tip subviews] objectAtIndex:SPINNER_INDEX] stopAnimating];
-    
     [tip removeFromSuperview];
 }
 

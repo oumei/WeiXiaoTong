@@ -12,6 +12,7 @@
 @interface HomeViewController : CommonViewController<UITableViewDataSource,UITableViewDelegate,MerchantsCellDelegate>
 {
     NSMutableArray *_friendsMutArr;
+    NSIndexPath *_lastIndexPath;
 }
 @property (weak, nonatomic) IBOutlet UITableView *table;
 @property (weak, nonatomic) IBOutlet UIButton *addNewMer;

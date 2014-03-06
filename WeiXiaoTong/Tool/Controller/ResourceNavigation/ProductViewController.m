@@ -14,6 +14,7 @@
 #import "DetailsViewController.h"
 #import "UIImageView+WebCache.h"
 #import "UserEntity.h"
+#import "UIView+SynRequestSignal.h"
 
 @interface ProductViewController ()
 
@@ -125,8 +126,21 @@ static int page = 1;
     cell.cost.text = [NSString stringWithFormat:@"拿货价：%d",chanPin.jiage];
     cell.describe.text = chanPin.miaoshu;
     cell.serialNum.text = [NSString stringWithFormat:@"编号：%d",chanPin.Id];
-    
     cell.time.text = [NSString stringWithFormat:@"日期：%@",[chanPin.shijian substringToIndex:10]];
+    
+    UserEntity *ue = [UserEntity shareCurrentUe];
+    if (ue.level == 0) {
+        cell.collection.hidden = YES;
+    }else{
+        NSFileManager *fm = [NSFileManager defaultManager];
+        if ([fm fileExistsAtPath:[self docPath]]) {
+            NSMutableArray *arr = [NSMutableArray arrayWithContentsOfFile:[self docPath]];
+            for (int i = 0; i < arr.count; i++) {
+                int _Id = [[arr objectAtIndex:i] intValue];
+                if (_Id == chanPin.Id) {
+                    [cell.collection setTitle:@"已收藏" forState:0];
+                }}}
+    }
     
     return cell;
 }
@@ -134,6 +148,13 @@ static int page = 1;
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     //
+}
+
+-(NSString *)docPath
+{
+    NSString *homePath=NSHomeDirectory();
+    homePath=[homePath stringByAppendingPathComponent:@"Documents/chanpinID.txt"];
+    return homePath;
 }
 
 #pragma mark - ProductCellDelegate -
@@ -151,13 +172,68 @@ static int page = 1;
 
 - (void)collection:(UIButton *)sender IndexPath:(NSIndexPath *)indexPath
 {
-//    UserModel *user = [UserModel shareCurrentUser];
-//    ChanPin *chanPin = [self.cpsArr objectAtIndex:indexPath.row];
-//    [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": COLLECT_CHANPIN,@"cpid": [NSString stringWithFormat:@"%d",chanPin.cpid],@"price": [NSString stringWithFormat:@"%d",chanPin.price],@"uname": user.uname,@"uuid": user.uuid} completionBlock:^(id object) {
-//        //
-//    } failureBlock:^(NSError *error, NSString *responseString) {
-//        //
-//    }];
+    ProductCell *cell = (ProductCell *)[self.table cellForRowAtIndexPath:indexPath];
+    ChanPin *chanPin = [self.cpsArr objectAtIndex:indexPath.row];
+     UserEntity *user = [UserEntity shareCurrentUe];
+    if ([cell.collection.titleLabel.text isEqualToString:@"已收藏"]) {
+        UILabel *lable = [[UILabel alloc]initWithFrame:CGRectMake(40, 350, 240, 20)];
+        lable.backgroundColor = [UIColor blackColor];
+        lable.text = @"已收藏";
+        lable.textAlignment = NSTextAlignmentCenter;
+        lable.textColor = [UIColor whiteColor];
+        
+        [self.view addSubview:lable];
+        [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(hideCollectionLable:) userInfo:lable repeats:NO];
+        lable = nil;
+    }else{
+        [self.view showWithType:0 Title:@"正在收藏产品..."];
+        [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": COLLECT_CHANPIN,@"cpid": [NSString stringWithFormat:@"%d",chanPin.cpid],@"price": [NSString stringWithFormat:@"%d",chanPin.price],@"uname": user.userName,@"uuid": user.uuid} completionBlock:^(id object) {
+            NSDictionary *ovoDic = [[object valueForKey:@"ovo"] JSONValue];
+            if ([[ovoDic valueForKey:@"code"] intValue] == 0) {
+                NSFileManager *fm = [NSFileManager defaultManager];
+                if ([fm fileExistsAtPath:[self docPath]]) {
+                    NSMutableArray *arr = [NSMutableArray arrayWithContentsOfFile:[self docPath]];
+                    [arr addObject:[NSString stringWithFormat:@"%d",chanPin.Id]];
+                    [arr writeToFile:[self docPath] atomically:YES];
+                }else{
+                    NSMutableArray *arr = [[NSMutableArray alloc]init];
+                    [arr addObject:[NSString stringWithFormat:@"%d",chanPin.Id]];
+                    [arr writeToFile:[self docPath] atomically:YES];
+                }
+                [self.table reloadData];
+                [self.view endSynRequestSignal];
+                UILabel *lable = [[UILabel alloc]initWithFrame:CGRectMake(100, 350, 120, 20)];
+                lable.backgroundColor = [UIColor blackColor];
+                lable.text = @"收藏成功";
+                lable.textAlignment = NSTextAlignmentCenter;
+                lable.textColor = [UIColor whiteColor];
+                
+                [self.view addSubview:lable];
+                [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(hideCollectionLable:) userInfo:lable repeats:NO];
+                lable = nil;
+            }else{
+                [self.view endSynRequestSignal];
+                UILabel *lable = [[UILabel alloc]initWithFrame:CGRectMake(100, 350, 120, 20)];
+                lable.backgroundColor = [UIColor blackColor];
+                lable.text = @"收藏失败";
+                lable.textAlignment = NSTextAlignmentCenter;
+                lable.textColor = [UIColor whiteColor];
+                
+                [self.view addSubview:lable];
+                [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(hideCollectionLable:) userInfo:lable repeats:NO];
+                lable = nil;
+            }
+        } failureBlock:^(NSError *error, NSString *responseString) {
+            [self.view endSynRequestSignal];
+        }];
+    }
+    
+}
+
+- (void)hideCollectionLable:(NSTimer *)aTimer
+{
+    UILabel *lable = [aTimer userInfo];
+    lable.hidden = YES;
 }
 
 - (void)didReceiveMemoryWarning

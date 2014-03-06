@@ -18,6 +18,7 @@
 #import "CheckApplicationViewController.h"
 #import "AddMerchantsViewController.h"
 #import "ApplyFriend.h"
+#import "UIView+SynRequestSignal.h"
 
 @interface HomeViewController ()
 
@@ -89,7 +90,7 @@
 {
     UserEntity *ue = [UserEntity shareCurrentUe];
     if (ue.level > 0) {
-        
+        [self.view showWithType:0 Title:@"请求商家申请列表中..."];
         [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": GET_APPLY_FRIENDS,@"uname": ue.userName,@"uuid": ue.uuid} completionBlock:^(id object) {
             NSLog(@"object = %@",object);
             NSString *ovo = [object valueForKey:@"ovo"];
@@ -110,11 +111,13 @@
                     CheckApplicationViewController *checkApplicationViewController = [[CheckApplicationViewController alloc]initWithNibName:@"CheckApplicationViewController" bundle:nil afs:mutArr];
                     [checkApplicationViewController setHidesBottomBarWhenPushed:YES];
                     [self.navigationController pushViewController:checkApplicationViewController animated:YES];
+                    [self.view endSynRequestSignal];
                     checkApplicationViewController = nil;
                     mutArr = nil;
                     afs = nil;
                 }else{
-                    UILabel *lable = [[UILabel alloc]initWithFrame:CGRectMake(50, 200, 220, 20)];
+                    [self.view endSynRequestSignal];
+                    UILabel *lable = [[UILabel alloc]initWithFrame:CGRectMake(100, 200, 120, 20)];
                     lable.backgroundColor = [UIColor blackColor];
                     lable.text = @"暂无商家申请！";
                     lable.textAlignment = NSTextAlignmentCenter;
@@ -124,6 +127,7 @@
                     lable = nil;
                 }
             }else{
+                [self.view endSynRequestSignal];
                 UILabel *lable = [[UILabel alloc]initWithFrame:CGRectMake(40, 200, 240, 20)];
                 lable.backgroundColor = [UIColor blackColor];
                 lable.text = [ovoDic valueForKey:@"msg"];
@@ -140,6 +144,7 @@
         
     }else if(ue.qx == 0){
         AddMerchantsViewController *addMerchantsViewController = [[AddMerchantsViewController alloc]initWithNibName:@"AddMerchantsViewController" bundle:nil];
+        [addMerchantsViewController setHidesBottomBarWhenPushed:YES];
         [self.navigationController pushViewController:addMerchantsViewController animated:YES];
         addMerchantsViewController = nil;
     }
@@ -147,7 +152,44 @@
 
 - (IBAction)refreshAction:(id)sender
 {
+    [self.view showWithType:0 Title:@"请求商家列表中..."];
+    UserEntity *user = [UserEntity shareCurrentUe];
     
+    [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": GET_FRIENDS,@"uname": user.userName,@"uuid": user.uuid} completionBlock:^(id object) {
+        
+        NSString *ovo = [object valueForKey:@"ovo"];
+        NSDictionary *ovoDic = [ovo JSONValue];
+        if ([[ovoDic valueForKey:@"code"] intValue] == 0) {
+            NSArray *friends = [ovoDic valueForKey:@"friends"];
+            NSMutableArray *mutArr = [[NSMutableArray alloc]init];
+            for (int i = 0; i < friends.count; i++) {
+                NSDictionary *dic = [friends objectAtIndex:i];
+                Friend *friend = [[Friend alloc]init];
+                for (NSString *key in [dic allKeys]) {
+                    [friend setValue:[dic valueForKey:key] forKey:key];
+                }
+                [mutArr addObject:friend];
+                friend = nil;
+            }
+            _friendsMutArr = mutArr;
+            [self.table reloadData];
+            [self.view endSynRequestSignal];
+        }else{
+            [self.view endSynRequestSignal];
+            UILabel *lable = [[UILabel alloc]initWithFrame:CGRectMake(40, 350, 240, 20)];
+            lable.backgroundColor = [UIColor blackColor];
+            lable.text = [ovoDic valueForKey:@"msg"];
+            lable.textAlignment = NSTextAlignmentCenter;
+            lable.textColor = [UIColor whiteColor];
+            
+            [self.view addSubview:lable];
+            [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(hideCollectionLable:) userInfo:lable repeats:NO];
+            lable = nil;
+        }
+        
+    } failureBlock:^(NSError *error, NSString *responseString) {
+        //
+    }];
 }
 
 #pragma mark - tableView Delegate -
@@ -163,6 +205,9 @@
     if (cell == nil) {
         cell = [[[NSBundle mainBundle] loadNibNamed:@"MerchantsCell" owner:self options:nil] lastObject];
     }
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    cell.delegate = self;
+    cell.indexPath = indexPath;
     Friend *friend = [_friendsMutArr objectAtIndex:indexPath.row];
     cell.name.text = friend.userName;
     cell.Id.text = [NSString stringWithFormat:@"用户ID：%d",friend.Id];
@@ -170,17 +215,90 @@
     return cell;
 }
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    UserEntity *ue = [UserEntity shareCurrentUe];
+    Friend *friend = [_friendsMutArr objectAtIndex:indexPath.row];
+    if (ue.qx > 0) {
+        [self.view showWithType:0 Title:@"切换商家中..."];
+        
+        [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": CHANGE_TABLE,@"fid": [NSString stringWithFormat:@"%d",friend.Id],@"uname": ue.userName,@"uuid": ue.uuid} completionBlock:^(id object) {
+            
+            NSString *ovo = [object valueForKey:@"ovo"];
+            NSDictionary *ovoDic = [ovo JSONValue];
+            if ([[ovoDic valueForKey:@"code"] intValue] == 0) {
+                [self.view endSynRequestSignal];
+                
+                if (_lastIndexPath == nil) {
+                    _lastIndexPath = indexPath;
+                }else{
+                    MerchantsCell *cell = (MerchantsCell *)[tableView cellForRowAtIndexPath:_lastIndexPath];
+                    cell.name.textColor = [UIColor blackColor];
+                    _lastIndexPath = indexPath;
+                }
+                MerchantsCell *cell = (MerchantsCell *)[tableView cellForRowAtIndexPath:indexPath];
+                cell.name.textColor = [UIColor redColor];
+                
+                UILabel *lable = [[UILabel alloc]initWithFrame:CGRectMake(100, 350, 120, 20)];
+                lable.backgroundColor = [UIColor blackColor];
+                lable.text = @"切换商家成功！";
+                lable.textAlignment = NSTextAlignmentCenter;
+                lable.textColor = [UIColor whiteColor];
+                
+                [self.view addSubview:lable];
+                [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(hideCollectionLable:) userInfo:lable repeats:NO];
+                lable = nil;
+            }else{
+                [self.view endSynRequestSignal];
+                UILabel *lable = [[UILabel alloc]initWithFrame:CGRectMake(40, 350, 240, 20)];
+                lable.backgroundColor = [UIColor blackColor];
+                lable.text = [ovoDic valueForKey:@"msg"];
+                lable.textAlignment = NSTextAlignmentCenter;
+                lable.textColor = [UIColor whiteColor];
+                
+                [self.view addSubview:lable];
+                [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(hideCollectionLable:) userInfo:lable repeats:NO];
+                lable = nil;
+            }
+            
+        } failureBlock:^(NSError *error, NSString *responseString) {
+            //
+        }];
+
+    }
+}
+
 - (void)deleted:(UIButton *)sender IndexPath:(NSIndexPath *)indexPath
 {
+    [self.view showWithType:0 Title:@"正在删除商家信息中..."];
     UserEntity *user = [UserEntity shareCurrentUe];
      Friend *friend = [_friendsMutArr objectAtIndex:indexPath.row];
     [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": DELETE_FRIENDS,@"fname":friend.userName,@"uname": user.userName,@"uuid":user.uuid} completionBlock:^(id object) {
-        //
+        NSString *ovo = [object valueForKey:@"ovo"];
+        NSDictionary *ovoDic = [ovo JSONValue];
+        if ([[ovoDic valueForKey:@"code"] intValue] == 0) {
+            NSMutableArray *arr = [[NSMutableArray alloc]initWithArray:_friendsMutArr];
+            [arr removeObjectAtIndex:indexPath.row];
+            _friendsMutArr = arr;
+            [self.table reloadData];
+            [self.view endSynRequestSignal];
+            arr = nil;
+        }else{
+            [self.view endSynRequestSignal];
+            UILabel *lable = [[UILabel alloc]initWithFrame:CGRectMake(50, 200, 220, 20)];
+            lable.backgroundColor = [UIColor blackColor];
+            lable.text = [ovoDic valueForKey:@"msg"];
+            lable.textAlignment = NSTextAlignmentCenter;
+            lable.textColor = [UIColor whiteColor];
+            [self.view addSubview:lable];
+            [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(hideCollectionLable:) userInfo:lable repeats:NO];
+            lable = nil;
+        }
     } failureBlock:^(NSError *error, NSString *responseString) {
         //
     }];
-    [_friendsMutArr removeObjectAtIndex:indexPath.row];
-    [self.table reloadData];
+//    [_friendsMutArr removeObjectAtIndex:indexPath.row];
+//    [self.table reloadData];
 }
 
 - (void)didReceiveMemoryWarning

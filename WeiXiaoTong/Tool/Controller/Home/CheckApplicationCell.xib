@@ -42,7 +42,7 @@
                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                         </state>
                         <connections>
-                            <action selector="refuseAction:" destination="X0e-kV-d2x" eventType="touchUpInside" id="XhQ-QB-e64"/>
+                            <action selector="refuseAction:" destination="X0e-kV-d2x" eventType="touchUpInside" id="0fA-3X-b2i"/>
                         </connections>
                     </button>
                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Jtd-uR-aA3">
