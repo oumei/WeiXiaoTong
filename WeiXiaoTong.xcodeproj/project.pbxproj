@@ -7,6 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		359FA23C18C9A1E40011417C /* TableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 359FA23A18C9A1E40011417C /* TableViewController.m */; };
+		359FA23D18C9A1E40011417C /* TableViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 359FA23B18C9A1E40011417C /* TableViewController.xib */; };
+		359FA24018C9A7170011417C /* TableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 359FA23F18C9A7170011417C /* TableCell.m */; };
+		359FA24218C9A7220011417C /* TableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 359FA24118C9A7220011417C /* TableCell.xib */; };
+		359FA24618C9D55C0011417C /* ApplicablePeopleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 359FA24418C9D55C0011417C /* ApplicablePeopleViewController.m */; };
+		359FA24718C9D55C0011417C /* ApplicablePeopleViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 359FA24518C9D55C0011417C /* ApplicablePeopleViewController.xib */; };
+		359FA24A18C9EF760011417C /* ApplicablePeopleCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 359FA24918C9EF760011417C /* ApplicablePeopleCell.m */; };
+		359FA24C18C9EF870011417C /* ApplicablePeopleCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 359FA24B18C9EF870011417C /* ApplicablePeopleCell.xib */; };
 		35A1F85018BB226800702B74 /* ControlCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 35A1F71718BB226700702B74 /* ControlCenter.m */; };
 		35A1F85118BB226800702B74 /* UINavigationBar+Custom.m in Sources */ = {isa = PBXBuildFile; fileRef = 35A1F71A18BB226700702B74 /* UINavigationBar+Custom.m */; };
 		35A1F88718BB226800702B74 /* AKTab.m in Sources */ = {isa = PBXBuildFile; fileRef = 35A1F78218BB226800702B74 /* AKTab.m */; };
@@ -367,6 +375,18 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		359FA23918C9A1E40011417C /* TableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TableViewController.h; sourceTree = "<group>"; };
+		359FA23A18C9A1E40011417C /* TableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TableViewController.m; sourceTree = "<group>"; };
+		359FA23B18C9A1E40011417C /* TableViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TableViewController.xib; sourceTree = "<group>"; };
+		359FA23E18C9A7170011417C /* TableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TableCell.h; sourceTree = "<group>"; };
+		359FA23F18C9A7170011417C /* TableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TableCell.m; sourceTree = "<group>"; };
+		359FA24118C9A7220011417C /* TableCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TableCell.xib; sourceTree = "<group>"; };
+		359FA24318C9D55C0011417C /* ApplicablePeopleViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ApplicablePeopleViewController.h; sourceTree = "<group>"; };
+		359FA24418C9D55C0011417C /* ApplicablePeopleViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ApplicablePeopleViewController.m; sourceTree = "<group>"; };
+		359FA24518C9D55C0011417C /* ApplicablePeopleViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ApplicablePeopleViewController.xib; sourceTree = "<group>"; };
+		359FA24818C9EF760011417C /* ApplicablePeopleCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ApplicablePeopleCell.h; sourceTree = "<group>"; };
+		359FA24918C9EF760011417C /* ApplicablePeopleCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ApplicablePeopleCell.m; sourceTree = "<group>"; };
+		359FA24B18C9EF870011417C /* ApplicablePeopleCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ApplicablePeopleCell.xib; sourceTree = "<group>"; };
 		35A1F71618BB226700702B74 /* ControlCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ControlCenter.h; sourceTree = "<group>"; };
 		35A1F71718BB226700702B74 /* ControlCenter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ControlCenter.m; sourceTree = "<group>"; };
 		35A1F71918BB226700702B74 /* UINavigationBar+Custom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UINavigationBar+Custom.h"; sourceTree = "<group>"; };
@@ -1195,6 +1215,18 @@
 				35A26DCE18C4CEE00076D38D /* CategoryCell.h */,
 				35A26DCF18C4CEE00076D38D /* CategoryCell.m */,
 				35A26DD118C4CEEC0076D38D /* CategoryCell.xib */,
+				359FA23918C9A1E40011417C /* TableViewController.h */,
+				359FA23A18C9A1E40011417C /* TableViewController.m */,
+				359FA23B18C9A1E40011417C /* TableViewController.xib */,
+				359FA23E18C9A7170011417C /* TableCell.h */,
+				359FA23F18C9A7170011417C /* TableCell.m */,
+				359FA24118C9A7220011417C /* TableCell.xib */,
+				359FA24318C9D55C0011417C /* ApplicablePeopleViewController.h */,
+				359FA24418C9D55C0011417C /* ApplicablePeopleViewController.m */,
+				359FA24518C9D55C0011417C /* ApplicablePeopleViewController.xib */,
+				359FA24818C9EF760011417C /* ApplicablePeopleCell.h */,
+				359FA24918C9EF760011417C /* ApplicablePeopleCell.m */,
+				359FA24B18C9EF870011417C /* ApplicablePeopleCell.xib */,
 			);
 			path = GoodsSearch;
 			sourceTree = "<group>";
@@ -1727,6 +1759,8 @@
 				35A1F8B818BB226800702B74 /* 退出.png in Resources */,
 				35A1F88918BB226800702B74 /* AKTabBarController.bundle in Resources */,
 				35A1F8A318BB226800702B74 /* 联系客服按钮2.png in Resources */,
+				359FA24C18C9EF870011417C /* ApplicablePeopleCell.xib in Resources */,
+				359FA23D18C9A1E40011417C /* TableViewController.xib in Resources */,
 				35A1F91C18BB226800702B74 /* 联系客服（选中状态）.png in Resources */,
 				35A1F92F18BB226800702B74 /* 胡先生-客服头像4.png in Resources */,
 				35A1F8D718BB226800702B74 /* 收货人底框.png in Resources */,
@@ -1817,6 +1851,7 @@
 				35A57B0E18B9DA5000339A66 /* button_noborder_on.png in Resources */,
 				35A894AE18BF82BA005F6538 /* ProductCell.xib in Resources */,
 				35A1F93418BB226800702B74 /* 黄先生-客服头像6.png in Resources */,
+				359FA24218C9A7220011417C /* TableCell.xib in Resources */,
 				35A1F8FC18BB226800702B74 /* 顶三儿-发布（黑）.png in Resources */,
 				35A57B1E18B9DA5000339A66 /* input_cpsd.png in Resources */,
 				35A1F97218BB675900702B74 /* LoginViewController.xib in Resources */,
@@ -1933,6 +1968,7 @@
 				35A57B2E18B9DA5000339A66 /* seach_over.png in Resources */,
 				35A57B1B18B9DA5000339A66 /* grayicon.png in Resources */,
 				35A57B1818B9DA5000339A66 /* feature_point_cur.png in Resources */,
+				359FA24718C9D55C0011417C /* ApplicablePeopleViewController.xib in Resources */,
 				35A1F96D18BB4E5500702B74 /* RegisterViewController.xib in Resources */,
 				35A1F93318BB226800702B74 /* 陈小姐-客服头像12.png in Resources */,
 				35A1F8F118BB226800702B74 /* 广告2.png in Resources */,
@@ -1961,6 +1997,7 @@
 				35A57B9418BA177000339A66 /* Friend.m in Sources */,
 				35A57BE918BA40AF00339A66 /* SBJsonWriter.m in Sources */,
 				35A878FA18BDAF5000EDC246 /* NSString+Utils.m in Sources */,
+				359FA24A18C9EF760011417C /* ApplicablePeopleCell.m in Sources */,
 				35A878FE18BDAF5000EDC246 /* UIViewController+BarItem.m in Sources */,
 				35A57BCE18BA270100339A66 /* ApplyFriendVo.m in Sources */,
 				35A894AC18BF7B65005F6538 /* ProductCell.m in Sources */,
@@ -1989,12 +2026,14 @@
 				35A68B7E18C1AB8700E17F8C /* UIImage+WebP.m in Sources */,
 				35A1F94E18BB2ED600702B74 /* GoodSearchViewController.m in Sources */,
 				35A68B7618C1AB8700E17F8C /* SDWebImageDecoder.m in Sources */,
+				359FA23C18C9A1E40011417C /* TableViewController.m in Sources */,
 				35A26DD018C4CEE00076D38D /* CategoryCell.m in Sources */,
 				35A57BB918BA249800339A66 /* ConfigVo.m in Sources */,
 				35A942E518C0E44500533758 /* DetailsViewController.m in Sources */,
 				35A879B818BE31A900EDC246 /* HttpService.m in Sources */,
 				35A57B8518BA15B300339A66 /* Service.m in Sources */,
 				35A879CE18BE343700EDC246 /* AFHTTPRequestOperationManager.m in Sources */,
+				359FA24618C9D55C0011417C /* ApplicablePeopleViewController.m in Sources */,
 				35A68B7B18C1AB8700E17F8C /* UIButton+WebCache.m in Sources */,
 				35A57B8E18BA16D400339A66 /* ShoesType.m in Sources */,
 				35A68B7318C1AB8700E17F8C /* NSData+ImageContentType.m in Sources */,
@@ -2021,6 +2060,7 @@
 				35A68B7C18C1AB8700E17F8C /* UIImage+GIF.m in Sources */,
 				35A878F518BDAF5000EDC246 /* CommonViewController.m in Sources */,
 				35A68B7818C1AB8700E17F8C /* SDWebImageDownloaderOperation.m in Sources */,
+				359FA24018C9A7170011417C /* TableCell.m in Sources */,
 				35A1F97618BB8B6400702B74 /* NSString+RegularExpressionTest.m in Sources */,
 				35A57AAC18B9D06600339A66 /* main.m in Sources */,
 				35A57BCB18BA26C900339A66 /* AddFriendVo.m in Sources */,
@@ -2139,7 +2179,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -2173,7 +2213,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;

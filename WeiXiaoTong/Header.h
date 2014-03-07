@@ -38,6 +38,7 @@
 #define IMAGE_URL_BY_TN(ID,W,H,PICS) [NSString stringWithFormat:@"http://115.28.17.18:8080/service/showPic.do?cpid=%d&lunbo=1&setW=%.0f&setH=%.0f&index=%d",ID,W,H,PICS]
 #define IMAGE_URL_BY_TN_ID(TN,ID,W,H,PICS) [NSString stringWithFormat:@"http://115.28.17.18:8080/service/showPic.do?cpid=%d-%d&lunbo=1&setW=%.0f&setH=%.0f&index=%d",TN,ID,W,H,PICS]
 
+//数组
 
 
 

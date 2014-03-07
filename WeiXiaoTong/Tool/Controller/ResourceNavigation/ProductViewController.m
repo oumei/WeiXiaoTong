@@ -147,7 +147,7 @@ static int page = 1;
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    //
+    ChanPin *chanPin = [self.cpsArr objectAtIndex:indexPath.row];
 }
 
 -(NSString *)docPath
@@ -176,7 +176,7 @@ static int page = 1;
     ChanPin *chanPin = [self.cpsArr objectAtIndex:indexPath.row];
      UserEntity *user = [UserEntity shareCurrentUe];
     if ([cell.collection.titleLabel.text isEqualToString:@"已收藏"]) {
-        UILabel *lable = [[UILabel alloc]initWithFrame:CGRectMake(40, 350, 240, 20)];
+        UILabel *lable = [[UILabel alloc]initWithFrame:CGRectMake(100, 350, 120, 20)];
         lable.backgroundColor = [UIColor blackColor];
         lable.text = @"已收藏";
         lable.textAlignment = NSTextAlignmentCenter;
@@ -187,7 +187,7 @@ static int page = 1;
         lable = nil;
     }else{
         [self.view showWithType:0 Title:@"正在收藏产品..."];
-        [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": COLLECT_CHANPIN,@"cpid": [NSString stringWithFormat:@"%d",chanPin.cpid],@"price": [NSString stringWithFormat:@"%d",chanPin.price],@"uname": user.userName,@"uuid": user.uuid} completionBlock:^(id object) {
+        [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": COLLECT_CHANPIN,@"cpid": [NSString stringWithFormat:@"%d",chanPin.Id],@"price": [NSString stringWithFormat:@"%d",chanPin.price],@"uname": user.userName,@"uuid": user.uuid} completionBlock:^(id object) {
             NSDictionary *ovoDic = [[object valueForKey:@"ovo"] JSONValue];
             if ([[ovoDic valueForKey:@"code"] intValue] == 0) {
                 NSFileManager *fm = [NSFileManager defaultManager];

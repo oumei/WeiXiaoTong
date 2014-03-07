@@ -50,6 +50,7 @@
     [tabBarController setTabStrokeColor:[UIColor clearColor]];
     [tabBarController setTabEdgeColor:[UIColor clearColor]];
     tabBarController.viewControllers = [NSMutableArray arrayWithObjects:nav_1,nav_2,nav_3,nav_4,nil];
+    tabBarController.selectedViewController = nav_2;
     appDelegate.akTabBarController = tabBarController;
     [appDelegate.window setRootViewController:appDelegate.akTabBarController];
     

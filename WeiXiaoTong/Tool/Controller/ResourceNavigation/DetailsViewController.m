@@ -134,7 +134,21 @@
         [baseData setValue:[[ob valueForKey:@"baseData"] valueForKey:key] forKey:key];
         NSLog(@"bd = %@",[[ob valueForKey:@"baseData"] valueForKey:key]);
     }
-    
+    for (int i = 0; i < baseData.xbs.count; i++) {
+        int _ID = [[[baseData.xbs objectAtIndex:i] valueForKey:@"id"] intValue];
+        if (_ID == _chanpin.xingbie) {
+            NSString *str = [NSString stringWithFormat:@"适应人群：%@",[[baseData.xbs objectAtIndex:i] valueForKey:@"name"]];
+            [_contents addObject:str];
+        }
+    }
+    for (int i = 0; i < baseData.pps.count; i++) {
+        int _ID = [[[baseData.pps objectAtIndex:i] valueForKey:@"id"] intValue];
+        if (_ID == _chanpin.pinpai) {
+            NSString *str = [NSString stringWithFormat:@"产品品牌：%@",[[baseData.pps objectAtIndex:i] valueForKey:@"cname"]];
+            [_contents addObject:str];
+        }
+    }
+
     NSArray *categorys = [_chanpin.categorys componentsSeparatedByString:@"|"];
     NSLog(@"c:%@",_chanpin.categorys);
     NSLog(@"ca = %@",categorys);
