@@ -14,12 +14,13 @@
 
 @implementation ApplicablePeopleViewController
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil data:(NSArray *)data indexPath:(NSIndexPath *)indexPath
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil data:(NSArray *)data indexPath:(NSIndexPath *)indexPath title:(NSString *)title
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         _contents = data;
         self.indexPath = indexPath;
+        self.title = title;
     }
     return self;
 }
@@ -76,13 +77,31 @@
 - (void)seletedAction:(UIButton *)sender IndexPath:(NSIndexPath *)indexPath
 {
     NSString *str;
-    if (self.indexPath.row == 0) {
+    if ([self.title isEqualToString:@"选择适用人群"]) {
         str = [NSString stringWithFormat:@"  适用人群：%@",[_contents objectAtIndex:indexPath.row]];
-    }else if (self.indexPath.row == 1){
+    }else if ([self.title isEqualToString:@"选择售后服务"]){
         str = [NSString stringWithFormat:@"  售后服务：%@",[_contents objectAtIndex:indexPath.row]];
+    }else if ([self.title isEqualToString:@"选择鞋子类型"]){
+        str = [NSString stringWithFormat:@"  鞋子类型：%@",[_contents objectAtIndex:indexPath.row]];
+    }else if ([self.title isEqualToString:@"选择产品材质"]){
+        str = [NSString stringWithFormat:@"  产品材质：%@",[_contents objectAtIndex:indexPath.row]];
+    }else if ([self.title isEqualToString:@"选择闭合方式"]){
+        str = [NSString stringWithFormat:@"  闭合方式：%@",[_contents objectAtIndex:indexPath.row]];
+    }else if ([self.title isEqualToString:@"选择手表机芯"]){
+        str = [NSString stringWithFormat:@"  手表机芯：%@",[_contents objectAtIndex:indexPath.row]];
+    }else if ([self.title isEqualToString:@"选择手表表带"]){
+        str = [NSString stringWithFormat:@"  手表表带：%@",[_contents objectAtIndex:indexPath.row]];
+    }else if ([self.title isEqualToString:@"选择包包类型"]){
+        str = [NSString stringWithFormat:@"  包包类型：%@",[_contents objectAtIndex:indexPath.row]];
+    }else if ([self.title isEqualToString:@"选择产品品质"]){
+        str = [NSString stringWithFormat:@"  产品品质：%@",[_contents objectAtIndex:indexPath.row]];
+    }else if ([self.title isEqualToString:@"选择服装类型"]){
+        str = [NSString stringWithFormat:@"  服装类型：%@",[_contents objectAtIndex:indexPath.row]];
+    }else if ([self.title isEqualToString:@"选择彩妆类型"]){
+        str = [NSString stringWithFormat:@"  彩妆类型：%@",[_contents objectAtIndex:indexPath.row]];
     }
-    if (self.delegate && [self.delegate respondsToSelector:@selector(changeTitle:indexPath:)]) {
-        [self.delegate performSelector:@selector(changeTitle:indexPath:) withObject:str withObject:self.indexPath];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(changeTitle:indexPath:apIndexPath:)]) {
+        [self.delegate changeTitle:str indexPath:self.indexPath apIndexPath:indexPath];
     }
     [self.navigationController popViewControllerAnimated:YES];
 }

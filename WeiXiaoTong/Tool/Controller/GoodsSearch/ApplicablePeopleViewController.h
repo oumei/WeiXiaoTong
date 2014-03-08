@@ -10,7 +10,7 @@
 #import "ApplicablePeopleCell.h"
 @protocol ApplicablePeopleViewControllerDelegate <NSObject>
 
--(void)changeTitle:(NSString *)aStr indexPath:(NSIndexPath *)indexPath;
+-(void)changeTitle:(NSString *)aStr indexPath:(NSIndexPath *)indexPath apIndexPath:(NSIndexPath *)apIndexPath;
 
 @end
 
@@ -23,6 +23,6 @@
 @property (weak, nonatomic) IBOutlet UITextField *searchText;
 @property (weak, nonatomic) IBOutlet UITableView *table;
 @property (weak, nonatomic) IBOutlet UIButton *back;
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil data:(NSArray *)data indexPath:(NSIndexPath *)indexPath;
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil data:(NSArray *)data indexPath:(NSIndexPath *)indexPath title:(NSString *)title;
 
 @end

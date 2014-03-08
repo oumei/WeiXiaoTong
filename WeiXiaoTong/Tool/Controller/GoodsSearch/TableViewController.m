@@ -7,6 +7,7 @@
 //
 
 #import "TableViewController.h"
+#import "UserEntity.h"
 
 @interface TableViewController ()
 
@@ -28,6 +29,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    UserEntity *ue = [UserEntity shareCurrentUe];
     
     //*******************************headerView*****************************//
     UIView *headerView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 230, 35)];
@@ -72,6 +74,9 @@
     
     UIButton *footBtn2 = [UIButton buttonWithType:UIButtonTypeCustom];
     footBtn2.frame = CGRectMake(0, 36, 230, 35);
+    if (ue.level < 1) {
+        footBtn2.hidden = YES;
+    }
     [footBtn2 setBackgroundImage:[UIImage imageNamed:@"long_button.png"] forState:0];
     [footBtn2 setBackgroundImage:[UIImage imageNamed:@"long_button_over.png"] forState:UIControlStateHighlighted];
     [footBtn2 addTarget:self action:@selector(footBtnAction:) forControlEvents:UIControlEventTouchUpInside];

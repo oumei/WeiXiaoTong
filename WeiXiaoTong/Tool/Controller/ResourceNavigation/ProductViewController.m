@@ -57,50 +57,66 @@ static int page = 1;
 - (void)downMoreData:(id)sender
 {
     UserEntity *user = [UserEntity shareCurrentUe];
-    
-    [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": GET_CHANPIN_BY_DANGKOU,@"page":[NSString stringWithFormat:@"%d",page],@"dangkou":self.title,@"uname": user.userName,@"uuid": user.uuid} completionBlock:^(id object) {
-        
-        NSDictionary *ovoDic = [[object valueForKey:@"ovo"] JSONValue];
-        if ([[ovoDic valueForKey:@"code"] intValue] == 0) {
+    if (self.title == nil) {
+        [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": GET_CHANPIN,@"page": [NSString stringWithFormat:@"%d",page],@"lx":self.lx,@"xb": self.xb,@"pp": @"-1",@"text": self.text,@"uname": user.userName,@"uuid": user.uuid,} completionBlock:^(id object) {
+            NSLog(@"ob = %@",object);
+            NSString *ovo = [object valueForKey:@"ovo"];
+            NSDictionary *objectVoDic = [ovo JSONValue];
             NSMutableArray *cpsArr = [[NSMutableArray alloc]initWithArray:self.cpsArr];
-            NSArray *arr = [[NSArray alloc]init];
-            arr = [ovoDic valueForKey:@"cps"];
-            if (arr.count < 50) {
-                self.table.tableFooterView = nil;
-            }
-            for (int i = 0; i < arr.count; i++) {
-                ChanPin *chanPin = [[ChanPin alloc]init];
-                for (NSString *key in [[arr objectAtIndex:i] allKeys]) {
-                    [chanPin setValue:[[arr objectAtIndex:i] valueForKey:key] forKey:key];
+            NSString *code = [objectVoDic valueForKey:@"code"];
+            if ([code intValue] == 0) {
+                NSArray *arr = [objectVoDic valueForKey:@"cps"];
+                for (int i = 0; i < arr.count; i++) {
+                    NSDictionary *dic = [arr objectAtIndex:i];
+                    ChanPin *chanpin = [[ChanPin alloc]init];
+                    for (NSString *key in dic) {
+                        [chanpin setValue:[dic valueForKey:key] forKey:key];
+                    }
+                    [cpsArr addObject:chanpin];
+                    chanpin = nil;
                 }
-//                chanPin.Id = [[[arr objectAtIndex:i] valueForKey:@"id"] intValue];
-//                chanPin.miaoshu = [[arr objectAtIndex:i] valueForKey:@"miaoshu"];
-//                chanPin.pinpai = [[[arr objectAtIndex:i] valueForKey:@"pinpai"] intValue];
-//                chanPin.leixing = [[[arr objectAtIndex:i] valueForKey:@"leixing"] intValue];
-//                chanPin.shijian = [[arr objectAtIndex:i] valueForKey:@"shijian"];
-//                chanPin.dangkou = [[arr objectAtIndex:i] valueForKey:@"dangkou"];
-//                chanPin.jiage = [[[arr objectAtIndex:i] valueForKey:@"jiage"] intValue];
-//                chanPin.pics = [[[arr objectAtIndex:i] valueForKey:@"pics"] intValue];
-//                chanPin.price = [[[arr objectAtIndex:i] valueForKey:@"price"] intValue];
-//                chanPin.upload = [[[arr objectAtIndex:i] valueForKey:@"upload"] intValue];
-//                chanPin.state = [[[arr objectAtIndex:i] valueForKey:@"state"] intValue];
-//                chanPin.categorys = [[arr objectAtIndex:i] valueForKey:@"categorys"];
-                [cpsArr addObject:chanPin];
-                chanPin = nil;
-                
+                page++;
+                self.cpsArr = nil;
+                self.cpsArr = cpsArr;
             }
-            page++;
-            self.cpsArr = nil;
-            self.cpsArr = cpsArr;
-            cpsArr = nil;
-            arr = nil;
-        }
-        [self.table reloadData];
-    } failureBlock:^(NSError *error, NSString *responseString) {
-        //
-    }];
+            [self.table reloadData];
+        } failureBlock:^(NSError *error, NSString *responseString) {
+            //
+        }];
+        
+    }else{
+        [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": GET_CHANPIN_BY_DANGKOU,@"page":[NSString stringWithFormat:@"%d",page],@"dangkou":self.title,@"uname": user.userName,@"uuid": user.uuid} completionBlock:^(id object) {
+            
+            NSDictionary *ovoDic = [[object valueForKey:@"ovo"] JSONValue];
+            if ([[ovoDic valueForKey:@"code"] intValue] == 0) {
+                NSMutableArray *cpsArr = [[NSMutableArray alloc]initWithArray:self.cpsArr];
+                NSArray *arr = [[NSArray alloc]init];
+                arr = [ovoDic valueForKey:@"cps"];
+                if (arr.count < 50) {
+                    self.table.tableFooterView = nil;
+                }
+                for (int i = 0; i < arr.count; i++) {
+                    ChanPin *chanPin = [[ChanPin alloc]init];
+                    for (NSString *key in [[arr objectAtIndex:i] allKeys]) {
+                        [chanPin setValue:[[arr objectAtIndex:i] valueForKey:key] forKey:key];
+                    }
+                    [cpsArr addObject:chanPin];
+                    chanPin = nil;
+                    
+                }
+                page++;
+                self.cpsArr = nil;
+                self.cpsArr = cpsArr;
+                cpsArr = nil;
+                arr = nil;
+            }
+            [self.table reloadData];
+        } failureBlock:^(NSError *error, NSString *responseString) {
+            //
+        }];
+        
 
-
+    }
 }
 
 #pragma mark - tableview delegate -
@@ -147,7 +163,7 @@ static int page = 1;
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    ChanPin *chanPin = [self.cpsArr objectAtIndex:indexPath.row];
+    //ChanPin *chanPin = [self.cpsArr objectAtIndex:indexPath.row];
 }
 
 -(NSString *)docPath
