@@ -150,8 +150,8 @@
     }
 
     NSArray *categorys = [_chanpin.categorys componentsSeparatedByString:@"|"];
-    NSLog(@"c:%@",_chanpin.categorys);
-    NSLog(@"ca = %@",categorys);
+//    NSLog(@"c:%@",_chanpin.categorys);
+//    NSLog(@"ca = %@",categorys);
     for (int i = 0; i < categorys.count; i++) {
         NSArray *categoryArr = [[categorys objectAtIndex:i] componentsSeparatedByString:@"_"];
         if ([[categoryArr objectAtIndex:0] intValue] == 1) {

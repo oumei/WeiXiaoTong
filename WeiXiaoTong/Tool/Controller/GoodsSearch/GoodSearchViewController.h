@@ -18,6 +18,7 @@
     TableViewController *_tableViewController;
     NSArray *_categoryArr;
     NSIndexPath *_indexPath;
+    NSString *_lx;
     NSString *_xb;         //适用人群
     NSString *_ss;         //售后服务
     NSString *_sts;        //鞋子类型

@@ -28,8 +28,13 @@
 
 #define GET_SELF_CHANPIN              @"getSelfChanPin"          /**查询自己的产品*/
 #define UPDATE_SELF_CHANPIN_PRICE     @"updateSelfChanpinPrice"  /**修改自己产品价格*/
-#define CHANGE_TABLE                  @"changeTable"
+#define CHANGE_TABLE                  @"changeTable"             /**切换商家*/
 #define COLLECT_CHANPIN               @"CollectChanPin"          /**收藏产品*/
+
+#define DELETE_CHANPIN                @"DeleteChanPin"           /**删除产品*/
+#define UPDATE_SELF_CHANPIN_PRICE     @"updateSelfChanpinPrice"  /**修改自己产品价格*/
+#define UPLOAD_CHANPIN                @"uploadChanPin"           /**上传产品*/
+
 
 //url
 #define DEFAULT_URL                   @"http://115.28.17.18:8080/service/interface.do"

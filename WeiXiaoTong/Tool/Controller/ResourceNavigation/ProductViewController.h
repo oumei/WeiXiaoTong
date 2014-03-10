@@ -8,8 +8,9 @@
 
 #import "CommonViewController.h"
 #import "ProductCell.h"
+#import "ProductTwoCell.h"
 
-@interface ProductViewController : CommonViewController<UITableViewDataSource,UITableViewDelegate,ProductCellDelegate>
+@interface ProductViewController : CommonViewController<UITableViewDataSource,UITableViewDelegate,ProductCellDelegate,ProductTwoCellDelegate>
 @property (weak, nonatomic) IBOutlet UITableView *table;
 @property (copy, nonatomic) NSMutableArray *cpsArr;
 @property (copy, nonatomic) NSString *lx;
