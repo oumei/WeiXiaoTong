@@ -38,8 +38,8 @@
     [headerBtn setBackgroundImage:[UIImage imageNamed:@"long_button.png"] forState:0];
     [headerBtn setBackgroundImage:[UIImage imageNamed:@"long_button_over.png"] forState:UIControlStateHighlighted];
     [headerBtn addTarget:self action:@selector(headerBtnAction:) forControlEvents:UIControlEventTouchUpInside];
-    UIImageView *imgView = [[UIImageView alloc]initWithFrame:CGRectMake(2, 3, 20, 28)];
-    imgView.backgroundColor = [UIColor redColor];
+    UIImageView *imgView = [[UIImageView alloc]initWithFrame:CGRectMake(2, 8, 20, 20)];
+    imgView.image = [UIImage imageNamed:@"seach_icon.png"];
     [headerBtn addSubview:imgView];
     UILabel *titleLable = [[UILabel alloc]initWithFrame:CGRectMake(25, 0, 100, 35)];
     titleLable.backgroundColor = [UIColor clearColor];
@@ -61,8 +61,8 @@
     [footBtn1 setBackgroundImage:[UIImage imageNamed:@"long_button.png"] forState:0];
     [footBtn1 setBackgroundImage:[UIImage imageNamed:@"long_button_over.png"] forState:UIControlStateHighlighted];
     [footBtn1 addTarget:self action:@selector(removeAttributes:) forControlEvents:UIControlEventTouchUpInside];
-    UIImageView *imgView1 = [[UIImageView alloc]initWithFrame:CGRectMake(2, 3, 20, 28)];
-    imgView1.backgroundColor = [UIColor redColor];
+    UIImageView *imgView1 = [[UIImageView alloc]initWithFrame:CGRectMake(2, 8, 20, 20)];
+    imgView1.image = [UIImage imageNamed:@"clear_icon.png"];
     [footBtn1 addSubview:imgView1];
     UILabel *titleLable1 = [[UILabel alloc]initWithFrame:CGRectMake(25, 0, 150, 35)];
     titleLable1.backgroundColor = [UIColor clearColor];
@@ -80,8 +80,8 @@
     [footBtn2 setBackgroundImage:[UIImage imageNamed:@"long_button.png"] forState:0];
     [footBtn2 setBackgroundImage:[UIImage imageNamed:@"long_button_over.png"] forState:UIControlStateHighlighted];
     [footBtn2 addTarget:self action:@selector(footBtnAction:) forControlEvents:UIControlEventTouchUpInside];
-    UIImageView *imgView2 = [[UIImageView alloc]initWithFrame:CGRectMake(2, 3, 20, 28)];
-    imgView2.backgroundColor = [UIColor redColor];
+    UIImageView *imgView2 = [[UIImageView alloc]initWithFrame:CGRectMake(2, 8, 20, 20)];
+    imgView2.image = [UIImage imageNamed:@"seach_icon.png"];
     [footBtn2 addSubview:imgView2];
     UILabel *titleLable2 = [[UILabel alloc]initWithFrame:CGRectMake(25, 0, 150, 35)];
     titleLable2.backgroundColor = [UIColor clearColor];

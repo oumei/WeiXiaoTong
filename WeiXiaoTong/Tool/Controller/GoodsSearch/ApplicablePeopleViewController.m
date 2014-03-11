@@ -29,6 +29,11 @@
 {
     [super viewDidLoad];
     [self.table reloadData];
+    
+    UIImageView *backImage = [[UIImageView alloc]initWithFrame:CGRectMake(7, 7, 20, 20)];
+    backImage.image = [UIImage imageNamed:@"clear_icon.png"];
+    [self.back addSubview:backImage];
+    backImage = nil;
 }
 
 #pragma mark - tableview - 
@@ -99,6 +104,8 @@
         str = [NSString stringWithFormat:@"  服装类型：%@",[_contents objectAtIndex:indexPath.row]];
     }else if ([self.title isEqualToString:@"选择彩妆类型"]){
         str = [NSString stringWithFormat:@"  彩妆类型：%@",[_contents objectAtIndex:indexPath.row]];
+    }else if ([self.title isEqualToString:@"选择产品类型"]){
+        str = [NSString stringWithFormat:@"  产品类型：%@",[_contents objectAtIndex:indexPath.row]];
     }
     if (self.delegate && [self.delegate respondsToSelector:@selector(changeTitle:indexPath:apIndexPath:)]) {
         [self.delegate changeTitle:str indexPath:self.indexPath apIndexPath:indexPath];

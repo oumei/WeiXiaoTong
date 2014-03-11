@@ -44,7 +44,8 @@
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="jyq-SX-g3U">
                     <rect key="frame" x="280" y="53" width="30" height="30"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    <state key="normal" title="C">
+                    <state key="normal" backgroundImage="delete_button.png">
+                        <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
                     <connections>
@@ -61,5 +62,6 @@
     </objects>
     <resources>
         <image name="clazz_title.png" width="720" height="80"/>
+        <image name="delete_button.png" width="50" height="50"/>
     </resources>
 </document>

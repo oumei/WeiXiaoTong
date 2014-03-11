@@ -16,5 +16,6 @@
 }
 @property (weak, nonatomic) IBOutlet UITableView *table;
 @property (weak, nonatomic) IBOutlet UIButton *addNewMer;
+@property (weak, nonatomic) IBOutlet UILabel *addLabel;
 
 @end

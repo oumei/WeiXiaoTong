@@ -317,7 +317,7 @@
 {
     UserEntity *ue = [UserEntity shareCurrentUe];
     if (ue.level > 0) {
-        [self.addNewMer setTitle:@"  查看用户申请列表" forState:0];
+        self.addLabel.text = @"  查看用户申请列表";
     }
 }
 

@@ -181,7 +181,12 @@ static int page = 1;
         NSArray *categorys = [chanPin.categorys componentsSeparatedByString:@"|"];
         NSArray *categoryArr = [[categorys objectAtIndex:0] componentsSeparatedByString:@"_"];
         if ([[categoryArr objectAtIndex:0] intValue] == 6) {
-            cell.service.text = [[[baseData valueForKey:@"ss"] objectAtIndex:[[categoryArr objectAtIndex:1] intValue]] valueForKey:@"name"];
+            for (int i = 0; i < [[baseData valueForKey:@"ss"] count]; i++) {
+                if ([[[[baseData valueForKey:@"ss"] objectAtIndex:i] valueForKey:@"id"] intValue] == [[categoryArr objectAtIndex:1] intValue]) {
+                    cell.service.text = [[[baseData valueForKey:@"ss"] objectAtIndex:i] valueForKey:@"name"];
+                }
+            }
+            //cell.service.text = [[[baseData valueForKey:@"ss"] objectAtIndex:[[categoryArr objectAtIndex:1] intValue]] valueForKey:@"name"];
             if ([cell.service.text rangeOfString:@"7天包退换"].location != NSNotFound) {
                 cell.service.textColor = [UIColor orangeColor];
             }else if ([cell.service.text rangeOfString:@"支持换款"].location != NSNotFound){

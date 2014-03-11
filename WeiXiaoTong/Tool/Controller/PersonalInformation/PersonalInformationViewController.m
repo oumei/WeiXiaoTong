@@ -11,6 +11,7 @@
 #import "UINavigationBar+Custom.h"
 #import "ControlCenter.h"
 #import "UserEntity.h"
+#import "UploadViewController.h"
 
 @interface PersonalInformationViewController ()
 
@@ -58,6 +59,14 @@
 }
 
 - (IBAction)clearCache:(id)sender {
+}
+
+- (IBAction)uploadAction:(id)sender
+{
+    UploadViewController *uploadViewController = [[UploadViewController alloc]initWithNibName:@"UploadViewController" bundle:nil];
+    [uploadViewController setHidesBottomBarWhenPushed:YES];
+    [self.navigationController pushViewController:uploadViewController animated:YES];
+    uploadViewController = nil;
 }
 
 - (IBAction)returnLogin:(id)sender

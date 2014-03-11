@@ -379,6 +379,9 @@
 		35ADCF4B18CE17F20002366B /* user_info_over.png in Resources */ = {isa = PBXBuildFile; fileRef = 35ADCF0918CE17F20002366B /* user_info_over.png */; };
 		35ADCF4C18CE17F20002366B /* xiangqing_on.png in Resources */ = {isa = PBXBuildFile; fileRef = 35ADCF0A18CE17F20002366B /* xiangqing_on.png */; };
 		35ADCF4D18CE17F20002366B /* xiangqing_over.png in Resources */ = {isa = PBXBuildFile; fileRef = 35ADCF0B18CE17F20002366B /* xiangqing_over.png */; };
+		35B8256F18CF15860000A317 /* UploadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 35B8256D18CF15860000A317 /* UploadViewController.m */; };
+		35B8257018CF15860000A317 /* UploadViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 35B8256E18CF15860000A317 /* UploadViewController.xib */; };
+		35B8257218CF419F0000A317 /* up_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 35B8257118CF419F0000A317 /* up_icon.png */; };
 		35C9D48518BC64F60033F599 /* UserModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 35C9D48418BC64F60033F599 /* UserModel.m */; };
 /* End PBXBuildFile section */
 
@@ -887,6 +890,10 @@
 		35ADCF0918CE17F20002366B /* user_info_over.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = user_info_over.png; sourceTree = "<group>"; };
 		35ADCF0A18CE17F20002366B /* xiangqing_on.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = xiangqing_on.png; sourceTree = "<group>"; };
 		35ADCF0B18CE17F20002366B /* xiangqing_over.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = xiangqing_over.png; sourceTree = "<group>"; };
+		35B8256C18CF15860000A317 /* UploadViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UploadViewController.h; sourceTree = "<group>"; };
+		35B8256D18CF15860000A317 /* UploadViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UploadViewController.m; sourceTree = "<group>"; };
+		35B8256E18CF15860000A317 /* UploadViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UploadViewController.xib; sourceTree = "<group>"; };
+		35B8257118CF419F0000A317 /* up_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = up_icon.png; sourceTree = "<group>"; };
 		35C9D48318BC64F60033F599 /* UserModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserModel.h; sourceTree = "<group>"; };
 		35C9D48418BC64F60033F599 /* UserModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserModel.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -1274,6 +1281,9 @@
 				35A1F95018BB2F1C00702B74 /* PersonalInformationViewController.h */,
 				35A1F95118BB2F1C00702B74 /* PersonalInformationViewController.m */,
 				35A1F95218BB2F1C00702B74 /* PersonalInformationViewController.xib */,
+				35B8256C18CF15860000A317 /* UploadViewController.h */,
+				35B8256D18CF15860000A317 /* UploadViewController.m */,
+				35B8256E18CF15860000A317 /* UploadViewController.xib */,
 			);
 			path = PersonalInformation;
 			sourceTree = "<group>";
@@ -1655,6 +1665,7 @@
 		35ADCEC918CE17F10002366B /* image */ = {
 			isa = PBXGroup;
 			children = (
+				35B8257118CF419F0000A317 /* up_icon.png */,
 				35ADCECA18CE17F10002366B /* attretube_text.png */,
 				35ADCECB18CE17F10002366B /* back_on.png */,
 				35ADCECC18CE17F10002366B /* back_over.png */,
@@ -2028,6 +2039,7 @@
 				35A1F8A918BB226800702B74 /* 关闭交易（选中状态）.png in Resources */,
 				35ADCF4518CE17F20002366B /* source_on.png in Resources */,
 				35A1F8FF18BB226800702B74 /* 顶三儿-底板.png in Resources */,
+				35B8257218CF419F0000A317 /* up_icon.png in Resources */,
 				35ADCF2E18CE17F20002366B /* icon_shanchu_focused.png in Resources */,
 				35ADCF1918CE17F20002366B /* button_yd_on.png in Resources */,
 				35A1F8A218BB226800702B74 /* 联系客服按钮.png in Resources */,
@@ -2037,6 +2049,7 @@
 				35A1F8E718BB226800702B74 /* app背景.png in Resources */,
 				35A1F8A618BB226800702B74 /* 降价（选中状态）.png in Resources */,
 				35A1F92E18BB226800702B74 /* 电话图标（选中状态）.png in Resources */,
+				35B8257018CF15860000A317 /* UploadViewController.xib in Resources */,
 				35A1F8DF18BB226800702B74 /* 更多三点小图标.png in Resources */,
 				35A1F8E918BB226800702B74 /* 两点.png in Resources */,
 				35A1F8D118BB226800702B74 /* 单片（选中状态）.png in Resources */,
@@ -2073,6 +2086,7 @@
 				359FA24A18C9EF760011417C /* ApplicablePeopleCell.m in Sources */,
 				35A878FE18BDAF5000EDC246 /* UIViewController+BarItem.m in Sources */,
 				35A57BCE18BA270100339A66 /* ApplyFriendVo.m in Sources */,
+				35B8256F18CF15860000A317 /* UploadViewController.m in Sources */,
 				35A894AC18BF7B65005F6538 /* ProductCell.m in Sources */,
 				35A57B6418BA0AEF00339A66 /* ApplyFriend.m in Sources */,
 				35A68B7F18C1AB8700E17F8C /* UIImageView+WebCache.m in Sources */,

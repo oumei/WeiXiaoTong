@@ -31,12 +31,11 @@
                     <rect key="frame" x="2" y="7" width="316" height="35"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 </imageView>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="3bI-Iu-NhV">
-                    <rect key="frame" x="5" y="9" width="25" height="30"/>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="seach_icon.png" id="3bI-Iu-NhV">
+                    <rect key="frame" x="7" y="15" width="20" height="20"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                 </imageView>
-                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" minimumFontSize="17" id="4Zf-t5-fua">
+                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="输入文字搜索" minimumFontSize="17" id="4Zf-t5-fua">
                     <rect key="frame" x="30" y="10" width="280" height="30"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -66,6 +65,7 @@
     </objects>
     <resources>
         <image name="long_button.png" width="680" height="75"/>
+        <image name="seach_icon.png" width="50" height="50"/>
         <image name="text.png" width="635" height="105"/>
     </resources>
 </document>
