@@ -219,7 +219,7 @@
 {
     UserEntity *ue = [UserEntity shareCurrentUe];
     Friend *friend = [_friendsMutArr objectAtIndex:indexPath.row];
-    if (ue.qx > 0) {
+    if (ue.qx == 0) {
         [self.view showWithType:0 Title:@"切换商家中..."];
         
         [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": CHANGE_TABLE,@"fid": [NSString stringWithFormat:@"%d",friend.Id],@"uname": ue.userName,@"uuid": ue.uuid} completionBlock:^(id object) {

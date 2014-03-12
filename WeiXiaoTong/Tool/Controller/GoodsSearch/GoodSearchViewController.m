@@ -400,7 +400,132 @@
 
 - (void)queryMyGoods:(id)sender
 {
-    //
+    if (_indexPath == nil || _indexPath.row == 0) {
+        _lx = @"-1";
+    }else{
+        _lx = [[_categorys objectAtIndex:_indexPath.row - 1] valueForKey:@"id"];
+    }
+    if (_xb == nil) {
+        _xb = @"-1";
+    }
+    NSString *text = @"";
+    if (_ss != nil && [_ss intValue] != -1) {
+        text = [NSString stringWithFormat:@"6/_%@",_ss];
+    }
+    if (_tableViewController.dataArr.count > 2) {
+        if (_sts != nil && [_sts intValue] != -1) {
+            if ([text isEqualToString:@""]) {
+                text = [NSString stringWithFormat:@"9/_%@",_sts];
+            }else{
+                text = [NSString stringWithFormat:@"%@|9/_%@",text,_sts];
+            }
+        }
+        if (_ms != nil && [_ms intValue] != -1) {
+            if ([text isEqualToString:@""]) {
+                text = [NSString stringWithFormat:@"5/_%@",_ms];
+            }else{
+                text = [NSString stringWithFormat:@"%@|5/_%@",text,_ms];
+            }
+        }
+        if (_bhs != nil && [_bhs intValue] != -1) {
+            if ([text isEqualToString:@""]) {
+                text = [NSString stringWithFormat:@"11/_%@",_bhs];
+            }else{
+                text = [NSString stringWithFormat:@"%@|11/_%@",text,_bhs];
+            }
+        }
+        if (_ms != nil && [_ms intValue] != -1) {
+            if ([text isEqualToString:@""]) {
+                text = [NSString stringWithFormat:@"5/_%@",_ms];
+            }else{
+                text = [NSString stringWithFormat:@"%@|5/_%@",text,_ms];
+            }
+        }
+        if (_cs != nil && [_cs intValue] != -1) {
+            if ([text isEqualToString:@""]) {
+                text = [NSString stringWithFormat:@"3/_%@",_cs];
+            }else{
+                text = [NSString stringWithFormat:@"%@|3/_%@",text,_cs];
+            }
+        }
+        if (_ws != nil && [_ws intValue] != -1) {
+            if ([text isEqualToString:@""]) {
+                text = [NSString stringWithFormat:@"10/_%@",_ws];
+            }else{
+                text = [NSString stringWithFormat:@"%@|10/_%@",text,_ws];
+            }
+        }
+        if (_bts != nil && [_bts intValue] != -1) {
+            if ([text isEqualToString:@""]) {
+                text = [NSString stringWithFormat:@"2/_%@",_bts];
+            }else{
+                text = [NSString stringWithFormat:@"%@|2/_%@",text,_bts];
+            }
+        }
+        if (_bqs != nil && [_bqs intValue] != -1) {
+            if ([text isEqualToString:@""]) {
+                text = [NSString stringWithFormat:@"1/_%@",_bqs];
+            }else{
+                text = [NSString stringWithFormat:@"%@|1/_%@",text,_bqs];
+            }
+        }
+        if (_cts != nil && [_cts intValue] != -1) {
+            if ([text isEqualToString:@""]) {
+                text = [NSString stringWithFormat:@"4/_%@",_cts];
+            }else{
+                text = [NSString stringWithFormat:@"%@|4/_%@",text,_cts];
+            }
+        }
+        if (_mts != nil && [_mts intValue] != -1) {
+            if ([text isEqualToString:@""]) {
+                text = [NSString stringWithFormat:@"12/_%@",_mts];
+            }else{
+                text = [NSString stringWithFormat:@"%@|12/_%@",text,_mts];
+            }
+        }
+    }
+    NSLog(@"text = %@,lx= %@,xb = %@",text,_lx,_xb);
+    UserEntity *ue = [UserEntity shareCurrentUe];
+    
+    NSDictionary *params;
+    if ([[self.searchText.text stringByReplacingOccurrencesOfString:@" " withString:@""] isEqualToString:@""]) {
+        params = @{@"interface": GET_CHANPIN,@"page": @"0",@"lx":_lx,@"xb": _xb,@"pp": @"-1",@"text": text,@"isSelf": @"1",@"uname": ue.userName,@"uuid": ue.uuid};
+    }else{
+        params = @{@"interface": GET_CHANPIN,@"page": @"0",@"lx":_lx,@"xb": _xb,@"pp": @"-1",@"miaoshu": [self.searchText.text stringByReplacingOccurrencesOfString:@" " withString:@""],@"text": text,@"isSelf": @"1",@"uname": ue.userName,@"uuid": ue.uuid};
+    }
+    
+    [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:params completionBlock:^(id object) {
+        NSString *ovo = [object valueForKey:@"ovo"];
+        NSDictionary *objectVoDic = [ovo JSONValue];
+        NSMutableArray *cps = [[NSMutableArray alloc]init];
+        NSString *code = [objectVoDic valueForKey:@"code"];
+        if ([code intValue] == 0) {
+            NSArray *arr = [objectVoDic valueForKey:@"cps"];
+            for (int i = 0; i < arr.count; i++) {
+                NSDictionary *dic = [arr objectAtIndex:i];
+                ChanPin *chanpin = [[ChanPin alloc]init];
+                for (NSString *key in dic) {
+                    [chanpin setValue:[dic valueForKey:key] forKey:key];
+                }
+                [cps addObject:chanpin];
+                chanpin = nil;
+            }
+        }
+        if (cps.count > 0) {
+            ProductViewController *productViewController = [[ProductViewController alloc]initWithNibName:@"ProductViewController" bundle:nil cpsArr:cps];
+            productViewController.lx = _lx;
+            productViewController.xb = _xb;
+            productViewController.text = text;
+            productViewController.isSelf = @"1";
+            [productViewController setHidesBottomBarWhenPushed:YES];
+            [self.navigationController pushViewController:productViewController animated:YES];
+            productViewController = nil;
+        }
+        
+    } failureBlock:^(NSError *error, NSString *responseString) {
+        //
+    }];
+
 }
 
 - (void)removeSelectedAttributes:(id)sender

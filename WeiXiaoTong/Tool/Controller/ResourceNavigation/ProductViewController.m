@@ -85,6 +85,33 @@ static int page = 1;
             //
         }];
         
+    }else if (self.isSelf != nil && self.title == nil){
+        [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": GET_CHANPIN,@"page": [NSString stringWithFormat:@"%d",page],@"lx":self.lx,@"xb": self.xb,@"pp": @"-1",@"text": self.text,@"isSelf": @"1",@"uname": user.userName,@"uuid": user.uuid,} completionBlock:^(id object) {
+            NSLog(@"ob = %@",object);
+            NSString *ovo = [object valueForKey:@"ovo"];
+            NSDictionary *objectVoDic = [ovo JSONValue];
+            NSMutableArray *cpsArr = [[NSMutableArray alloc]initWithArray:self.cpsArr];
+            NSString *code = [objectVoDic valueForKey:@"code"];
+            if ([code intValue] == 0) {
+                NSArray *arr = [objectVoDic valueForKey:@"cps"];
+                for (int i = 0; i < arr.count; i++) {
+                    NSDictionary *dic = [arr objectAtIndex:i];
+                    ChanPin *chanpin = [[ChanPin alloc]init];
+                    for (NSString *key in dic) {
+                        [chanpin setValue:[dic valueForKey:key] forKey:key];
+                    }
+                    [cpsArr addObject:chanpin];
+                    chanpin = nil;
+                }
+                page++;
+                self.cpsArr = nil;
+                self.cpsArr = cpsArr;
+            }
+            [self.table reloadData];
+        } failureBlock:^(NSError *error, NSString *responseString) {
+            //
+        }];
+        
     }else{
         [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": GET_CHANPIN_BY_DANGKOU,@"page":[NSString stringWithFormat:@"%d",page],@"dangkou":self.title,@"uname": user.userName,@"uuid": user.uuid} completionBlock:^(id object) {
             
