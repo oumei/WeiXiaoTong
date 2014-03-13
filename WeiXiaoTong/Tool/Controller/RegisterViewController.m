@@ -38,8 +38,7 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:YES];
-    self.registerTextView.text = self.st;
-    NSLog(@"sf = %@",self.registerTextView.text);
+    [self.registerWebView loadHTMLString:self.st baseURL:[[NSBundle mainBundle] bundleURL]];
 }
 
 - (IBAction)submit:(id)sender

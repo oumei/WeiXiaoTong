@@ -9,7 +9,7 @@
             <connections>
                 <outlet property="cpsd" destination="MPf-Qa-qdb" id="POe-38-1Gf"/>
                 <outlet property="psd" destination="nVE-kL-JKo" id="Y9G-Y1-8mL"/>
-                <outlet property="registerTextView" destination="Ind-pz-Ofd" id="9mO-ei-kiR"/>
+                <outlet property="registerWebView" destination="1B0-iA-HqS" id="YT5-Wl-KXn"/>
                 <outlet property="tell" destination="ONk-rp-cdc" id="g6u-vY-5fg"/>
                 <outlet property="uname" destination="NMC-fV-N7M" id="1F6-lS-fGP"/>
                 <outlet property="view" destination="1" id="3"/>
@@ -90,13 +90,11 @@
                         <action selector="submit:" destination="-1" eventType="touchUpInside" id="jzN-k8-pJP"/>
                     </connections>
                 </button>
-                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" id="Ind-pz-Ofd">
-                    <rect key="frame" x="10" y="230" width="300" height="150"/>
+                <webView contentMode="scaleToFill" id="1B0-iA-HqS">
+                    <rect key="frame" x="10" y="230" width="300" height="238"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>
                     <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="12"/>
-                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                </textView>
+                </webView>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
             <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>

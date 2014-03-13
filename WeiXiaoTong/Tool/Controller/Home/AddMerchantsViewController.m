@@ -30,6 +30,11 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    NSString *path=[[NSBundle mainBundle]pathForResource:@"index" ofType:@"htm"];
+    NSString *indexContent=[NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:nil];
+    [self.addWebView loadHTMLString:indexContent baseURL:[NSBundle mainBundle].bundleURL];
+    
     [self.validationMsg _init];
     self.validationMsg.placeholder = @"请在此输入验证消息...";
 }

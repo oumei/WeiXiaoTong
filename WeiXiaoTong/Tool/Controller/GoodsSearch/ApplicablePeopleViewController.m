@@ -57,6 +57,35 @@
 
 - (IBAction)backAction:(id)sender
 {
+    NSString *str;
+    if ([self.title isEqualToString:@"选择适用人群"]) {
+        str = @"  选择适用人群";
+    }else if ([self.title isEqualToString:@"选择售后服务"]){
+        str = @"  选择售后服务";
+    }else if ([self.title isEqualToString:@"选择鞋子类型"]){
+        str = @"  选择鞋子类型";
+    }else if ([self.title isEqualToString:@"选择产品材质"]){
+        str = @"  选择产品材质";
+    }else if ([self.title isEqualToString:@"选择闭合方式"]){
+        str = @"  选择闭合方式";
+    }else if ([self.title isEqualToString:@"选择手表机芯"]){
+        str = @"  选择手表机芯";
+    }else if ([self.title isEqualToString:@"选择手表表带"]){
+        str = @"  选择手表表带";
+    }else if ([self.title isEqualToString:@"选择包包类型"]){
+        str = @"  选择包包类型";
+    }else if ([self.title isEqualToString:@"选择产品品质"]){
+        str = @"  选择产品品质";
+    }else if ([self.title isEqualToString:@"选择服装类型"]){
+        str = @"  选择服装类型";
+    }else if ([self.title isEqualToString:@"选择彩妆类型"]){
+        str = @"  选择彩妆类型";
+    }else if ([self.title isEqualToString:@"选择产品类型"]){
+        str = @"  选择产品类型";
+    }
+    if (self.delegate && [self.delegate respondsToSelector:@selector(clear:indexPath:)]) {
+        [self.delegate performSelector:@selector(clear:indexPath:) withObject:str withObject:self.indexPath];
+    }
     [self.navigationController popViewControllerAnimated:YES];
 }
 

@@ -7,7 +7,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="LoginViewController">
             <connections>
-                <outlet property="loginTextView" destination="6qh-wJ-oPt" id="CQw-xM-Tqr"/>
+                <outlet property="loginWebView" destination="HkP-OJ-v2T" id="SOX-fS-gMP"/>
                 <outlet property="psd" destination="E3x-T7-Lfu" id="STC-Y3-3zt"/>
                 <outlet property="uname" destination="lbx-jb-RST" id="KA8-28-iXT"/>
                 <outlet property="view" destination="1" id="3"/>
@@ -76,13 +76,11 @@
                         <action selector="loginAction:" destination="-1" eventType="touchUpInside" id="COc-AM-Qhr"/>
                     </connections>
                 </button>
-                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" id="6qh-wJ-oPt">
+                <webView contentMode="scaleToFill" id="HkP-OJ-v2T">
                     <rect key="frame" x="10" y="144" width="300" height="324"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>
                     <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="12"/>
-                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                </textView>
+                </webView>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
             <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>

@@ -14,7 +14,7 @@
 @property (weak, nonatomic) IBOutlet UITextField *psd;
 @property (weak, nonatomic) IBOutlet UITextField *cpsd;
 @property (weak, nonatomic) IBOutlet UITextField *tell;
-@property (weak, nonatomic) IBOutlet UITextView *registerTextView;
+@property (weak, nonatomic) IBOutlet UIWebView *registerWebView;
 @property (copy, nonatomic) NSString *st;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil registerText:(NSString *)aRegisterText;

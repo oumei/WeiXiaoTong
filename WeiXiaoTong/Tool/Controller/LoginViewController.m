@@ -66,7 +66,7 @@
         if (object != nil)
         {
             self.registerText = [object valueForKey:@"seachText"];
-            self.loginTextView.text = [object valueForKey:@"loginText"];
+            [self.loginWebView loadHTMLString:[object valueForKey:@"loginText"] baseURL:[NSBundle mainBundle].bundleURL];
             for (NSString *key in [object allKeys]) {
                 if ([[object valueForKey:key] isKindOfClass:[NSString class]]) {
                     [config setValue:[object valueForKey:key] forKey:key];
@@ -90,9 +90,7 @@
 
 - (void)initUI
 {
-    
     [self.navigationController.navigationBar setBackgroundImage:[self image]];
-    
 }
 
 - (UIImage *)image

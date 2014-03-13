@@ -11,6 +11,7 @@
 @protocol ApplicablePeopleViewControllerDelegate <NSObject>
 
 -(void)changeTitle:(NSString *)aStr indexPath:(NSIndexPath *)indexPath apIndexPath:(NSIndexPath *)apIndexPath;
+-(void)clear:(NSString *)aStr indexPath:(NSIndexPath *)indexPath;
 
 @end
 

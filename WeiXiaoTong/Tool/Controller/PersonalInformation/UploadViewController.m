@@ -245,76 +245,77 @@
         }
         [self.table reloadData];
         [NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(tableViewControllerReloadData) userInfo:nil repeats:NO];
+         ApplicablePeopleCell *cell = (ApplicablePeopleCell *)[self.table cellForRowAtIndexPath:indexPath];
+        [cell.btn setTitle:aStr forState:0];
+        
     }else{
-        //
+        NSMutableArray *_ids = [[NSMutableArray alloc]init];
+        for (int i = 0; i < _contentsArr.count; i++) {
+            NSString *str = [[_contentsArr objectAtIndex:i] valueForKey:@"id"];
+            [_ids addObject:str];
+        }
+        ApplicablePeopleCell *cell = (ApplicablePeopleCell *)[self.table cellForRowAtIndexPath:indexPath];
+        
+        if ([[_ids objectAtIndex:apIndexPath.row] intValue] == -1) {
+            NSString *title;
+            if ([[[_contentsArr objectAtIndex:apIndexPath.row] valueForKey:@"name"] rangeOfString:@"适用人群"].location != NSNotFound) {
+                title = @"  选择适用人群";
+            }else if ([[[_contentsArr objectAtIndex:apIndexPath.row] valueForKey:@"name"] rangeOfString:@"售后服务"].location != NSNotFound){
+                title = @"  选择售后服务";
+            }else if ([[[_contentsArr objectAtIndex:apIndexPath.row] valueForKey:@"name"] rangeOfString:@"鞋子类型"].location != NSNotFound){
+                title = @"  选择鞋子类型";
+            }else if ([[[_contentsArr objectAtIndex:apIndexPath.row] valueForKey:@"name"] rangeOfString:@"材质"].location != NSNotFound){
+                title = @"  选择产品材质";
+            }else if ([[[_contentsArr objectAtIndex:apIndexPath.row] valueForKey:@"name"] rangeOfString:@"闭合方式"].location != NSNotFound){
+                title = @"  选择闭合方式";
+            }else if ([[[_contentsArr objectAtIndex:apIndexPath.row] valueForKey:@"name"] rangeOfString:@"机芯"].location != NSNotFound){
+                title = @"  选择手表机芯";
+            }else if ([[[_contentsArr objectAtIndex:apIndexPath.row] valueForKey:@"name"] rangeOfString:@"表带"].location != NSNotFound){
+                title = @"  选择手表表带";
+            }else if ([[[_contentsArr objectAtIndex:apIndexPath.row] valueForKey:@"name"] rangeOfString:@"包包类型"].location != NSNotFound){
+                title = @"  选择包包类型";
+            }else if ([[[_contentsArr objectAtIndex:apIndexPath.row] valueForKey:@"name"] rangeOfString:@"品质"].location != NSNotFound){
+                title = @"  选择产品品质";
+            }else if ([[[_contentsArr objectAtIndex:apIndexPath.row] valueForKey:@"name"] rangeOfString:@"服装类型"].location != NSNotFound){
+                title = @"  选择服装类型";
+            }else if ([[[_contentsArr objectAtIndex:apIndexPath.row] valueForKey:@"name"] rangeOfString:@"彩妆类型"].location != NSNotFound){
+                title = @"  选择彩妆类型";
+            }
+            
+            [cell.btn setTitle:title forState:0];
+        }else{
+            [cell.btn setTitle:aStr forState:0];
+        }
+        
+        if ([cell.btn.titleLabel.text rangeOfString:@"适用人群"].location != NSNotFound) {
+            _xb = [_ids objectAtIndex:apIndexPath.row];
+        }else if ([cell.btn.titleLabel.text rangeOfString:@"售后服务"].location != NSNotFound){
+            _ss = [_ids objectAtIndex:apIndexPath.row];
+        }else if ([cell.btn.titleLabel.text rangeOfString:@"鞋子类型"].location != NSNotFound){
+            _sts = [_ids objectAtIndex:apIndexPath.row];
+        }else if ([cell.btn.titleLabel.text rangeOfString:@"产品材质"].location != NSNotFound){
+            _ms = [_ids objectAtIndex:apIndexPath.row];
+        }else if ([cell.btn.titleLabel.text rangeOfString:@"闭合方式"].location != NSNotFound){
+            _bhs = [_ids objectAtIndex:apIndexPath.row];
+        }else if ([cell.btn.titleLabel.text rangeOfString:@"手表机芯"].location != NSNotFound){
+            _cs = [_ids objectAtIndex:apIndexPath.row];
+        }else if ([cell.btn.titleLabel.text rangeOfString:@"手表表带"].location != NSNotFound){
+            _ws = [_ids objectAtIndex:apIndexPath.row];
+        }else if ([cell.btn.titleLabel.text rangeOfString:@"包包类型"].location != NSNotFound){
+            _bts = [_ids objectAtIndex:apIndexPath.row];
+        }else if ([cell.btn.titleLabel.text rangeOfString:@"产品品质"].location != NSNotFound){
+            _bqs = [_ids objectAtIndex:apIndexPath.row];
+        }else if ([cell.btn.titleLabel.text rangeOfString:@"服装类型"].location != NSNotFound){
+            _cts = [_ids objectAtIndex:apIndexPath.row];
+        }else if ([cell.btn.titleLabel.text rangeOfString:@"彩妆类型"].location != NSNotFound){
+            _mts = [_ids objectAtIndex:apIndexPath.row];
+        }
     }
-    
-//    NSMutableArray *_ids = [[NSMutableArray alloc]init];
-//    for (int i = 0; i < _contentsArr.count; i++) {
-//        NSString *str = [[_contentsArr objectAtIndex:i] valueForKey:@"id"];
-//        [_ids addObject:str];
-//    }
-//    ApplicablePeopleCell *cell = (ApplicablePeopleCell *)[self.table cellForRowAtIndexPath:indexPath];
-//
-//    if ([[_ids objectAtIndex:apIndexPath.row] intValue] == -1) {
-//        NSString *title;
-//        if ([[[_contentsArr objectAtIndex:apIndexPath.row] valueForKey:@"name"] rangeOfString:@"适用人群"].location != NSNotFound) {
-//            title = @"  选择适用人群";
-//        }else if ([[[_contentsArr objectAtIndex:apIndexPath.row] valueForKey:@"name"] rangeOfString:@"售后服务"].location != NSNotFound){
-//            title = @"  选择售后服务";
-//        }else if ([[[_contentsArr objectAtIndex:apIndexPath.row] valueForKey:@"name"] rangeOfString:@"鞋子类型"].location != NSNotFound){
-//            title = @"  选择鞋子类型";
-//        }else if ([[[_contentsArr objectAtIndex:apIndexPath.row] valueForKey:@"name"] rangeOfString:@"材质"].location != NSNotFound){
-//            title = @"  选择产品材质";
-//        }else if ([[[_contentsArr objectAtIndex:apIndexPath.row] valueForKey:@"name"] rangeOfString:@"闭合方式"].location != NSNotFound){
-//            title = @"  选择闭合方式";
-//        }else if ([[[_contentsArr objectAtIndex:apIndexPath.row] valueForKey:@"name"] rangeOfString:@"机芯"].location != NSNotFound){
-//            title = @"  选择手表机芯";
-//        }else if ([[[_contentsArr objectAtIndex:apIndexPath.row] valueForKey:@"name"] rangeOfString:@"表带"].location != NSNotFound){
-//            title = @"  选择手表表带";
-//        }else if ([[[_contentsArr objectAtIndex:apIndexPath.row] valueForKey:@"name"] rangeOfString:@"包包类型"].location != NSNotFound){
-//            title = @"  选择包包类型";
-//        }else if ([[[_contentsArr objectAtIndex:apIndexPath.row] valueForKey:@"name"] rangeOfString:@"品质"].location != NSNotFound){
-//            title = @"  选择产品品质";
-//        }else if ([[[_contentsArr objectAtIndex:apIndexPath.row] valueForKey:@"name"] rangeOfString:@"服装类型"].location != NSNotFound){
-//            title = @"  选择服装类型";
-//        }else if ([[[_contentsArr objectAtIndex:apIndexPath.row] valueForKey:@"name"] rangeOfString:@"彩妆类型"].location != NSNotFound){
-//            title = @"  选择彩妆类型";
-//        }
-//        
-//        [cell.btn setTitle:title forState:0];
-//    }else{
-//        [cell.btn setTitle:aStr forState:0];
-//    }
-//    
-//    if ([cell.btn.titleLabel.text rangeOfString:@"适用人群"].location != NSNotFound) {
-//        _xb = [_ids objectAtIndex:apIndexPath.row];
-//    }else if ([cell.btn.titleLabel.text rangeOfString:@"售后服务"].location != NSNotFound){
-//        _ss = [_ids objectAtIndex:apIndexPath.row];
-//    }else if ([cell.btn.titleLabel.text rangeOfString:@"鞋子类型"].location != NSNotFound){
-//        _sts = [_ids objectAtIndex:apIndexPath.row];
-//    }else if ([cell.btn.titleLabel.text rangeOfString:@"产品材质"].location != NSNotFound){
-//        _ms = [_ids objectAtIndex:apIndexPath.row];
-//    }else if ([cell.btn.titleLabel.text rangeOfString:@"闭合方式"].location != NSNotFound){
-//        _bhs = [_ids objectAtIndex:apIndexPath.row];
-//    }else if ([cell.btn.titleLabel.text rangeOfString:@"手表机芯"].location != NSNotFound){
-//        _cs = [_ids objectAtIndex:apIndexPath.row];
-//    }else if ([cell.btn.titleLabel.text rangeOfString:@"手表表带"].location != NSNotFound){
-//        _ws = [_ids objectAtIndex:apIndexPath.row];
-//    }else if ([cell.btn.titleLabel.text rangeOfString:@"包包类型"].location != NSNotFound){
-//        _bts = [_ids objectAtIndex:apIndexPath.row];
-//    }else if ([cell.btn.titleLabel.text rangeOfString:@"产品品质"].location != NSNotFound){
-//        _bqs = [_ids objectAtIndex:apIndexPath.row];
-//    }else if ([cell.btn.titleLabel.text rangeOfString:@"服装类型"].location != NSNotFound){
-//        _cts = [_ids objectAtIndex:apIndexPath.row];
-//    }else if ([cell.btn.titleLabel.text rangeOfString:@"彩妆类型"].location != NSNotFound){
-//        _mts = [_ids objectAtIndex:apIndexPath.row];
-//    }
 }
 
 - (void)tableViewControllerReloadData
 {
-    [self.table reloadData];
+    //[self.table reloadData];
     ObjectVo *ob = [ObjectVo shareCurrentObjectVo];
     NSDictionary *baseData = [ob valueForKey:@"baseData"];
     NSArray *cells = [self.table visibleCells];
@@ -418,6 +419,37 @@
     
 }
 
+- (void)clear:(NSString *)aStr indexPath:(NSIndexPath *)indexPath
+{
+    ApplicablePeopleCell *cell = (ApplicablePeopleCell *)[self.table cellForRowAtIndexPath:indexPath];
+    [cell.btn setTitle:aStr forState:0];
+    if ([cell.btn.titleLabel.text rangeOfString:@"适用人群"].location != NSNotFound) {
+        _xb = nil;
+    }else if ([cell.btn.titleLabel.text rangeOfString:@"售后服务"].location != NSNotFound){
+        _ss = nil;
+    }else if ([cell.btn.titleLabel.text rangeOfString:@"鞋子类型"].location != NSNotFound){
+        _sts = nil;
+    }else if ([cell.btn.titleLabel.text rangeOfString:@"产品材质"].location != NSNotFound){
+        _ms = nil;
+    }else if ([cell.btn.titleLabel.text rangeOfString:@"闭合方式"].location != NSNotFound){
+        _bhs = nil;
+    }else if ([cell.btn.titleLabel.text rangeOfString:@"手表机芯"].location != NSNotFound){
+        _cs = nil;
+    }else if ([cell.btn.titleLabel.text rangeOfString:@"手表表带"].location != NSNotFound){
+        _ws = nil;
+    }else if ([cell.btn.titleLabel.text rangeOfString:@"包包类型"].location != NSNotFound){
+        _bts = nil;
+    }else if ([cell.btn.titleLabel.text rangeOfString:@"产品品质"].location != NSNotFound){
+        _bqs = nil;
+    }else if ([cell.btn.titleLabel.text rangeOfString:@"服装类型"].location != NSNotFound){
+        _cts = nil;
+    }else if ([cell.btn.titleLabel.text rangeOfString:@"彩妆类型"].location != NSNotFound){
+        _mts = nil;
+    }else if ([cell.btn.titleLabel.text rangeOfString:@"产品类型"].location != NSNotFound){
+        _lx = nil;
+    }
+
+}
 
 #pragma mark - textField -
 - (void)textFieldDidBeginEditing:(UITextField *)textField
