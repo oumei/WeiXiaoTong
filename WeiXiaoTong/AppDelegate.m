@@ -7,15 +7,14 @@
 //
 
 #import "AppDelegate.h"
-
+#import "UMSocial.h"
+#import "UMSocialWechatHandler.h"
 
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    
-    
     //[ControlCenter makeKeyAndVisible];
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
@@ -34,9 +33,33 @@
 //    NSString *str = deviceUID.UUIDString;
 //    NSLog(@"%@",str); // 输出设备id
     
+    [UMSocialData setAppKey:@"5322a4ff56240b03260af5b3"];
+    //[UMSocialData defaultData].extConfig.wxMessageType = UMSocialWXMessageTypeApp;
+    //[UMSocialData defaultData].extConfig.title = @"朋友圈分享内容";
+    //设置微信AppId，url地址传nil，将默认使用友盟的网址
+    
+    [UMSocialWechatHandler setWXAppId:@"wx898576c69f679801" url:nil];
     
     [self.window makeKeyAndVisible];
     return YES;
+}
+
+- (void)applicationDidBecomeActive:(UIApplication *)application
+{
+    [UMSocialSnsService  applicationDidBecomeActive];
+}
+
+- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url
+{
+    return  [UMSocialSnsService handleOpenURL:url wxApiDelegate:nil];
+}
+
+- (BOOL)application:(UIApplication *)application
+            openURL:(NSURL *)url
+  sourceApplication:(NSString *)sourceApplication
+         annotation:(id)annotation
+{
+    return  [UMSocialSnsService handleOpenURL:url wxApiDelegate:nil];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application
@@ -56,10 +79,10 @@
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
 }
 
-- (void)applicationDidBecomeActive:(UIApplication *)application
-{
-    // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-}
+//- (void)applicationDidBecomeActive:(UIApplication *)application
+//{
+//    // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+//}
 
 - (void)applicationWillTerminate:(UIApplication *)application
 {

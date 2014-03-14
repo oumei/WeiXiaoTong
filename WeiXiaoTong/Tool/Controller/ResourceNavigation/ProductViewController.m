@@ -16,6 +16,7 @@
 #import "UserEntity.h"
 #import "UIView+SynRequestSignal.h"
 #import "ObjectVo.h"
+#import "UMSocial.h"
 
 @interface ProductViewController ()
 
@@ -238,6 +239,15 @@ static int page = 1;
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     //ChanPin *chanPin = [self.cpsArr objectAtIndex:indexPath.row];
+    //(UM KEY)5322a4ff56240b03260af5b3
+//    [UMSocialSnsService presentSnsIconSheetView:self
+//                                         appKey:@"5322a4ff56240b03260af5b3"
+//                                      shareText:@"你要分享的文字"
+//                                     shareImage:[UIImage imageNamed:@"btn_seach.png"]
+//                                shareToSnsNames:[NSArray arrayWithObjects:UMShareToSina,UMShareToWechatTimeline,UMShareToLWTimeline,nil]
+//                                       delegate:nil];
+    
+    
 }
 
 -(NSString *)docPath
