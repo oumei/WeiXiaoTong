@@ -61,9 +61,6 @@
 
     headerView.frame = CGRectMake(0, 0, 320, 60);
     self.table.tableHeaderView = headerView;
-//    self.describeText = nil;
-//    self.lineOne = nil;
-//    headerView = nil;
     
     //************************tableFooterView**************************//
     UIView *footerView = [[UIView alloc]init];
@@ -121,27 +118,133 @@
     
     [footerView addSubview:uploadBtn];
     
+    self.imagesView = [[UIView alloc]initWithFrame:CGRectMake(0, 115, 320, 200)];
+    
     UIButton *uploadImage = [UIButton buttonWithType:UIButtonTypeCustom];
     uploadImage.frame = CGRectMake(5, 115, 60, 60);
     [uploadImage setBackgroundImage:[UIImage imageNamed:@"icon_addpic_unfocused.png"] forState:0];
     [uploadImage setBackgroundImage:[UIImage imageNamed:@"icon_addpic_focused.png"] forState:UIControlStateHighlighted];
-    [footerView addSubview:uploadImage];
+    [uploadImage addTarget:self action:@selector(uploadImageAtion:) forControlEvents:UIControlEventTouchUpInside];
+    [self.imagesView addSubview:uploadImage];
     
-    
+    [footerView addSubview:self.imagesView];
     footerView.frame = CGRectMake(0, 0, 320, 320);
     self.table.tableFooterView = footerView;
-//    self.address = nil;
-//    self.price = nil;
-//    self.agentPrice = nil;
-//    self.lineTwo = nil;
-//    self.lineThree = nil;
-//    self.lineFour = nil;
-//    uploadBtn = nil;
-//    uploadIcon = nil;
-//    uploadImage = nil;
-//    footerView = nil;
     
 }
+
+#pragma mark - ZYQAssetPickerController Delegate
+-(void)assetPickerController:(ZYQAssetPickerController *)picker didFinishPickingAssets:(NSArray *)assets{
+    [self.imagesView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+//        src.contentSize=CGSizeMake(assets.count*src.frame.size.width, src.frame.size.height);
+        dispatch_async(dispatch_get_main_queue(), ^{
+//            pageControl.numberOfPages=assets.count;
+        });
+        
+        for (int i=0; i<assets.count; i++) {
+            ALAsset *asset=assets[i];
+//            UIImageView *imgview=[[UIImageView alloc] initWithFrame:CGRectMake(i*src.frame.size.width, 0, src.frame.size.width, src.frame.size.height)];
+//            imgview.contentMode=UIViewContentModeScaleAspectFill;
+//            imgview.clipsToBounds=YES;
+            UIImage *tempImg=[UIImage imageWithCGImage:asset.defaultRepresentation.fullScreenImage];
+            dispatch_async(dispatch_get_main_queue(), ^{
+//                [imgview setImage:tempImg];
+//                [src addSubview:imgview];
+            });
+        }
+    });
+}
+
+- (void)uploadImageAtion:(UIButton *)sender
+{
+    
+    ZYQAssetPickerController *picker = [[ZYQAssetPickerController alloc] init];
+    picker.maximumNumberOfSelection = 10;
+    picker.assetsFilter = [ALAssetsFilter allPhotos];
+    picker.showEmptyGroups=NO;
+    picker.delegate=self;
+    picker.selectionFilter = [NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary *bindings) {
+        if ([[(ALAsset*)evaluatedObject valueForProperty:ALAssetPropertyType] isEqual:ALAssetTypeVideo]) {
+            NSTimeInterval duration = [[(ALAsset*)evaluatedObject valueForProperty:ALAssetPropertyDuration] doubleValue];
+            return duration >= 5;
+        } else {
+            return YES;
+        }
+    }];
+    
+    [self presentViewController:picker animated:YES completion:NULL];
+    
+    
+    
+//    UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+//    picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+//    NSArray *temp_MediaTypes = [UIImagePickerController availableMediaTypesForSourceType:picker.sourceType];
+//    picker.mediaTypes = temp_MediaTypes;
+//    picker.delegate = self;
+//    picker.allowsImageEditing = YES;
+//    //picker.showsCameraControls = NO;//指示 picker 是否显示默认的camera controls.默认是YES,设置成NO隐藏默认的controls来使用自定义的overlay view.(从而可以实现多选而不是选一张picker就dismiss了).只有 UIImagePickerControllerSourceTypeCamera 源有效,否则NSInvalidArgumentException异常.
+//    
+////    if([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+////       
+////    }
+//    [self presentViewController:picker animated:YES completion:^{}];
+//    //[self presentModalViewController:picker animated:YES];
+}
+
+//- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
+//{
+//    
+//    NSString *mediaType = [info objectForKey:UIImagePickerControllerMediaType];
+//    
+//    BOOL success;
+//    NSFileManager *fileManager = [NSFileManager defaultManager];
+//    NSError *error;
+//    
+//    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+//    NSString *documentsDirectory = [paths objectAtIndex:0];
+//    
+//    if ([mediaType isEqualToString:@"public.image"]){
+//        
+//        UIImage *image = [info objectForKey:@"UIImagePickerControllerEditedImage"];
+//        
+//        NSString *imageFile = [documentsDirectory stringByAppendingPathComponent:@"temp.jpg"];
+//        
+//        success = [fileManager fileExistsAtPath:imageFile];
+//        if(success) {
+//            success = [fileManager removeItemAtPath:imageFile error:&error];
+//        }
+//        
+////        self.imageView.image = image;
+//        [UIImageJPEGRepresentation(image, 1.0f) writeToFile:imageFile atomically:YES];
+//        
+//        
+//    }
+//    else if([mediaType isEqualToString:@"public.movie"]){
+//        NSURL *videoURL = [info objectForKey:UIImagePickerControllerMediaURL];
+//        NSData *videoData = [NSData dataWithContentsOfURL:videoURL];
+//        
+//        
+//        
+//        NSString *videoFile = [documentsDirectory stringByAppendingPathComponent:@"temp.mov"];
+//        
+//        success = [fileManager fileExistsAtPath:videoFile];
+//        if(success) {
+//            success = [fileManager removeItemAtPath:videoFile error:&error];
+//        }
+//        [videoData writeToFile:videoFile atomically:YES];
+//        
+//    }
+//    [picker dismissModalViewControllerAnimated:YES];
+//}
+//
+//- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
+//{
+//    
+//    [picker dismissModalViewControllerAnimated:YES];
+//    
+//}
 
 #pragma mark - tableView -
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section

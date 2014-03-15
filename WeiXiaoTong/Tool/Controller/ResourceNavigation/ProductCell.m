@@ -34,6 +34,13 @@
         [self.delegate performSelector:@selector(checkDetail:IndexPath:) withObject:sender withObject:self.indexPath];
     }
 }
+- (IBAction)dangkouPush:(id)sender
+{
+    if (self.delegate && [self.delegate respondsToSelector:@selector(dangkou:IndexPath:)])
+    {
+        [self.delegate performSelector:@selector(dangkou:IndexPath:) withObject:sender withObject:self.indexPath];
+    }
+}
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated
 {

@@ -18,6 +18,8 @@
 @interface ApplicablePeopleViewController : CommonViewController<UITableViewDataSource,UITableViewDelegate,UITextFieldDelegate,ApplicablePeopleCellDelegate>
 {
     NSArray *_contents;
+    NSArray *_changeData;
+    NSTimer *_time;
 }
 @property (assign, nonatomic)id<ApplicablePeopleViewControllerDelegate> delegate;
 @property (copy, nonatomic) NSIndexPath *indexPath;

@@ -157,83 +157,126 @@ static int page = 1;
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UserEntity *user = [UserEntity shareCurrentUe];
-    if (user.qx == 2) {
-        static NSString *identifier = @"productCell";
-        ProductCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
-        if (cell == nil) {
-            cell= (ProductCell *)[[[NSBundle  mainBundle]  loadNibNamed:@"ProductCell" owner:self options:nil]  lastObject];
-        }
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
-        cell.delegate = self;
-        cell.indexPath = indexPath;
-        
-        ChanPin *chanPin = [self.cpsArr objectAtIndex:indexPath.row];
-        [cell.image setImageWithURL:[NSURL URLWithString:IMAGE_URL(chanPin.Id)]];
-        cell.name.text = chanPin.dangkou;
-        cell.cost.text = [NSString stringWithFormat:@"拿货价：%d",chanPin.jiage];
-        cell.describe.text = chanPin.miaoshu;
-        cell.serialNum.text = [NSString stringWithFormat:@"编号：%d",chanPin.Id];
-        cell.time.text = [NSString stringWithFormat:@"日期：%@",[chanPin.shijian substringToIndex:10]];
-        
-        UserEntity *ue = [UserEntity shareCurrentUe];
-        if (ue.level == 0) {
-            cell.collection.hidden = YES;
-        }else{
-            NSFileManager *fm = [NSFileManager defaultManager];
-            if ([fm fileExistsAtPath:[self docPath]]) {
-                NSMutableArray *arr = [NSMutableArray arrayWithContentsOfFile:[self docPath]];
-                for (int i = 0; i < arr.count; i++) {
-                    int _Id = [[arr objectAtIndex:i] intValue];
-                    if (_Id == chanPin.Id) {
-                        [cell.collection setTitle:@"已收藏" forState:0];
-                    }}}
-        }
-        
-        return cell;
-    }else {
-        static NSString *identifier = @"productTwoCell";
-        ProductTwoCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
-        if (cell == nil) {
-            cell= (ProductTwoCell *)[[[NSBundle  mainBundle]  loadNibNamed:@"ProductTwoCell" owner:self options:nil]  lastObject];
-        }
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
-        cell.delegate = self;
-        cell.indexPath = indexPath;
-        ObjectVo *ob = [ObjectVo shareCurrentObjectVo];
-        NSDictionary *baseData = [ob valueForKey:@"baseData"];
-        
-        ChanPin *chanPin = [self.cpsArr objectAtIndex:indexPath.row];
-        [cell.image setImageWithURL:[NSURL URLWithString:IMAGE_URL(chanPin.Id)]];
-        cell.type.text = [NSString stringWithFormat:@"类型：%@",[[[baseData valueForKey:@"lxs"] objectAtIndex:chanPin.leixing] valueForKey:@"name"]];
-        cell.type2.text = [NSString stringWithFormat:@"类型：%@",[[[baseData valueForKey:@"lxs"] objectAtIndex:chanPin.leixing] valueForKey:@"name"]];
-        NSArray *categorys = [chanPin.categorys componentsSeparatedByString:@"|"];
-        NSArray *categoryArr = [[categorys objectAtIndex:0] componentsSeparatedByString:@"_"];
-        if ([[categoryArr objectAtIndex:0] intValue] == 6) {
-            for (int i = 0; i < [[baseData valueForKey:@"ss"] count]; i++) {
-                if ([[[[baseData valueForKey:@"ss"] objectAtIndex:i] valueForKey:@"id"] intValue] == [[categoryArr objectAtIndex:1] intValue]) {
-                    cell.service.text = [[[baseData valueForKey:@"ss"] objectAtIndex:i] valueForKey:@"name"];
-                }
-            }
-            //cell.service.text = [[[baseData valueForKey:@"ss"] objectAtIndex:[[categoryArr objectAtIndex:1] intValue]] valueForKey:@"name"];
-            if ([cell.service.text rangeOfString:@"7天包退换"].location != NSNotFound) {
-                cell.service.textColor = [UIColor orangeColor];
-            }else if ([cell.service.text rangeOfString:@"支持换款"].location != NSNotFound){
-                cell.service.textColor = [UIColor redColor];
-            }else if ([cell.service.text rangeOfString:@"可换大小"].location != NSNotFound){
-                cell.service.textColor = [UIColor cyanColor];
-            }else if ([cell.service.text rangeOfString:@"不退不换"].location != NSNotFound){
-                cell.service.textColor = [UIColor grayColor];
-            }else if ([cell.service.text rangeOfString:@"质量包换"].location != NSNotFound){
-                cell.service.textColor = [UIColor magentaColor];
-            }
-        }
-        cell.applicablePeople.text = [NSString stringWithFormat:@"适用人群：%@",[[[baseData valueForKey:@"xbs"] objectAtIndex:chanPin.xingbie] valueForKey:@"name"]];
-        cell.describe.text = chanPin.miaoshu;
-        cell.serialNum.text = [NSString stringWithFormat:@"编号：%d",chanPin.Id];
-        cell.time.text = [NSString stringWithFormat:@"日期：%@",[chanPin.shijian substringToIndex:10]];
-        
-        return cell;
+    ObjectVo *ob = [ObjectVo shareCurrentObjectVo];
+    NSDictionary *baseData = [ob valueForKey:@"baseData"];
+    static NSString *identifier = @"productCell";
+    ProductCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
+    if (cell == nil) {
+        cell= (ProductCell *)[[[NSBundle  mainBundle]  loadNibNamed:@"ProductCell" owner:self options:nil]  lastObject];
+//        UIView *line = [[UIView alloc]init];
+//        line.backgroundColor = [UIColor blackColor];
+//        line.tag = 200;
+//        [cell.name addSubview:line];
     }
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    cell.delegate = self;
+    cell.indexPath = indexPath;
+    
+    ChanPin *chanPin = [self.cpsArr objectAtIndex:indexPath.row];
+    [cell.image setImageWithURL:[NSURL URLWithString:IMAGE_URL(chanPin.Id)]];
+    [cell.name setTitle:chanPin.dangkou forState:0];
+    cell.cost.text = [NSString stringWithFormat:@"进价：%d",chanPin.jiage];
+    cell.describe.text = chanPin.miaoshu;
+    cell.serialNum.text = [NSString stringWithFormat:@"编号：%d",chanPin.Id];
+    cell.time.text = [NSString stringWithFormat:@"日期：%@",[chanPin.shijian substringToIndex:10]];
+    
+    NSArray *categorys = [chanPin.categorys componentsSeparatedByString:@"|"];
+    NSArray *categoryArr = [[categorys objectAtIndex:0] componentsSeparatedByString:@"_"];
+    if ([[categoryArr objectAtIndex:0] intValue] == 6) {
+        for (int i = 0; i < [[baseData valueForKey:@"ss"] count]; i++) {
+            if ([[[[baseData valueForKey:@"ss"] objectAtIndex:i] valueForKey:@"id"] intValue] == [[categoryArr objectAtIndex:1] intValue]) {
+                cell.service.text = [[[baseData valueForKey:@"ss"] objectAtIndex:i] valueForKey:@"name"];
+            }
+        }
+        //cell.service.text = [[[baseData valueForKey:@"ss"] objectAtIndex:[[categoryArr objectAtIndex:1] intValue]] valueForKey:@"name"];
+        if ([cell.service.text rangeOfString:@"7天包退换"].location != NSNotFound) {
+            cell.service.textColor = [UIColor orangeColor];
+        }else if ([cell.service.text rangeOfString:@"支持换款"].location != NSNotFound){
+            cell.service.textColor = [UIColor redColor];
+        }else if ([cell.service.text rangeOfString:@"可换大小"].location != NSNotFound){
+            cell.service.textColor = [UIColor cyanColor];
+        }else if ([cell.service.text rangeOfString:@"不退不换"].location != NSNotFound){
+            cell.service.textColor = [UIColor grayColor];
+        }else if ([cell.service.text rangeOfString:@"质量包换"].location != NSNotFound){
+            cell.service.textColor = [UIColor magentaColor];
+        }
+    }
+    
+    UserEntity *ue = [UserEntity shareCurrentUe];
+    if (ue.level == 0) {
+        cell.collection.hidden = YES;
+    }else{
+        NSFileManager *fm = [NSFileManager defaultManager];
+        if ([fm fileExistsAtPath:[self docPath]]) {
+            NSMutableArray *arr = [NSMutableArray arrayWithContentsOfFile:[self docPath]];
+            for (int i = 0; i < arr.count; i++) {
+                int _Id = [[arr objectAtIndex:i] intValue];
+                if (_Id == chanPin.Id) {
+                    [cell.collection setTitle:@"已收藏" forState:0];
+                }}}
+    }
+    
+    if (user.qx == 2) {
+//        UIView *line = [cell.name viewWithTag:200];
+//        CGSize size = [cell.name.titleLabel.text sizeWithFont:cell.name.titleLabel.font];
+//        line.frame = CGRectMake(0, 18, size.width, 1);
+        cell.type.hidden = YES;
+        cell.applicablePeople.hidden = YES;
+    }else{
+        cell.name.hidden = YES;
+        cell.type.text = [NSString stringWithFormat:@"类型：%@",[[[baseData valueForKey:@"lxs"] objectAtIndex:chanPin.leixing] valueForKey:@"name"]];
+        cell.cost.text = [NSString stringWithFormat:@"类型：%@",[[[baseData valueForKey:@"lxs"] objectAtIndex:chanPin.leixing] valueForKey:@"name"]];
+        cell.cost.textColor = [UIColor blackColor];
+        cell.collection.hidden = YES;
+        cell.applicablePeople.text = [NSString stringWithFormat:@"适用人群：%@",[[[baseData valueForKey:@"xbs"] objectAtIndex:chanPin.xingbie] valueForKey:@"name"]];
+    }
+    
+    return cell;
+        
+//    }else {
+//        static NSString *identifier = @"productTwoCell";
+//        ProductTwoCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
+//        if (cell == nil) {
+//            cell= (ProductTwoCell *)[[[NSBundle  mainBundle]  loadNibNamed:@"ProductTwoCell" owner:self options:nil]  lastObject];
+//        }
+//        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+//        cell.delegate = self;
+//        cell.indexPath = indexPath;
+//        ObjectVo *ob = [ObjectVo shareCurrentObjectVo];
+//        NSDictionary *baseData = [ob valueForKey:@"baseData"];
+//        
+//        ChanPin *chanPin = [self.cpsArr objectAtIndex:indexPath.row];
+//        [cell.image setImageWithURL:[NSURL URLWithString:IMAGE_URL(chanPin.Id)]];
+//        cell.type.text = [NSString stringWithFormat:@"类型：%@",[[[baseData valueForKey:@"lxs"] objectAtIndex:chanPin.leixing] valueForKey:@"name"]];
+//        cell.type2.text = [NSString stringWithFormat:@"类型：%@",[[[baseData valueForKey:@"lxs"] objectAtIndex:chanPin.leixing] valueForKey:@"name"]];
+//        NSArray *categorys = [chanPin.categorys componentsSeparatedByString:@"|"];
+//        NSArray *categoryArr = [[categorys objectAtIndex:0] componentsSeparatedByString:@"_"];
+//        if ([[categoryArr objectAtIndex:0] intValue] == 6) {
+//            for (int i = 0; i < [[baseData valueForKey:@"ss"] count]; i++) {
+//                if ([[[[baseData valueForKey:@"ss"] objectAtIndex:i] valueForKey:@"id"] intValue] == [[categoryArr objectAtIndex:1] intValue]) {
+//                    cell.service.text = [[[baseData valueForKey:@"ss"] objectAtIndex:i] valueForKey:@"name"];
+//                }
+//            }
+//            //cell.service.text = [[[baseData valueForKey:@"ss"] objectAtIndex:[[categoryArr objectAtIndex:1] intValue]] valueForKey:@"name"];
+//            if ([cell.service.text rangeOfString:@"7天包退换"].location != NSNotFound) {
+//                cell.service.textColor = [UIColor orangeColor];
+//            }else if ([cell.service.text rangeOfString:@"支持换款"].location != NSNotFound){
+//                cell.service.textColor = [UIColor redColor];
+//            }else if ([cell.service.text rangeOfString:@"可换大小"].location != NSNotFound){
+//                cell.service.textColor = [UIColor cyanColor];
+//            }else if ([cell.service.text rangeOfString:@"不退不换"].location != NSNotFound){
+//                cell.service.textColor = [UIColor grayColor];
+//            }else if ([cell.service.text rangeOfString:@"质量包换"].location != NSNotFound){
+//                cell.service.textColor = [UIColor magentaColor];
+//            }
+//        }
+//        cell.applicablePeople.text = [NSString stringWithFormat:@"适用人群：%@",[[[baseData valueForKey:@"xbs"] objectAtIndex:chanPin.xingbie] valueForKey:@"name"]];
+//        cell.describe.text = chanPin.miaoshu;
+//        cell.serialNum.text = [NSString stringWithFormat:@"编号：%d",chanPin.Id];
+//        cell.time.text = [NSString stringWithFormat:@"日期：%@",[chanPin.shijian substringToIndex:10]];
+//        
+//        return cell;
+//    }
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -327,19 +370,51 @@ static int page = 1;
             [self.view endSynRequestSignal];
         }];
     }
-    
 }
 
-- (void)checkDetails:(UIButton *)sender IndexPath:(NSIndexPath *)indexPath
+- (void)dangkou:(UIButton *)sender IndexPath:(NSIndexPath *)indexPath
 {
+    UserEntity *user = [UserEntity shareCurrentUe];
     ChanPin *chanPin = [self.cpsArr objectAtIndex:indexPath.row];
-    NSDictionary *dic = @{@"Id": [NSString stringWithFormat:@"%d",chanPin.Id],@"miaoshu": chanPin.miaoshu,@"pinpai": [NSString stringWithFormat:@"%d",chanPin.pinpai],@"leixing": [NSString stringWithFormat:@"%d",chanPin.leixing],@"xingbie": [NSString stringWithFormat:@"%d",chanPin.xingbie],@"shijian": chanPin.shijian,@"dangkou": chanPin.dangkou,@"jiage": [NSString stringWithFormat:@"%d",chanPin.jiage],@"pics": [NSString stringWithFormat:@"%d",chanPin.pics],@"price":[NSString stringWithFormat:@"%d", chanPin.price],@"upload": [NSString stringWithFormat:@"%d",chanPin.upload],@"state": [NSString stringWithFormat:@"%d",chanPin.state],@"categorys": chanPin.categorys,@"cpid": [NSString stringWithFormat:@"%d",chanPin.cpid]};
-    DetailsViewController *detailsViewController = [[DetailsViewController alloc]initWithNibName:@"DetailsViewController" bundle:nil chanPin:dic];
-    [detailsViewController setHidesBottomBarWhenPushed:YES];
-    [self.navigationController pushViewController:detailsViewController animated:YES];
-    detailsViewController = nil;
-    chanPin = nil;
-    dic = nil;
+    [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": GET_CHANPIN_BY_DANGKOU,@"page":@"0",@"dangkou":chanPin.dangkou,@"uname": user.userName,@"uuid": user.uuid} completionBlock:^(id object) {
+        
+        NSDictionary *ovoDic = [[object valueForKey:@"ovo"] JSONValue];
+        if ([[ovoDic valueForKey:@"code"] intValue] == 0) {
+            NSMutableArray *cpsArr = [[NSMutableArray alloc]init];
+            NSArray *arr = [[NSArray alloc]init];
+            arr = [ovoDic valueForKey:@"cps"];
+            for (int i = 0; i < arr.count; i++) {
+                ChanPin *chanPin = [[ChanPin alloc]init];
+                chanPin.Id = [[[arr objectAtIndex:i] valueForKey:@"id"] intValue];
+                chanPin.miaoshu = [[arr objectAtIndex:i] valueForKey:@"miaoshu"];
+                chanPin.pinpai = [[[arr objectAtIndex:i] valueForKey:@"pinpai"] intValue];
+                chanPin.leixing = [[[arr objectAtIndex:i] valueForKey:@"leixing"] intValue];
+                chanPin.shijian = [[arr objectAtIndex:i] valueForKey:@"shijian"];
+                chanPin.dangkou = [[arr objectAtIndex:i] valueForKey:@"dangkou"];
+                chanPin.jiage = [[[arr objectAtIndex:i] valueForKey:@"jiage"] intValue];
+                chanPin.pics = [[[arr objectAtIndex:i] valueForKey:@"pics"] intValue];
+                chanPin.price = [[[arr objectAtIndex:i] valueForKey:@"price"] intValue];
+                chanPin.upload = [[[arr objectAtIndex:i] valueForKey:@"upload"] intValue];
+                chanPin.state = [[[arr objectAtIndex:i] valueForKey:@"state"] intValue];
+                chanPin.categorys = [[arr objectAtIndex:i] valueForKey:@"categorys"];
+                [cpsArr addObject:chanPin];
+                chanPin = nil;
+            }
+            
+            if (cpsArr.count > 0) {
+                ProductViewController *productViewController = [[ProductViewController alloc]initWithNibName:@"ProductViewController" bundle:nil cpsArr:cpsArr];
+                productViewController.title = chanPin.dangkou;
+                [productViewController setHidesBottomBarWhenPushed:YES];
+                [self.navigationController pushViewController:productViewController animated:YES];
+                productViewController = nil;
+            }
+            cpsArr = nil;
+            arr = nil;
+        }
+    } failureBlock:^(NSError *error, NSString *responseString) {
+        //
+    }];
+
 }
 
 - (void)hideCollectionLable:(NSTimer *)aTimer

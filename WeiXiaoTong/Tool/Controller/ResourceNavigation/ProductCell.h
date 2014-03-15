@@ -12,14 +12,17 @@
 
 - (void)checkDetail:(UIButton *)sender IndexPath:(NSIndexPath *)indexPath;
 - (void)collection:(UIButton *)sender IndexPath:(NSIndexPath *)indexPath;
-
+- (void)dangkou:(UIButton *)sender IndexPath:(NSIndexPath *)indexPath;
 @end
 
 @interface ProductCell : UITableViewCell
 @property (copy, nonatomic) NSIndexPath *indexPath;
 @property (assign, nonatomic) id<ProductCellDelegate> delegate;
 @property (weak, nonatomic) IBOutlet UIImageView *image;
-@property (weak, nonatomic) IBOutlet UILabel *name;
+@property (weak, nonatomic) IBOutlet UIButton *name;
+@property (weak, nonatomic) IBOutlet UILabel *type;
+@property (weak, nonatomic) IBOutlet UILabel *applicablePeople;
+@property (weak, nonatomic) IBOutlet UILabel *service;
 @property (weak, nonatomic) IBOutlet UILabel *cost;
 @property (weak, nonatomic) IBOutlet UILabel *describe;
 @property (weak, nonatomic) IBOutlet UILabel *serialNum;

@@ -29,6 +29,7 @@
 {
     [super viewDidLoad];
     [self.table reloadData];
+    _changeData = [[NSArray alloc]initWithArray:_contents];
     
     UIImageView *backImage = [[UIImageView alloc]initWithFrame:CGRectMake(7, 7, 20, 20)];
     backImage.image = [UIImage imageNamed:@"clear_icon.png"];
@@ -107,9 +108,31 @@
     return YES;
 }
 
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+{
+    _time = [NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(changedata) userInfo:nil repeats:YES];
+    return YES;
+}
+
+- (void)changedata{
+    if ([[self.searchText.text stringByReplacingOccurrencesOfString:@" " withString:@""] isEqualToString:@""]) {
+        _contents = _changeData;
+    }else{
+        NSMutableArray *data = [[NSMutableArray alloc]init];
+        for (int i = 0; i < _changeData.count; i++) {
+            if ([[_changeData objectAtIndex:i] rangeOfString:self.searchText.text].location != NSNotFound) {
+                [data addObject:[_changeData objectAtIndex:i]];
+            }
+        }
+        _contents = data;
+    }
+    [self.table reloadData];
+}
+
 #pragma mark - applicablePeopleCellDelegate -
 - (void)seletedAction:(UIButton *)sender IndexPath:(NSIndexPath *)indexPath
 {
+    [_time invalidate];
     NSString *str;
     if ([self.title isEqualToString:@"选择适用人群"]) {
         str = [NSString stringWithFormat:@"  适用人群：%@",[_contents objectAtIndex:indexPath.row]];

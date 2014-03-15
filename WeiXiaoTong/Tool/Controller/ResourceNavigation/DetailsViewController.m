@@ -42,6 +42,7 @@
 #import "UIImageView+WebCache.h"
 #import "ObjectVo.h"
 #import "BaseData.h"
+#import "UserEntity.h"
 
 
 @interface DetailsViewController ()
@@ -132,7 +133,7 @@
     BaseData *baseData = [[BaseData alloc]init];
     for (NSString *key in [[ob valueForKey:@"baseData"] allKeys]) {
         [baseData setValue:[[ob valueForKey:@"baseData"] valueForKey:key] forKey:key];
-        NSLog(@"bd = %@",[[ob valueForKey:@"baseData"] valueForKey:key]);
+        //NSLog(@"bd = %@",[[ob valueForKey:@"baseData"] valueForKey:key]);
     }
     for (int i = 0; i < baseData.xbs.count; i++) {
         int _ID = [[[baseData.xbs objectAtIndex:i] valueForKey:@"id"] intValue];
@@ -284,10 +285,20 @@
     [copy setBackgroundImage:[UIImage imageNamed:@"button_noborder_on.png"] forState:0];
     [copy setBackgroundImage:[UIImage imageNamed:@"button_noborder_over.png"] forState:UIControlStateHighlighted];
     [copy setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];//设置button的title靠左
-    [headerView addSubview:copy];
-    copy = nil;
+    [copy addTarget:self action:@selector(copyContact:) forControlEvents:UIControlEventTouchUpInside];
+    UserEntity *ue = [UserEntity shareCurrentUe];
     
-    headerView.frame = CGRectMake(0, 0, 320, hight + 40 + 40);
+    if (ue.qx == 0) {
+        if (ue.level < 1) {
+            price.text = @"代理价格：不详！";
+        }
+        copy = nil;
+        headerView.frame = CGRectMake(0, 0, 320, hight + 40);
+    }else if(ue.qx == 2){
+        [headerView addSubview:copy];
+        copy = nil;
+        headerView.frame = CGRectMake(0, 0, 320, hight + 40 + 40);
+    }
     self.table.tableHeaderView = headerView;
     headerView = nil;
     
@@ -298,6 +309,27 @@
     CGSize size = [text sizeWithFont:[UIFont systemFontOfSize:11] constrainedToSize:CGSizeMake(310, 1000) lineBreakMode:UILineBreakModeCharacterWrap];
     //NSLog(@"%f%f",size.height,size.width);
     return size.height;
+}
+
+- (void)copyContact:(UIButton *)sender
+{
+    UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+    pasteboard.string = [sender.titleLabel.text substringWithRange:NSMakeRange(8, sender.titleLabel.text.length - 8)];
+    
+    UILabel *lable = [[UILabel alloc]initWithFrame:CGRectMake(100, 200, 120, 20)];
+    lable.backgroundColor = [UIColor blackColor];
+    lable.text = @"无网络连接！";
+    lable.textAlignment = NSTextAlignmentCenter;
+    lable.textColor = [UIColor whiteColor];
+    [self.view addSubview:lable];
+    [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(hideCollectionLable:) userInfo:lable repeats:NO];
+    lable = nil;
+}
+
+- (void)hideCollectionLable:(NSTimer *)aTimer
+{
+    UILabel *lable = [aTimer userInfo];
+    lable.hidden = YES;
 }
 
 #pragma UIScrollView delegate

@@ -27,26 +27,23 @@
                         <outlet property="delegate" destination="-1" id="pO0-tf-lKb"/>
                     </connections>
                 </tableView>
-                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="line" minimumFontSize="17" id="FyL-GI-KIc">
-                    <rect key="frame" x="5" y="7" width="250" height="30"/>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="text.png" id="fja-IB-OD6">
+                    <rect key="frame" x="5" y="7" width="310" height="30"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                </imageView>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="seach_icon.png" id="blO-AE-ZZG">
+                    <rect key="frame" x="10" y="12" width="20" height="20"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                </imageView>
+                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="请输入文字搜索" minimumFontSize="17" id="FyL-GI-KIc">
+                    <rect key="frame" x="30" y="7" width="270" height="30"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>
                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                     <textInputTraits key="textInputTraits"/>
-                </textField>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="vl8-Kg-ZNq">
-                    <rect key="frame" x="258" y="6" width="60" height="32"/>
-                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>
-                    <state key="normal" title="搜索" backgroundImage="button_on.png">
-                        <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                    </state>
-                    <state key="highlighted" title="搜索" backgroundImage="button_over.png">
-                        <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                    </state>
                     <connections>
-                        <action selector="search:" destination="-1" eventType="touchUpInside" id="uu2-qg-4rC"/>
+                        <outlet property="delegate" destination="-1" id="1Pa-D2-GsQ"/>
                     </connections>
-                </button>
+                </textField>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
             <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>
@@ -55,7 +52,7 @@
         </view>
     </objects>
     <resources>
-        <image name="button_on.png" width="190" height="80"/>
-        <image name="button_over.png" width="190" height="80"/>
+        <image name="seach_icon.png" width="50" height="50"/>
+        <image name="text.png" width="635" height="105"/>
     </resources>
 </document>

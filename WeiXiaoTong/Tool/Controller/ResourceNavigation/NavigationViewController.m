@@ -34,6 +34,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    _changeData = [[NSArray alloc]initWithArray:self.linksArr];
     // Do any additional setup after loading the view from its nib.
 }
 
@@ -63,6 +64,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    [_time invalidate];
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
     UserEntity *user = [UserEntity shareCurrentUe];
@@ -111,19 +113,35 @@
     }];
 }
 
-- (IBAction)search:(id)sender
+#pragma mark - textField -
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
-    NSMutableArray *arr = [[NSMutableArray alloc]init];
-    for (int i = 0; i < self.linksArr.count; i++) {
-        Link *link = [self.linksArr objectAtIndex:i];
-        if ([link.name rangeOfString:self.searchText.text].location != NSNotFound) {
-            [arr addObject:link];
-        }
-    }
-    self.linksArr = arr;
-    [self.table reloadData];
-    arr = nil;
+    [textField endEditing:YES];
+    return YES;
 }
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+{
+    _time = [NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(changedata) userInfo:nil repeats:YES];
+    return YES;
+}
+
+- (void)changedata{
+    if ([[self.searchText.text stringByReplacingOccurrencesOfString:@" " withString:@""] isEqualToString:@""]) {
+        self.linksArr = _changeData;
+    }else{
+        NSMutableArray *data = [[NSMutableArray alloc]init];
+        for (int i = 0; i < _changeData.count; i++) {
+            Link *link = [_changeData objectAtIndex:i];
+            if ([link.name rangeOfString:self.searchText.text].location != NSNotFound) {
+                [data addObject:[_changeData objectAtIndex:i]];
+            }
+        }
+        self.linksArr = data;
+    }
+    [self.table reloadData];
+}
+
 
 - (void)viewWillAppear:(BOOL)animated
 {

@@ -10,8 +10,9 @@
 #import "ApplicablePeopleViewController.h"
 #import "ApplicablePeopleCell.h"
 #import "CDTextView.h"
+#import "ZYQAssetPickerController.h"
 
-@interface UploadViewController : CommonViewController<UITableViewDataSource,UITableViewDelegate,ApplicablePeopleCellDelegate,UITextFieldDelegate,UITextViewDelegate,ApplicablePeopleViewControllerDelegate>
+@interface UploadViewController : CommonViewController<UITableViewDataSource,UITableViewDelegate,ApplicablePeopleCellDelegate,UITextFieldDelegate,UITextViewDelegate,ApplicablePeopleViewControllerDelegate,ZYQAssetPickerControllerDelegate,UINavigationControllerDelegate>
 {
     NSArray *_all;             //全部
     NSArray *_other;           //其他
@@ -51,5 +52,6 @@
 @property (retain, nonatomic) UIView *lineTwo;
 @property (retain, nonatomic) UIView *lineThree;
 @property (retain, nonatomic) UIView *lineFour;
+@property (retain, nonatomic) UIView *imagesView;
 
 @end

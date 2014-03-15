@@ -8,7 +8,11 @@
 
 #import "CommonViewController.h"
 
-@interface NavigationViewController : CommonViewController<UITableViewDataSource,UITableViewDataSource>
+@interface NavigationViewController : CommonViewController<UITableViewDataSource,UITableViewDataSource,UITextFieldDelegate>
+{
+    NSTimer *_time;
+    NSArray *_changeData;
+}
 
 @property (copy, nonatomic) NSString *title;
 @property (copy, nonatomic) NSArray *linksArr;

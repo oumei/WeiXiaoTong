@@ -224,6 +224,8 @@
 		35A894A918BF7B40005F6538 /* ProductViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 35A894A718BF7B40005F6538 /* ProductViewController.xib */; };
 		35A894AC18BF7B65005F6538 /* ProductCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 35A894AB18BF7B65005F6538 /* ProductCell.m */; };
 		35A894AE18BF82BA005F6538 /* ProductCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 35A894AD18BF82BA005F6538 /* ProductCell.xib */; };
+		35A8D79418D4A79E001A8FB6 /* ZYQAssetPicker.Bundle in Resources */ = {isa = PBXBuildFile; fileRef = 35A8D79118D4A79E001A8FB6 /* ZYQAssetPicker.Bundle */; };
+		35A8D79518D4A79E001A8FB6 /* ZYQAssetPickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 35A8D79318D4A79E001A8FB6 /* ZYQAssetPickerController.m */; };
 		35A942DE18C07BA800533758 /* BIDImageOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 35A942DD18C07BA800533758 /* BIDImageOperation.m */; };
 		35A942E118C07C4B00533758 /* UIImageView+downLoadImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 35A942E018C07C4B00533758 /* UIImageView+downLoadImage.m */; };
 		35A942E518C0E44500533758 /* DetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 35A942E318C0E44500533758 /* DetailsViewController.m */; };
@@ -605,6 +607,9 @@
 		35A894AA18BF7B65005F6538 /* ProductCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProductCell.h; sourceTree = "<group>"; };
 		35A894AB18BF7B65005F6538 /* ProductCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProductCell.m; sourceTree = "<group>"; };
 		35A894AD18BF82BA005F6538 /* ProductCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProductCell.xib; sourceTree = "<group>"; };
+		35A8D79118D4A79E001A8FB6 /* ZYQAssetPicker.Bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = ZYQAssetPicker.Bundle; sourceTree = "<group>"; };
+		35A8D79218D4A79E001A8FB6 /* ZYQAssetPickerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZYQAssetPickerController.h; sourceTree = "<group>"; };
+		35A8D79318D4A79E001A8FB6 /* ZYQAssetPickerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZYQAssetPickerController.m; sourceTree = "<group>"; };
 		35A942DC18C07BA800533758 /* BIDImageOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BIDImageOperation.h; sourceTree = "<group>"; };
 		35A942DD18C07BA800533758 /* BIDImageOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BIDImageOperation.m; sourceTree = "<group>"; };
 		35A942DF18C07C4B00533758 /* UIImageView+downLoadImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImageView+downLoadImage.h"; sourceTree = "<group>"; };
@@ -742,6 +747,7 @@
 		35A1F77F18BB226800702B74 /* Libs */ = {
 			isa = PBXGroup;
 			children = (
+				35A8D79018D4A79E001A8FB6 /* ZYQAssetPickerController */,
 				35AD035218D2F38B00B4C67D /* UMSocial_Sdk_Extra_Frameworks */,
 				35AD032218D2DD2B00B4C67D /* UMSocial_Sdk_3.3.6 */,
 				35A68B5418C1AB8700E17F8C /* SDWebImage */,
@@ -1314,6 +1320,16 @@
 			path = Reachability;
 			sourceTree = "<group>";
 		};
+		35A8D79018D4A79E001A8FB6 /* ZYQAssetPickerController */ = {
+			isa = PBXGroup;
+			children = (
+				35A8D79118D4A79E001A8FB6 /* ZYQAssetPicker.Bundle */,
+				35A8D79218D4A79E001A8FB6 /* ZYQAssetPickerController.h */,
+				35A8D79318D4A79E001A8FB6 /* ZYQAssetPickerController.m */,
+			);
+			path = ZYQAssetPickerController;
+			sourceTree = "<group>";
+		};
 		35AD032218D2DD2B00B4C67D /* UMSocial_Sdk_3.3.6 */ = {
 			isa = PBXGroup;
 			children = (
@@ -1590,6 +1606,7 @@
 				35A8262818D20CA00036C1CC /* bg.png in Resources */,
 				35AD034218D2DD2B00B4C67D /* UMShareEditViewController.xib in Resources */,
 				35A1F8E818BB226800702B74 /* tabbar_bg.png in Resources */,
+				35A8D79418D4A79E001A8FB6 /* ZYQAssetPicker.Bundle in Resources */,
 				35AD033F18D2DD2B00B4C67D /* UMSCommentDetailController.xib in Resources */,
 				35A1F94A18BB2E4400702B74 /* HomeViewController.xib in Resources */,
 				35A1F95418BB2F1C00702B74 /* PersonalInformationViewController.xib in Resources */,
@@ -1713,6 +1730,7 @@
 				35A57B6718BA0C7700339A66 /* Bazaar.m in Sources */,
 				35A68BE518C1D53700E17F8C /* DetailsCell.m in Sources */,
 				35A1F88C18BB226800702B74 /* UINavigationController+AKTabBarController.m in Sources */,
+				35A8D79518D4A79E001A8FB6 /* ZYQAssetPickerController.m in Sources */,
 				35A1F97118BB675900702B74 /* LoginViewController.m in Sources */,
 				35A879B718BE31A900EDC246 /* AFHttp.m in Sources */,
 				35A77FA718C622620028D391 /* CheckApplicationCell.m in Sources */,
