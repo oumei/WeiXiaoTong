@@ -8,13 +8,15 @@
 
 #import "UploadViewController.h"
 #import "ObjectVo.h"
+#import "UserEntity.h"
+#import "UploadOperation.h"
 
 @interface UploadViewController ()
 
 @end
 
 @implementation UploadViewController
-
+static int progressNum = 0;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -27,6 +29,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    _images = [[NSMutableArray alloc]init];
     
     self.data = @[@"选择产品类型"];
     _all = @[@"选择产品类型",@"选择适用人群",@"选择售后服务"];
@@ -111,6 +114,7 @@
     [uploadBtn setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
     [uploadBtn setBackgroundImage:[UIImage imageNamed:@"long_button.png"] forState:0];
     [uploadBtn setBackgroundImage:[UIImage imageNamed:@"long_button_over.png"] forState:UIControlStateHighlighted];
+    [uploadBtn addTarget:self action:@selector(uploadImageAtion:) forControlEvents:UIControlEventTouchUpInside];
     
     UIImageView *uploadIcon = [[UIImageView alloc]initWithFrame:CGRectMake(5, 5, 25, 25)];
     uploadIcon.image = [UIImage imageNamed:@"up_icon.png"];
@@ -120,51 +124,96 @@
     
     self.imagesView = [[UIView alloc]initWithFrame:CGRectMake(0, 115, 320, 200)];
     
-    UIButton *uploadImage = [UIButton buttonWithType:UIButtonTypeCustom];
-    uploadImage.frame = CGRectMake(5, 115, 60, 60);
-    [uploadImage setBackgroundImage:[UIImage imageNamed:@"icon_addpic_unfocused.png"] forState:0];
-    [uploadImage setBackgroundImage:[UIImage imageNamed:@"icon_addpic_focused.png"] forState:UIControlStateHighlighted];
-    [uploadImage addTarget:self action:@selector(uploadImageAtion:) forControlEvents:UIControlEventTouchUpInside];
-    [self.imagesView addSubview:uploadImage];
+    self.chooseBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.chooseBtn.frame = CGRectMake(5, 5, 60, 60);
+    [self.chooseBtn setBackgroundImage:[UIImage imageNamed:@"icon_addpic_unfocused.png"] forState:0];
+    [self.chooseBtn setBackgroundImage:[UIImage imageNamed:@"icon_addpic_focused.png"] forState:UIControlStateHighlighted];
+    [self.chooseBtn addTarget:self action:@selector(chooseImages:) forControlEvents:UIControlEventTouchUpInside];
+    [self.imagesView addSubview:self.chooseBtn];
     
     [footerView addSubview:self.imagesView];
     footerView.frame = CGRectMake(0, 0, 320, 320);
     self.table.tableFooterView = footerView;
     
-}
-
-#pragma mark - ZYQAssetPickerController Delegate
--(void)assetPickerController:(ZYQAssetPickerController *)picker didFinishPickingAssets:(NSArray *)assets{
-    [self.imagesView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+    self.progress = [[UIProgressView alloc]initWithProgressViewStyle:UIProgressViewStyleBar];
+    self.progress.frame=CGRectMake(60, 100, 200, 20);
+    [self.view addSubview:self.progress];
     
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-//        src.contentSize=CGSizeMake(assets.count*src.frame.size.width, src.frame.size.height);
-        dispatch_async(dispatch_get_main_queue(), ^{
-//            pageControl.numberOfPages=assets.count;
-        });
-        
-        for (int i=0; i<assets.count; i++) {
-            ALAsset *asset=assets[i];
-//            UIImageView *imgview=[[UIImageView alloc] initWithFrame:CGRectMake(i*src.frame.size.width, 0, src.frame.size.width, src.frame.size.height)];
-//            imgview.contentMode=UIViewContentModeScaleAspectFill;
-//            imgview.clipsToBounds=YES;
-            UIImage *tempImg=[UIImage imageWithCGImage:asset.defaultRepresentation.fullScreenImage];
-            dispatch_async(dispatch_get_main_queue(), ^{
-//                [imgview setImage:tempImg];
-//                [src addSubview:imgview];
-            });
-        }
-    });
 }
 
 - (void)uploadImageAtion:(UIButton *)sender
 {
-    
+//    NSString *yourPath = [[NSBundle mainBundle] pathForResource:@"back_on" ofType:@"png"];
+//    NSFileManager *man = [NSFileManager defaultManager];
+//    NSDictionary *attrs = [man attributesOfItemAtPath: yourPath error: NULL];
+//    UInt32 result = [attrs fileSize];
+//    NSLog(@"%ld",result);
+
+    if (_images.count > 0) {
+        NSDate *date = [NSDate date];
+        NSTimeZone *zone = [NSTimeZone systemTimeZone];
+        NSInteger interval = [zone secondsFromGMTForDate: date];
+        NSDate *localeDate = [date  dateByAddingTimeInterval: interval];
+        NSString *timeSp = [NSString stringWithFormat:@"%.0f", [localeDate timeIntervalSince1970]*1000];
+        //NSLog(@"timeSp:%@",timeSp); //时间戳的值
+        
+        UserEntity *ue = [UserEntity shareCurrentUe];
+        NSString *cpid = [NSString stringWithFormat:@"%@%d",timeSp,ue.Id];
+        //NSLog(@"ti:%@",cpid);
+        //数据要提交到此url
+        for (int i = 0; i < _images.count; i++) {
+            NSString *url = [NSString stringWithFormat:@"http://192.168.1.107:8080/service/upload.do?cpid=%@&name=%d.jpg",cpid,i];
+            UploadOperation *operation = [[UploadOperation alloc]initWithTarget:self selector:@selector(uploadFinish:) url:url image:[_images objectAtIndex:i]];
+            NSOperationQueue *queue = [[NSOperationQueue alloc]init];
+            [queue addOperation:operation];
+        }
+    }
+}
+
+- (void)uploadFinish:(NSData *)data
+{
+    NSString *str = [[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
+    if ([str isEqualToString:@"ok"]) {
+        progressNum = progressNum + 1;
+        self.progress.progress = progressNum/_images.count;
+        if (progressNum == _images.count) {
+            self.progress.hidden = YES;
+            UILabel *lable = [[UILabel alloc]initWithFrame:CGRectMake(100, 150, 120, 20)];
+            lable.backgroundColor = [UIColor blackColor];
+            lable.text = @"上传完成！";
+            lable.textAlignment = NSTextAlignmentCenter;
+            lable.textColor = [UIColor whiteColor];
+            
+            [self.view addSubview:lable];
+            [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(hideCollectionLable:) userInfo:lable repeats:NO];
+            lable = nil;
+        }
+    }else{
+        UILabel *lable = [[UILabel alloc]initWithFrame:CGRectMake(100, 200, 120, 20)];
+        lable.backgroundColor = [UIColor blackColor];
+        lable.text = @"上传失败！";
+        lable.textAlignment = NSTextAlignmentCenter;
+        lable.textColor = [UIColor whiteColor];
+        
+        [self.view addSubview:lable];
+        [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(hideCollectionLable:) userInfo:lable repeats:NO];
+        lable = nil;
+    }
+}
+
+- (void)hideCollectionLable:(NSTimer *)aTimer
+{
+    UILabel *lable = [aTimer userInfo];
+    lable.hidden = YES;
+}
+
+- (void)chooseImages:(UIButton *)sender
+{
     ZYQAssetPickerController *picker = [[ZYQAssetPickerController alloc] init];
-    picker.maximumNumberOfSelection = 10;
+    picker.maximumNumberOfSelection = 9 - _images.count;
     picker.assetsFilter = [ALAssetsFilter allPhotos];
-    picker.showEmptyGroups=NO;
-    picker.delegate=self;
+    picker.showEmptyGroups = NO;
+    picker.delegate = self;
     picker.selectionFilter = [NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary *bindings) {
         if ([[(ALAsset*)evaluatedObject valueForProperty:ALAssetPropertyType] isEqual:ALAssetTypeVideo]) {
             NSTimeInterval duration = [[(ALAsset*)evaluatedObject valueForProperty:ALAssetPropertyDuration] doubleValue];
@@ -175,76 +224,84 @@
     }];
     
     [self presentViewController:picker animated:YES completion:NULL];
-    
-    
-    
-//    UIImagePickerController *picker = [[UIImagePickerController alloc] init];
-//    picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-//    NSArray *temp_MediaTypes = [UIImagePickerController availableMediaTypesForSourceType:picker.sourceType];
-//    picker.mediaTypes = temp_MediaTypes;
-//    picker.delegate = self;
-//    picker.allowsImageEditing = YES;
-//    //picker.showsCameraControls = NO;//指示 picker 是否显示默认的camera controls.默认是YES,设置成NO隐藏默认的controls来使用自定义的overlay view.(从而可以实现多选而不是选一张picker就dismiss了).只有 UIImagePickerControllerSourceTypeCamera 源有效,否则NSInvalidArgumentException异常.
-//    
-////    if([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
-////       
-////    }
-//    [self presentViewController:picker animated:YES completion:^{}];
-//    //[self presentModalViewController:picker animated:YES];
 }
 
-//- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
-//{
-//    
-//    NSString *mediaType = [info objectForKey:UIImagePickerControllerMediaType];
-//    
-//    BOOL success;
-//    NSFileManager *fileManager = [NSFileManager defaultManager];
-//    NSError *error;
-//    
-//    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-//    NSString *documentsDirectory = [paths objectAtIndex:0];
-//    
-//    if ([mediaType isEqualToString:@"public.image"]){
-//        
-//        UIImage *image = [info objectForKey:@"UIImagePickerControllerEditedImage"];
-//        
-//        NSString *imageFile = [documentsDirectory stringByAppendingPathComponent:@"temp.jpg"];
-//        
-//        success = [fileManager fileExistsAtPath:imageFile];
-//        if(success) {
-//            success = [fileManager removeItemAtPath:imageFile error:&error];
-//        }
-//        
-////        self.imageView.image = image;
-//        [UIImageJPEGRepresentation(image, 1.0f) writeToFile:imageFile atomically:YES];
-//        
-//        
-//    }
-//    else if([mediaType isEqualToString:@"public.movie"]){
-//        NSURL *videoURL = [info objectForKey:UIImagePickerControllerMediaURL];
-//        NSData *videoData = [NSData dataWithContentsOfURL:videoURL];
-//        
-//        
-//        
-//        NSString *videoFile = [documentsDirectory stringByAppendingPathComponent:@"temp.mov"];
-//        
-//        success = [fileManager fileExistsAtPath:videoFile];
-//        if(success) {
-//            success = [fileManager removeItemAtPath:videoFile error:&error];
-//        }
-//        [videoData writeToFile:videoFile atomically:YES];
-//        
-//    }
-//    [picker dismissModalViewControllerAnimated:YES];
-//}
-//
-//- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
-//{
-//    
-//    [picker dismissModalViewControllerAnimated:YES];
-//    
-//}
+- (void)deleteImage:(UIButton *)sender
+{
+    [self.imagesView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+    [_images removeObjectAtIndex:sender.tag - 1000];
+    
+    for (int j = 0; j< _images.count; j++) {
+        UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+        if (j < 4) {
+            btn.frame = CGRectMake(5 + j%4*70, 5, 60, 60);
+        }else if (j < 8){
+            btn.frame = CGRectMake(5 + j%4*70, 5 + 65, 60, 60);
+        }else{
+            btn.frame = CGRectMake(5 + j%4*70, 5 + 130, 60, 60);
+        }
+        btn.tag = 1000 + j;
+        [btn addTarget:self action:@selector(deleteImage:) forControlEvents:UIControlEventTouchUpInside];
+        [btn setBackgroundImage:[_images objectAtIndex:j] forState:0];
+        [self.imagesView addSubview:btn];
+    }
+    if (_images.count < 9) {
+        if (_images.count < 4) {
+            self.chooseBtn.frame = CGRectMake(5 + _images.count%4*70, 5, 60, 60);
+        }else if (_images.count < 8){
+            self.chooseBtn.frame = CGRectMake(5 + _images.count%4*70, 5 + 65, 60, 60);
+        }else{
+            self.chooseBtn.frame = CGRectMake(5, 5 + 140, 60, 60);
+        }
+        [self.imagesView addSubview:self.chooseBtn];
+    }
+}
+
+#pragma mark - ZYQAssetPickerController Delegate
+-(void)assetPickerController:(ZYQAssetPickerController *)picker didFinishPickingAssets:(NSArray *)assets{
+    [self.imagesView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        dispatch_async(dispatch_get_main_queue(), ^{
+            //
+        });
+        
+        for (int i=0; i < assets.count; i++) {
+            ALAsset *asset=assets[i];
+            NSLog(@"%lld",asset.defaultRepresentation.size);//图片的大小
+            UIImage *tempImg=[UIImage imageWithCGImage:asset.defaultRepresentation.fullScreenImage];
+            [_images addObject:tempImg];
+            
+        }
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            for (int j = 0; j< _images.count; j++) {
+                UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+                if (j < 4) {
+                    btn.frame = CGRectMake(5 + j%4*70, 5, 60, 60);
+                }else if (j < 8){
+                    btn.frame = CGRectMake(5 + j%4*70, 5 + 65, 60, 60);
+                }else{
+                    btn.frame = CGRectMake(5 + j%4*70, 5 + 130, 60, 60);
+                }
+                btn.tag = 1000 + j;
+                [btn addTarget:self action:@selector(deleteImage:) forControlEvents:UIControlEventTouchUpInside];
+                [btn setBackgroundImage:[_images objectAtIndex:j] forState:0];
+                [self.imagesView addSubview:btn];
+                UIImageJPEGRepresentation(nil, 1.0);
+            }
+            if (_images.count < 9) {
+                if (_images.count < 4) {
+                    self.chooseBtn.frame = CGRectMake(5 + _images.count%4*70, 5, 60, 60);
+                }else if (_images.count < 8){
+                    self.chooseBtn.frame = CGRectMake(5 + _images.count%4*70, 5 + 65, 60, 60);
+                }else{
+                    self.chooseBtn.frame = CGRectMake(5, 5 + 140, 60, 60);
+                }
+                [self.imagesView addSubview:self.chooseBtn];
+            }
+        });
+    });
+}
 
 #pragma mark - tableView -
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section

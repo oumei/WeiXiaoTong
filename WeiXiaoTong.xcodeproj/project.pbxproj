@@ -226,10 +226,11 @@
 		35A894AE18BF82BA005F6538 /* ProductCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 35A894AD18BF82BA005F6538 /* ProductCell.xib */; };
 		35A8D79418D4A79E001A8FB6 /* ZYQAssetPicker.Bundle in Resources */ = {isa = PBXBuildFile; fileRef = 35A8D79118D4A79E001A8FB6 /* ZYQAssetPicker.Bundle */; };
 		35A8D79518D4A79E001A8FB6 /* ZYQAssetPickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 35A8D79318D4A79E001A8FB6 /* ZYQAssetPickerController.m */; };
-		35A942DE18C07BA800533758 /* BIDImageOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 35A942DD18C07BA800533758 /* BIDImageOperation.m */; };
 		35A942E118C07C4B00533758 /* UIImageView+downLoadImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 35A942E018C07C4B00533758 /* UIImageView+downLoadImage.m */; };
 		35A942E518C0E44500533758 /* DetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 35A942E318C0E44500533758 /* DetailsViewController.m */; };
 		35A942E618C0E44500533758 /* DetailsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 35A942E418C0E44500533758 /* DetailsViewController.xib */; };
+		35A99BB918D993F90028E484 /* UploadOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 35A99BB818D993F90028E484 /* UploadOperation.m */; };
+		35A99BBC18D9DF6A0028E484 /* BIDImageOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 35A99BBB18D9DF6A0028E484 /* BIDImageOperation.m */; };
 		35AAB28E18C6F46A003ECCE1 /* AddMerchantsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 35AAB28C18C6F46A003ECCE1 /* AddMerchantsViewController.m */; };
 		35AAB28F18C6F46A003ECCE1 /* AddMerchantsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 35AAB28D18C6F46A003ECCE1 /* AddMerchantsViewController.xib */; };
 		35AAB29218C6FC98003ECCE1 /* CDTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 35AAB29118C6FC98003ECCE1 /* CDTextView.m */; };
@@ -610,13 +611,15 @@
 		35A8D79118D4A79E001A8FB6 /* ZYQAssetPicker.Bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = ZYQAssetPicker.Bundle; sourceTree = "<group>"; };
 		35A8D79218D4A79E001A8FB6 /* ZYQAssetPickerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZYQAssetPickerController.h; sourceTree = "<group>"; };
 		35A8D79318D4A79E001A8FB6 /* ZYQAssetPickerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZYQAssetPickerController.m; sourceTree = "<group>"; };
-		35A942DC18C07BA800533758 /* BIDImageOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BIDImageOperation.h; sourceTree = "<group>"; };
-		35A942DD18C07BA800533758 /* BIDImageOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BIDImageOperation.m; sourceTree = "<group>"; };
 		35A942DF18C07C4B00533758 /* UIImageView+downLoadImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImageView+downLoadImage.h"; sourceTree = "<group>"; };
 		35A942E018C07C4B00533758 /* UIImageView+downLoadImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+downLoadImage.m"; sourceTree = "<group>"; };
 		35A942E218C0E44500533758 /* DetailsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DetailsViewController.h; sourceTree = "<group>"; };
 		35A942E318C0E44500533758 /* DetailsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DetailsViewController.m; sourceTree = "<group>"; };
 		35A942E418C0E44500533758 /* DetailsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DetailsViewController.xib; sourceTree = "<group>"; };
+		35A99BB718D993F90028E484 /* UploadOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UploadOperation.h; sourceTree = "<group>"; };
+		35A99BB818D993F90028E484 /* UploadOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UploadOperation.m; sourceTree = "<group>"; };
+		35A99BBA18D9DF6A0028E484 /* BIDImageOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BIDImageOperation.h; sourceTree = "<group>"; };
+		35A99BBB18D9DF6A0028E484 /* BIDImageOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BIDImageOperation.m; sourceTree = "<group>"; };
 		35AAB28B18C6F46A003ECCE1 /* AddMerchantsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddMerchantsViewController.h; sourceTree = "<group>"; };
 		35AAB28C18C6F46A003ECCE1 /* AddMerchantsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddMerchantsViewController.m; sourceTree = "<group>"; };
 		35AAB28D18C6F46A003ECCE1 /* AddMerchantsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AddMerchantsViewController.xib; sourceTree = "<group>"; };
@@ -1275,8 +1278,10 @@
 		35A879B218BE31A900EDC246 /* Http */ = {
 			isa = PBXGroup;
 			children = (
-				35A942DC18C07BA800533758 /* BIDImageOperation.h */,
-				35A942DD18C07BA800533758 /* BIDImageOperation.m */,
+				35A99BBA18D9DF6A0028E484 /* BIDImageOperation.h */,
+				35A99BBB18D9DF6A0028E484 /* BIDImageOperation.m */,
+				35A99BB718D993F90028E484 /* UploadOperation.h */,
+				35A99BB818D993F90028E484 /* UploadOperation.m */,
 				35A879B318BE31A900EDC246 /* AFHttp.h */,
 				35A879B418BE31A900EDC246 /* AFHttp.m */,
 				35A879B518BE31A900EDC246 /* HttpService.h */,
@@ -1681,6 +1686,7 @@
 				359FA23C18C9A1E40011417C /* TableViewController.m in Sources */,
 				35A26DD018C4CEE00076D38D /* CategoryCell.m in Sources */,
 				35A57BB918BA249800339A66 /* ConfigVo.m in Sources */,
+				35A99BB918D993F90028E484 /* UploadOperation.m in Sources */,
 				35A942E518C0E44500533758 /* DetailsViewController.m in Sources */,
 				35A879B818BE31A900EDC246 /* HttpService.m in Sources */,
 				35A57B8518BA15B300339A66 /* Service.m in Sources */,
@@ -1753,11 +1759,11 @@
 				35AAB29218C6FC98003ECCE1 /* CDTextView.m in Sources */,
 				35A879B018BE1CF500EDC246 /* NavigationViewController.m in Sources */,
 				35A57B6A18BA0EAC00339A66 /* ChanPin.m in Sources */,
-				35A942DE18C07BA800533758 /* BIDImageOperation.m in Sources */,
 				35A68B7718C1AB8700E17F8C /* SDWebImageDownloader.m in Sources */,
 				35A57BBC18BA250600339A66 /* FriendsVo.m in Sources */,
 				35A57B7318BA14EF00339A66 /* BagType.m in Sources */,
 				35A57BE518BA40AF00339A66 /* NSString+SBJSON.m in Sources */,
+				35A99BBC18D9DF6A0028E484 /* BIDImageOperation.m in Sources */,
 				35A57BB018BA238000339A66 /* ObjectVo.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

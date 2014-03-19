@@ -41,6 +41,8 @@
     NSString *_bqs;        //产品品质
     NSString *_cts;        //服装类型
     NSString *_mts;        //彩妆类型
+    
+    NSMutableArray *_images;
 }
 @property (weak, nonatomic) IBOutlet UITableView *table;
 @property (copy, nonatomic) NSArray *data;
@@ -53,5 +55,7 @@
 @property (retain, nonatomic) UIView *lineThree;
 @property (retain, nonatomic) UIView *lineFour;
 @property (retain, nonatomic) UIView *imagesView;
+@property (retain, nonatomic) UIButton *chooseBtn;
+@property (retain, nonatomic) UIProgressView *progress;
 
 @end
