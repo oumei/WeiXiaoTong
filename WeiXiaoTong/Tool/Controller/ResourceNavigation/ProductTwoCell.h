@@ -16,7 +16,7 @@
 
 @interface ProductTwoCell : UITableViewCell
 @property (copy, nonatomic) NSIndexPath *indexPath;
-@property (assign, nonatomic) id<ProductTwoCellDelegate> delegate;
+@property (weak, nonatomic) id<ProductTwoCellDelegate> delegate;
 @property (weak, nonatomic) IBOutlet UIImageView *image;
 @property (weak, nonatomic) IBOutlet UILabel *type;
 @property (weak, nonatomic) IBOutlet UILabel *applicablePeople;

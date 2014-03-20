@@ -16,7 +16,7 @@
 
 @interface CheckApplicationCell : UITableViewCell
 @property (copy, nonatomic) NSIndexPath *indexPath;
-@property (assign, nonatomic) id<CheckApplicationCellDelegate> delegate;
+@property (weak, nonatomic) id<CheckApplicationCellDelegate> delegate;
 @property (weak, nonatomic) IBOutlet UILabel *userName;
 @property (weak, nonatomic) IBOutlet UILabel *uLabel;
 @property (weak, nonatomic) IBOutlet UILabel *validationMsg;

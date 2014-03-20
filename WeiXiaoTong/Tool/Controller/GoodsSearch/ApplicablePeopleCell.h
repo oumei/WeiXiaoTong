@@ -14,8 +14,8 @@
 @end
 
 @interface ApplicablePeopleCell : UITableViewCell
-@property (copy, nonatomic) NSIndexPath *indexPath;
-@property (assign, nonatomic) id<ApplicablePeopleCellDelegate> delegate;
+@property (strong, nonatomic) NSIndexPath *indexPath;
+@property (weak, nonatomic) id<ApplicablePeopleCellDelegate> delegate;
 @property (weak, nonatomic) IBOutlet UIButton *btn;
 
 @end

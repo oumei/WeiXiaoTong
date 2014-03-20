@@ -17,6 +17,7 @@
     NSString *_sj;
     NSString *_loginText;
     NSString *_seachText;
+    NSString *_addFriendText;
 }
 
 @property(nonatomic,copy)NSString *url;
@@ -26,16 +27,17 @@
 @property(nonatomic,copy)NSString *sj;
 @property(nonatomic,copy)NSString *loginText;
 @property(nonatomic,copy)NSString *seachText;
+@property(nonatomic,copy)NSString *addFriendText;
 
 + (Config *)shareCurrentConfig;
 + (void)clearCurrentConfig;
 - (id)initWithUrl:(NSString *)aUrl
-              serverBanBen:(int)aServerBanBen
-              dxurl:(NSString *)aDxurl
-              wturl:(NSString *)aWturl
-              sj:(NSString *)aSj
-              loginText:(NSString *)aLoginText
-              seachText:(NSString *)aSeachText;
-
+     serverBanBen:(int)aServerBanBen
+            dxurl:(NSString *)aDxurl
+            wturl:(NSString *)aWturl
+               sj:(NSString *)aSj
+        loginText:(NSString *)aLoginText
+        seachText:(NSString *)aSeachText
+    addFriendText:(NSString *)aFriendText;
 
 @end

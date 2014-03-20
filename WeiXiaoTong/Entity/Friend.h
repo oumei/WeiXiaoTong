@@ -11,13 +11,25 @@
 @interface Friend : NSObject
 {
     int _Id;
-    NSString *_userName;
-    int _qx;
-    int _xzCount;
+    NSString *_uname;
+//    int _qx;
+//    int _xzCount;
+    NSString *_addTime;
+    NSString *_description;
+    NSString *_fname;
+    NSString *_remark;
+    int _fid;
 }
 @property(nonatomic,assign)int Id;
-@property(nonatomic,copy)NSString *userName;
-@property(nonatomic,assign)int qx;
-@property(nonatomic,assign)int xzCount;
+@property(nonatomic,copy)NSString *uname;
+@property(nonatomic,copy)NSString *addTime;
+@property(nonatomic,copy)NSString *description;
+@property(nonatomic,copy)NSString *fname;
+@property(nonatomic,copy)NSString *remark;
+@property(nonatomic,assign)int fid;
+//@property(nonatomic,assign)int qx;
+//@property(nonatomic,assign)int xzCount;
+
+
 
 @end

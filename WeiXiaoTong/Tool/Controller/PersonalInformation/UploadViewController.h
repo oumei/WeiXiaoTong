@@ -46,16 +46,16 @@
 }
 @property (weak, nonatomic) IBOutlet UITableView *table;
 @property (copy, nonatomic) NSArray *data;
-@property (retain, nonatomic) CDTextView *describeText;
-@property (retain, nonatomic) UITextField *address;
-@property (retain, nonatomic) UITextField *price;        //进货价
-@property (retain, nonatomic) UITextField *agentPrice;   //代理价
-@property (retain, nonatomic) UIView *lineOne;
-@property (retain, nonatomic) UIView *lineTwo;
-@property (retain, nonatomic) UIView *lineThree;
-@property (retain, nonatomic) UIView *lineFour;
-@property (retain, nonatomic) UIView *imagesView;
-@property (retain, nonatomic) UIButton *chooseBtn;
-@property (retain, nonatomic) UIProgressView *progress;
+@property (strong, nonatomic) CDTextView *describeText;
+@property (strong, nonatomic) UITextField *address;
+@property (strong, nonatomic) UITextField *price;        //进货价
+@property (strong, nonatomic) UITextField *agentPrice;   //代理价
+@property (strong, nonatomic) UIView *lineOne;
+@property (strong, nonatomic) UIView *lineTwo;
+@property (strong, nonatomic) UIView *lineThree;
+@property (strong, nonatomic) UIView *lineFour;
+@property (strong, nonatomic) UIView *imagesView;
+@property (strong, nonatomic) UIButton *chooseBtn;
+@property (strong, nonatomic) UIProgressView *progress;
 
 @end

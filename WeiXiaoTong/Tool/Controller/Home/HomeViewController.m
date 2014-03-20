@@ -53,6 +53,7 @@
             NSMutableArray *mutArr = [[NSMutableArray alloc]init];
             for (int i = 0; i < friends.count; i++) {
                 NSDictionary *dic = [friends objectAtIndex:i];
+                NSLog(@"d = %@",dic);
                 Friend *friend = [[Friend alloc]init];
                 for (NSString *key in [dic allKeys]) {
                     [friend setValue:[dic valueForKey:key] forKey:key];
@@ -209,9 +210,12 @@
     cell.delegate = self;
     cell.indexPath = indexPath;
     Friend *friend = [_friendsMutArr objectAtIndex:indexPath.row];
-    cell.name.text = friend.userName;
+    cell.name.text = friend.fname;
+    if (![friend.remark isEqualToString:@""]) {
+        cell.name.text = [NSString stringWithFormat:@"%@(%@)",friend.fname,friend.remark];
+    }
     cell.Id.text = [NSString stringWithFormat:@"用户ID：%d",friend.Id];
-    cell.xzCount.text = [NSString stringWithFormat:@"下载数量：%d",friend.xzCount];
+    //cell.xzCount.text = [NSString stringWithFormat:@"下载数量：%d",friend.xzCount];
     return cell;
 }
 
@@ -273,7 +277,7 @@
     [self.view showWithType:0 Title:@"正在删除商家信息中..."];
     UserEntity *user = [UserEntity shareCurrentUe];
      Friend *friend = [_friendsMutArr objectAtIndex:indexPath.row];
-    [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": DELETE_FRIENDS,@"fname":friend.userName,@"uname": user.userName,@"uuid":user.uuid} completionBlock:^(id object) {
+    [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": DELETE_FRIENDS,@"fname":friend.fname,@"uname": user.userName,@"uuid":user.uuid} completionBlock:^(id object) {
         NSString *ovo = [object valueForKey:@"ovo"];
         NSDictionary *ovoDic = [ovo JSONValue];
         if ([[ovoDic valueForKey:@"code"] intValue] == 0) {

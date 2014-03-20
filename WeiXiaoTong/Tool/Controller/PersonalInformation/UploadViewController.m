@@ -143,20 +143,14 @@ static int progressNum = 0;
 
 - (void)uploadImageAtion:(UIButton *)sender
 {
-//    NSString *yourPath = [[NSBundle mainBundle] pathForResource:@"back_on" ofType:@"png"];
-//    NSFileManager *man = [NSFileManager defaultManager];
-//    NSDictionary *attrs = [man attributesOfItemAtPath: yourPath error: NULL];
-//    UInt32 result = [attrs fileSize];
-//    NSLog(@"%ld",result);
-
-    if (_images.count > 0) {
+//    if (_images.count > 0) {
         NSDate *date = [NSDate date];
         NSTimeZone *zone = [NSTimeZone systemTimeZone];
         NSInteger interval = [zone secondsFromGMTForDate: date];
         NSDate *localeDate = [date  dateByAddingTimeInterval: interval];
         NSString *timeSp = [NSString stringWithFormat:@"%.0f", [localeDate timeIntervalSince1970]*1000];
-        //NSLog(@"timeSp:%@",timeSp); //时间戳的值
-        
+        NSLog(@"timeSp:%@",timeSp); //时间戳的值
+    
         UserEntity *ue = [UserEntity shareCurrentUe];
         NSString *cpid = [NSString stringWithFormat:@"%@%d",timeSp,ue.Id];
         //NSLog(@"ti:%@",cpid);
@@ -167,7 +161,7 @@ static int progressNum = 0;
             NSOperationQueue *queue = [[NSOperationQueue alloc]init];
             [queue addOperation:operation];
         }
-    }
+//    }
 }
 
 - (void)uploadFinish:(NSData *)data

@@ -10,9 +10,14 @@
 
 @implementation Friend
 @synthesize Id = _Id;
-@synthesize userName = _userName;
-@synthesize qx = _qx;
-@synthesize xzCount = _xzCount;
+@synthesize uname = _uname;
+@synthesize addTime = _addTime;
+@synthesize description = _description;
+@synthesize fid = _fid;
+@synthesize fname = _fname;
+@synthesize remark = _remark;
+//@synthesize qx = _qx;
+//@synthesize xzCount = _xzCount;
 
 
 @end

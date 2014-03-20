@@ -21,8 +21,8 @@
     NSArray *_changeData;
     NSTimer *_time;
 }
-@property (assign, nonatomic)id<ApplicablePeopleViewControllerDelegate> delegate;
-@property (copy, nonatomic) NSIndexPath *indexPath;
+@property (weak, nonatomic)id<ApplicablePeopleViewControllerDelegate> delegate;
+@property (strong, nonatomic) NSIndexPath *indexPath;
 @property (weak, nonatomic) IBOutlet UITextField *searchText;
 @property (weak, nonatomic) IBOutlet UITableView *table;
 @property (weak, nonatomic) IBOutlet UIButton *back;

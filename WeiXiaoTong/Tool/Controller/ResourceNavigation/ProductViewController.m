@@ -173,9 +173,10 @@ static int page = 1;
     cell.indexPath = indexPath;
     
     ChanPin *chanPin = [self.cpsArr objectAtIndex:indexPath.row];
-    
-    [cell.image setImageWithURL:[NSURL URLWithString:IMAGE_URL(chanPin.Id)]];
     cell.image.clipsToBounds = YES;
+    cell.image.contentMode = UIViewContentModeScaleAspectFill;
+    [cell.image setImageWithURL:[NSURL URLWithString:IMAGE_URL(chanPin.Id)]];
+    
     [cell.name setTitle:chanPin.dangkou forState:0];
     cell.cost.text = [NSString stringWithFormat:@"进价：%d",chanPin.jiage];
     cell.describe.text = chanPin.miaoshu;

@@ -39,6 +39,7 @@
 //url
 #define DEFAULT_URL                   @"http://115.28.17.18:8080/service/interface.do"
 #define IMAGE_URL(ID) [NSString stringWithFormat:@"http://115.28.17.18:8080/data/%d/small.jpg",ID]
+#define IMAGE_URL_ID(ID,NUM) [NSString stringWithFormat:@"http://115.28.17.18:8080/data/%d/%d.jpg",ID,NUM]
 #define IMAGE_URL_BY_CPID(CPID,W,H,PICS) [NSString stringWithFormat:@"http://115.28.17.18:8080/service/showPic.do?cpid=%d&lunbo=1&setW=%.0f&setH=%.0f&index=%d",CPID,W,H,PICS]
 #define IMAGE_URL_BY_TN(ID,W,H,PICS) [NSString stringWithFormat:@"http://115.28.17.18:8080/service/showPic.do?cpid=%d&lunbo=1&setW=%.0f&setH=%.0f&index=%d",ID,W,H,PICS]
 #define IMAGE_URL_BY_TN_ID(TN,ID,W,H,PICS) [NSString stringWithFormat:@"http://115.28.17.18:8080/service/showPic.do?cpid=%d-%d&lunbo=1&setW=%.0f&setH=%.0f&index=%d",TN,ID,W,H,PICS]

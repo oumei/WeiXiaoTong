@@ -48,6 +48,6 @@
 }
 @property (weak, nonatomic) IBOutlet UITableView *table;
 @property (weak, nonatomic) IBOutlet UITextField *searchText;
-@property (retain, nonatomic) TableViewController *tableViewController;
+@property (strong, nonatomic) TableViewController *tableViewController;
 
 @end

@@ -15,7 +15,6 @@
 @property (weak, nonatomic) IBOutlet CDTextView *validationMsg;
 @property (weak, nonatomic) IBOutlet UIImageView *line2;
 @property (weak, nonatomic) IBOutlet UIButton *sendBtn;
-@property (weak, nonatomic) IBOutlet UITextView *prompt;
 @property (weak, nonatomic) IBOutlet UIWebView *addWebView;
 
 @end

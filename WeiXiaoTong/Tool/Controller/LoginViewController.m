@@ -163,12 +163,11 @@
                     ObjectVo *objectVo = [ObjectVo shareCurrentObjectVo];
                     
                     for (NSString *key in [objectVoDic allKeys]) {
-//                        NSLog(@"key = %@",key);
-//                        NSLog(@"value=%@",[objectVoDic valueForKey:key]);
+                        NSLog(@"key = %@",key);
+                        NSLog(@"value=%@",[objectVoDic valueForKey:@"ue"]);
                         
                         if ([key isEqualToString:@"baseData"] || [key isEqualToString:@"ue"]) {
                             if ([key isEqualToString:@"ue"]){
-                                
                                 NSDictionary *ueDic = [objectVoDic valueForKey:key];
                                 [UserEntity clearCurrrentUe];
                                 UserEntity *ue = [UserEntity shareCurrentUe];

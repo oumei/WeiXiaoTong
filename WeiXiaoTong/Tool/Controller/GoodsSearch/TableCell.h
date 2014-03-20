@@ -15,7 +15,7 @@
 
 @interface TableCell : UITableViewCell
 @property (copy, nonatomic) NSIndexPath *indexPath;
-@property (assign, nonatomic) id<TableCellDelegate> delegate;
+@property (weak, nonatomic) id<TableCellDelegate> delegate;
 @property (weak, nonatomic) IBOutlet UIButton *btn;
 
 @end

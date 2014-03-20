@@ -24,6 +24,10 @@
 @synthesize level = _level;
 @synthesize firends = _firends;
 @synthesize tableName = _tableName;
+@synthesize description = _description;
+@synthesize friendCout = _friendCout;
+@synthesize chanPinCout = _chanPinCout;
+@synthesize upCount = _upCount;
 
 + (UserEntity *)shareCurrentUe
 {
@@ -58,7 +62,7 @@
     }
 }
 
-- (id)initWithUname:(NSString *)aUname psd:(NSString *)aPsd tell:(int)aTell uuid:(NSString *)aUuid id:(int)aId xzStr:(NSString *)aXzStr xzCount:(int)aXzCount qx:(int)aQx state:(int)aState resetUuid:(int)aResetUuid daoqi:(int)aDaoqi registerTime:(NSString *)aRegisterTime level:(int)aLevel firends:(NSString *)aFirends tableName:(int)aTableName
+- (id)initWithUname:(NSString *)aUname psd:(NSString *)aPsd tell:(int)aTell uuid:(NSString *)aUuid id:(int)aId xzStr:(NSString *)aXzStr xzCount:(int)aXzCount qx:(int)aQx state:(int)aState resetUuid:(int)aResetUuid daoqi:(int)aDaoqi registerTime:(NSString *)aRegisterTime level:(int)aLevel firends:(NSString *)aFirends tableName:(int)aTableName description:(NSString *)aDescription friendCout:(int)aFriendCout chanPinCout:(int)aChanPinCout upCount:(int)aUpCount
 {
     if (self = [super init])
     {
@@ -77,6 +81,10 @@
         self.level = aLevel;
         self.firends = aFirends;
         self.tableName = aTableName;
+        self.description = aDescription;
+        self.friendCout = aFriendCout;
+        self.chanPinCout = aChanPinCout;
+        self.upCount = aUpCount;
     }
     return self;
 }
@@ -98,6 +106,10 @@
     [encoder encodeInt:self.level forKey:@"level"];
     [encoder encodeObject:self.firends forKey:@"firends"];
     [encoder encodeInt:self.tableName forKey:@"tableName"];
+    [encoder encodeObject:self.description forKey:@"description"];
+    [encoder encodeInt:self.friendCout forKey:@"friendCout"];
+    [encoder encodeInt:self.chanPinCout forKey:@"chanPinCout"];
+    [encoder encodeInt:self.upCount forKey:@"upCount"];
 }
 
 - (id)initWithCoder:(NSCoder *)decoder
@@ -119,6 +131,8 @@
         self.level = [decoder decodeIntForKey:@"level"];
         self.firends = [decoder decodeObjectForKey:@"firends"];
         self.tableName = [decoder decodeIntForKey:@"tableName"];
+        self.description = [decoder decodeObjectForKey:@"description"];
+        self.friendCout = [decoder decodeIntForKey:@"friendCout"];
     }
     return self;
     

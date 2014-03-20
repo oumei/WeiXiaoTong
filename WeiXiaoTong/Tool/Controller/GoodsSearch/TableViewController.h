@@ -22,8 +22,8 @@
 
 @property (weak, nonatomic) IBOutlet UITableView *table;
 @property (copy, nonatomic) NSArray *dataArr;
-@property (assign, nonatomic)id<TableViewControllerDelegate> delegate;
-@property (copy, nonatomic) NSIndexPath *indexPath;
+@property (weak, nonatomic)id<TableViewControllerDelegate> delegate;
+@property (strong, nonatomic) NSIndexPath *indexPath;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil data:(NSArray *)dataArr;
 
 @end

@@ -14,8 +14,8 @@
 @end
 
 @interface CategoryCell : UITableViewCell
-@property (copy, nonatomic) NSIndexPath *indexPath;
-@property (assign, nonatomic) id<CategoryCellDelegate> delegate;
+@property (strong, nonatomic) NSIndexPath *indexPath;
+@property (weak, nonatomic) id<CategoryCellDelegate> delegate;
 @property (weak, nonatomic) IBOutlet UIButton *categoryBtn;
 
 @end

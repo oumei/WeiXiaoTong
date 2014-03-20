@@ -25,6 +25,10 @@
     int _level;
     NSString *_firends;
     int _tableName;
+    NSString *_description;
+    int _friendCout;
+    int _chanPinCout;
+    int _upCount;
 }
 @property(nonatomic,assign)int Id;
 @property(nonatomic,copy)NSString *userName;
@@ -41,6 +45,10 @@
 @property(nonatomic,assign)int level;
 @property(nonatomic,copy)NSString *firends;
 @property(nonatomic,assign)int tableName;
+@property(nonatomic,copy)NSString *description;
+@property(nonatomic,assign)int friendCout;
+@property(nonatomic,assign)int chanPinCout;
+@property(nonatomic,assign)int upCount;
 
 + (UserEntity *)shareCurrentUe;
 + (void)clearCurrrentUe;
@@ -58,6 +66,10 @@
        registerTime:(NSString *)aRegisterTime
               level:(int)aLevel
             firends:(NSString *)aFirends
-          tableName:(int)aTableName;
+          tableName:(int)aTableName
+        description:(NSString *)aDescription
+         friendCout:(int)aFriendCout
+        chanPinCout:(int)aChanPinCout
+            upCount:(int)aUpCount;
 
 @end

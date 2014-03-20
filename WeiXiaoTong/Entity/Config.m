@@ -16,6 +16,7 @@
 @synthesize sj = _sj;
 @synthesize loginText = _loginText;
 @synthesize seachText = _seachText;
+@synthesize addFriendText = _addFriendText;
 
 + (Config *)shareCurrentConfig
 {
@@ -53,7 +54,7 @@
     }
 }
 
-- (id)initWithUrl:(NSString *)aUrl serverBanBen:(int)aServerBanBen dxurl:(NSString *)aDxurl wturl:(NSString *)aWturl sj:(NSString *)aSj loginText:(NSString *)aLoginText seachText:(NSString *)aSeachText
+- (id)initWithUrl:(NSString *)aUrl serverBanBen:(int)aServerBanBen dxurl:(NSString *)aDxurl wturl:(NSString *)aWturl sj:(NSString *)aSj loginText:(NSString *)aLoginText seachText:(NSString *)aSeachText addFriendText:(NSString *)aFriendText
 {
     if (self = [super init])
     {
@@ -64,6 +65,7 @@
         self.sj = aSj;
         self.loginText = aLoginText;
         self.seachText = aSeachText;
+        self.addFriendText  = aFriendText;
     }
     return self;
 }
@@ -78,6 +80,8 @@
     [encoder encodeObject:self.sj forKey:@"sj"];
     [encoder encodeObject:self.loginText forKey:@"loginText"];
     [encoder encodeObject:self.seachText forKey:@"seachText"];
+    [encoder encodeObject:self.addFriendText forKey:@"addFriendText"];
+
 }
 
 - (id)initWithCoder:(NSCoder *)decoder
@@ -91,6 +95,7 @@
         self.sj = [decoder decodeObjectForKey:@"sj"];
         self.loginText = [decoder decodeObjectForKey:@"loginText"];
         self.seachText = [decoder decodeObjectForKey:@"seachText"];
+        self.addFriendText = [decoder decodeObjectForKey:@"addFriendText"];
     }
     return self;
     

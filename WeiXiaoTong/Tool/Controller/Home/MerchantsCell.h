@@ -14,7 +14,7 @@
 @end
 @interface MerchantsCell : UITableViewCell
 @property (copy, nonatomic) NSIndexPath *indexPath;
-@property (assign, nonatomic) id<MerchantsCellDelegate> delegate;
+@property (weak, nonatomic) id<MerchantsCellDelegate> delegate;
 @property (weak, nonatomic) IBOutlet UILabel *name;
 @property (weak, nonatomic) IBOutlet UILabel *Id;
 @property (weak, nonatomic) IBOutlet UILabel *xzCount;

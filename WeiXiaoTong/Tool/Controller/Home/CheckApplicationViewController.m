@@ -54,7 +54,7 @@
     cell.userName.text = [NSString stringWithFormat:@"(%d)",af.applyId];
     cell.validationMsg.text = [NSString stringWithFormat:@"验证消息：%@",af.message];
     
-    NSDate *date = [NSDate dateWithTimeIntervalSince1970:[[af.date substringWithRange:NSMakeRange(0, 10)] intValue]];
+    NSDate *date = [NSDate dateWithTimeIntervalSince1970:[af.date floatValue]/1000];
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     [formatter setDateStyle:NSDateFormatterMediumStyle];
     [formatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
