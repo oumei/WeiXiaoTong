@@ -8,15 +8,18 @@
 
 #import "CommonViewController.h"
 #import "ProductCell.h"
-
+#import "WXApi.h"
 
 @interface ProductViewController : CommonViewController<UITableViewDataSource,UITableViewDelegate,ProductCellDelegate>
+
 @property (weak, nonatomic) IBOutlet UITableView *table;
 @property (copy, nonatomic) NSMutableArray *cpsArr;
 @property (copy, nonatomic) NSString *lx;
 @property (copy, nonatomic) NSString *xb;
 @property (copy, nonatomic) NSString *text;
 @property (copy, nonatomic) NSString *isSelf;
+@property (strong, nonatomic) NSMutableArray *imageArr;
+@property (assign, nonatomic) int imageCount;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil cpsArr:(NSMutableArray *)cps;
 

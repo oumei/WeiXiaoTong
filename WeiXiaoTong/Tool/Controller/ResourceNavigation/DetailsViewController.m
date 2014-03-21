@@ -43,7 +43,7 @@
 #import "ObjectVo.h"
 #import "BaseData.h"
 #import "UserEntity.h"
-
+#include<objc/runtime.h>
 
 @interface DetailsViewController ()
 
@@ -68,10 +68,15 @@
     
     _chanpin = [[ChanPin alloc]init];
     for (NSString *key in [self.chanPin allKeys]) {
-        if ([[self.chanPin valueForKey:key] isKindOfClass:[NSString class]]) {
-            [_chanpin setValue:[self.chanPin valueForKey:key] forKey:key];
-        }else{
-            [_chanpin setValue:[NSString stringWithFormat:@"%d",[[self.chanPin valueForKey:key] intValue]] forKey:key];
+        NSArray *cpArr = [self properties_aps:[ChanPin class] objc:_chanPin];
+        for (NSString *k in cpArr) {
+            if ([key isEqualToString:k]) {
+                if ([[self.chanPin valueForKey:key] isKindOfClass:[NSString class]]) {
+                    [_chanpin setValue:[self.chanPin valueForKey:key] forKey:key];
+                }else{
+                    [_chanpin setValue:[NSString stringWithFormat:@"%d",[[self.chanPin valueForKey:key] intValue]] forKey:key];
+                }
+            }
         }
     }
     
@@ -364,6 +369,27 @@
     cell.content.text = [_contents objectAtIndex:indexPath.row];
     return cell;
 }
+
+//遍历类属性
+- (NSMutableArray *)properties_aps:(Class)aClass objc:(id)aObjc
+{
+    //NSMutableDictionary *props = [NSMutableDictionary dictionary];
+    NSMutableArray *props = [NSMutableArray array];
+    unsigned int outCount, i;
+    objc_property_t *properties = class_copyPropertyList(aClass, &outCount);
+    for (i = 0; i < outCount; i++)
+    {
+        objc_property_t property = properties[i];
+        const char* char_f =property_getName(property);
+        NSString *propertyName = [NSString stringWithUTF8String:char_f];
+        [props addObject:propertyName];
+        //        id propertyValue = [aObjc valueForKey:(NSString *)propertyName];
+        //        if (propertyValue) [props setObject:propertyValue forKey:propertyName];
+    }
+    free(properties);
+    return props;
+}
+
 
 - (void)didReceiveMemoryWarning
 {

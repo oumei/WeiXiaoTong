@@ -8,7 +8,7 @@
 
 #import "GoodSearchViewController.h"
 #import "UIViewController+AKTabBarController.h"
-#import "UINavigationBar+Custom.h"
+//#import "UINavigationBar+Custom.h"
 #import "TableCell.h"
 #import "ObjectVo.h"
 #import "UserEntity.h"
@@ -36,12 +36,11 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    [self.navigationController.navigationBar setBackgroundImage:[self image]];
+    self.navigationController.navigationBar.hidden = YES;
+    //[self.navigationController.navigationBar setBackgroundImage:[self image]];
     ObjectVo *ob = [ObjectVo shareCurrentObjectVo];
     NSDictionary *baseData = [ob valueForKey:@"baseData"];
     _categorys = [baseData valueForKey:@"lxs"];
-//    _categorys = [[NSArray alloc]initWithObjects:@"全部", @"其他",@"鞋子",@"手表",@"包包",@"皮夹",@"丝巾",@"皮带",@"衣服",@"帽子",@"眼镜",@"首饰",@"护肤彩妆",nil];
     
     _all = @[@"选择适用人群",@"选择售后服务"];
     _other = @[@"选择适用人群",@"选择售后服务"];

@@ -19,6 +19,7 @@
 #import "BaseData.h"
 #import "Reachability.h"
 #import "UIView+SynRequestSignal.h"
+#include<objc/runtime.h>
 
 
 @interface LoginViewController ()
@@ -42,6 +43,21 @@
     [super viewDidLoad];
     [self initUI];
     self.psd.secureTextEntry = YES;
+    
+    UIView *leftView = [[UIView alloc]initWithFrame:CGRectMake(0, 5, 150, 30)];
+    UIImageView *icon = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 30, 30)];
+    icon.image = [UIImage imageNamed:@"up_icon.png"];
+    [leftView addSubview:icon];
+    UILabel *label = [[UILabel alloc]initWithFrame:CGRectMake(35, 5, 100, 20)];
+    label.text = @"用户登录";
+    label.textColor = [UIColor whiteColor];
+    [leftView addSubview:label];
+    UIBarButtonItem *leftBarButton = [[UIBarButtonItem alloc]initWithCustomView:leftView];
+    self.navigationItem.leftBarButtonItem = leftBarButton;
+    leftView = nil;
+    icon = nil;
+    label = nil;
+    leftBarButton = nil;
     
 //    [UserModel clearCurrrentUser];
 //    UserModel *userModel = [UserModel shareCurrentUser];
@@ -68,11 +84,17 @@
             self.registerText = [object valueForKey:@"seachText"];
             [self.loginWebView loadHTMLString:[object valueForKey:@"loginText"] baseURL:[NSBundle mainBundle].bundleURL];
             for (NSString *key in [object allKeys]) {
-                if ([[object valueForKey:key] isKindOfClass:[NSString class]]) {
-                    [config setValue:[object valueForKey:key] forKey:key];
-                }else{
-                    [config setValue:[NSString stringWithFormat:@"%d",[[object valueForKey:key] intValue]] forKey:key];
+                NSArray *arr = [self properties_aps:[Config class] objc:config];
+                for (NSString *k in arr) {
+                    if ([key isEqualToString:k]) {
+                        if ([[object valueForKey:key] isKindOfClass:[NSString class]]) {
+                            [config setValue:[object valueForKey:key] forKey:key];
+                        }else{
+                            [config setValue:[NSString stringWithFormat:@"%d",[[object valueForKey:key] intValue]] forKey:key];
+                        }
+                    }
                 }
+                
             }
         }
         // 将个人信息全部持久化到documents中，可通过config的单例获取登录了的用户的个人信息
@@ -163,40 +185,52 @@
                     ObjectVo *objectVo = [ObjectVo shareCurrentObjectVo];
                     
                     for (NSString *key in [objectVoDic allKeys]) {
-                        NSLog(@"key = %@",key);
-                        NSLog(@"value=%@",[objectVoDic valueForKey:@"ue"]);
-                        
-                        if ([key isEqualToString:@"baseData"] || [key isEqualToString:@"ue"]) {
-                            if ([key isEqualToString:@"ue"]){
-                                NSDictionary *ueDic = [objectVoDic valueForKey:key];
-                                [UserEntity clearCurrrentUe];
-                                UserEntity *ue = [UserEntity shareCurrentUe];
-                                for (NSString *uekey in [ueDic allKeys]) {
-                                    if ([[ueDic valueForKey:uekey] isKindOfClass:[NSString class]]) {
-                                        [ue setValue:[ueDic valueForKey:uekey] forKey:uekey];
+//                        NSLog(@"key = %@",key);
+//                        NSLog(@"value=%@",[objectVoDic valueForKey:@"ue"]);
+                        NSArray *obArr = [self properties_aps:[ObjectVo class] objc:objectVo];
+                        for (NSString *obKey in obArr) {
+                            if ([key isEqualToString:obKey]) {
+                                
+                                if ([key isEqualToString:@"baseData"] || [key isEqualToString:@"ue"]) {
+                                    
+                                    if ([key isEqualToString:@"ue"]){
+                                        NSDictionary *ueDic = [objectVoDic valueForKey:key];
+                                        [UserEntity clearCurrrentUe];
+                                        UserEntity *ue = [UserEntity shareCurrentUe];
+                                        for (NSString *uekey in [ueDic allKeys]) {
+                                            NSArray *uArr = [self properties_aps:[UserEntity class] objc:ue];
+                                            for (NSString *u in uArr) {
+                                                if ([uekey isEqualToString:u]) {
+                                                    if ([[ueDic valueForKey:uekey] isKindOfClass:[NSString class]]) {
+                                                        [ue setValue:[ueDic valueForKey:uekey] forKey:uekey];
+                                                    }else{
+                                                        [ue setValue:[NSString stringWithFormat:@"%d",[[ueDic valueForKey:uekey] intValue]] forKey:uekey];
+                                                    }
+                                                }
+                                            }
+                                            
+                                        }
+                                        
+                                        // 将个人信息全部持久化到documents中，可通过ue的单例获取登录了的用户的个人信息
+                                        NSMutableData *mData = [[NSMutableData alloc]init];
+                                        NSKeyedArchiver *archiver=[[NSKeyedArchiver alloc] initForWritingWithMutableData:mData];
+                                        [archiver encodeObject:ue forKey:@"ueInfo"];
+                                        [archiver finishEncoding];
+                                        NSString *ueInfoPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/ueInfo.txt"];
+                                        [mData writeToFile:ueInfoPath atomically:YES];
+                                        mData = nil;
+                                        ue = nil;
+                                    }
+                                    
+                                    [objectVo setValue:[objectVoDic valueForKey:key] forKey:key];
+                                }else{
+                                    
+                                    if ([[objectVoDic valueForKey:key] isKindOfClass:[NSString class]]) {
+                                        [objectVo setValue:[objectVoDic valueForKey:key] forKey:key];
                                     }else{
-                                        [ue setValue:[NSString stringWithFormat:@"%d",[[ueDic valueForKey:uekey] intValue]] forKey:uekey];
+                                        [objectVo setValue:[NSString stringWithFormat:@"%d",[[objectVoDic valueForKey:key] intValue]] forKey:key];
                                     }
                                 }
-                                
-                                // 将个人信息全部持久化到documents中，可通过ue的单例获取登录了的用户的个人信息
-                                NSMutableData *mData = [[NSMutableData alloc]init];
-                                NSKeyedArchiver *archiver=[[NSKeyedArchiver alloc] initForWritingWithMutableData:mData];
-                                [archiver encodeObject:ue forKey:@"ueInfo"];
-                                [archiver finishEncoding];
-                                NSString *ueInfoPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/ueInfo.txt"];
-                                [mData writeToFile:ueInfoPath atomically:YES];
-                                mData = nil;
-                                ue = nil;
-                            }
-                            
-                            [objectVo setValue:[objectVoDic valueForKey:key] forKey:key];
-                        }else{
-                            
-                            if ([[objectVoDic valueForKey:key] isKindOfClass:[NSString class]]) {
-                                [objectVo setValue:[objectVoDic valueForKey:key] forKey:key];
-                            }else{
-                                [objectVo setValue:[NSString stringWithFormat:@"%d",[[objectVoDic valueForKey:key] intValue]] forKey:key];
                             }
                         }
                     }
@@ -272,6 +306,26 @@
         //NSLog(@"无网络连接");
     }
     
+}
+
+//遍历类属性
+- (NSMutableArray *)properties_aps:(Class)aClass objc:(id)aObjc
+{
+    //NSMutableDictionary *props = [NSMutableDictionary dictionary];
+    NSMutableArray *props = [NSMutableArray array];
+    unsigned int outCount, i;
+    objc_property_t *properties = class_copyPropertyList(aClass, &outCount);
+    for (i = 0; i < outCount; i++)
+    {
+        objc_property_t property = properties[i];
+        const char* char_f =property_getName(property);
+        NSString *propertyName = [NSString stringWithUTF8String:char_f];
+        [props addObject:propertyName];
+//        id propertyValue = [aObjc valueForKey:(NSString *)propertyName];
+//        if (propertyValue) [props setObject:propertyValue forKey:propertyName];
+    }
+    free(properties);
+    return props;
 }
 
 

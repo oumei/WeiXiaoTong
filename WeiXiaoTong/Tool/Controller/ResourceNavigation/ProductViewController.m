@@ -9,14 +9,15 @@
 #import "ProductViewController.h"
 #import "HttpService.h"
 #import "JSON.h"
-#import "UIImageView+downLoadImage.h"
 #import "ChanPin.h"
 #import "DetailsViewController.h"
 #import "UIImageView+WebCache.h"
 #import "UserEntity.h"
 #import "UIView+SynRequestSignal.h"
 #import "ObjectVo.h"
-#import "UMSocial.h"
+#import "DownloadImageOperation.h"
+#include<objc/runtime.h>
+
 
 @interface ProductViewController ()
 
@@ -38,6 +39,7 @@ static int page = 1;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.imageArr = [NSMutableArray array];
 
     if (self.cpsArr.count >= 50) {
         UIView *footview = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 50)];
@@ -72,7 +74,12 @@ static int page = 1;
                     NSDictionary *dic = [arr objectAtIndex:i];
                     ChanPin *chanpin = [[ChanPin alloc]init];
                     for (NSString *key in dic) {
-                        [chanpin setValue:[dic valueForKey:key] forKey:key];
+                        NSArray *cpArr = [self properties_aps:[ChanPin class] objc:chanpin];
+                        for (NSString *k in cpArr) {
+                            if ([key isEqualToString:k]) {
+                                [chanpin setValue:[dic valueForKey:key] forKey:key];
+                            }
+                        }
                     }
                     [cpsArr addObject:chanpin];
                     chanpin = nil;
@@ -99,7 +106,12 @@ static int page = 1;
                     NSDictionary *dic = [arr objectAtIndex:i];
                     ChanPin *chanpin = [[ChanPin alloc]init];
                     for (NSString *key in dic) {
-                        [chanpin setValue:[dic valueForKey:key] forKey:key];
+                        NSArray *cpArr = [self properties_aps:[ChanPin class] objc:chanpin];
+                        for (NSString *k in cpArr) {
+                            if ([key isEqualToString:k]) {
+                                [chanpin setValue:[dic valueForKey:key] forKey:key];
+                            }
+                        }
                     }
                     [cpsArr addObject:chanpin];
                     chanpin = nil;
@@ -127,7 +139,12 @@ static int page = 1;
                 for (int i = 0; i < arr.count; i++) {
                     ChanPin *chanPin = [[ChanPin alloc]init];
                     for (NSString *key in [[arr objectAtIndex:i] allKeys]) {
-                        [chanPin setValue:[[arr objectAtIndex:i] valueForKey:key] forKey:key];
+                        NSArray *cpArr = [self properties_aps:[ChanPin class] objc:chanPin];
+                        for (NSString *k in cpArr) {
+                            if ([key isEqualToString:k]) {
+                                [chanPin setValue:[[arr objectAtIndex:i] valueForKey:key] forKey:key];
+                            }
+                        } 
                     }
                     [cpsArr addObject:chanPin];
                     chanPin = nil;
@@ -284,16 +301,43 @@ static int page = 1;
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    //ChanPin *chanPin = [self.cpsArr objectAtIndex:indexPath.row];
-    //(UM KEY)5322a4ff56240b03260af5b3
-//    [UMSocialSnsService presentSnsIconSheetView:self
-//                                         appKey:@"5322a4ff56240b03260af5b3"
-//                                      shareText:@"你要分享的文字"
-//                                     shareImage:[UIImage imageNamed:@"btn_seach.png"]
-//                                shareToSnsNames:[NSArray arrayWithObjects:UMShareToSina,UMShareToWechatTimeline,UMShareToLWTimeline,nil]
-//                                       delegate:nil];
+    ChanPin *chanPin = [self.cpsArr objectAtIndex:indexPath.row];
+    self.imageCount = chanPin.pics;
+    for (int i = 0; i < chanPin.pics; i++) {
+        NSString *url = IMAGE_URL_ID(chanPin.Id, i);
+        DownloadImageOperation *operation = [[DownloadImageOperation alloc]initWithTarget:self selector:@selector(shareAction:) url:url];
+        NSOperationQueue *queue = [[NSOperationQueue alloc]init];
+        [queue addOperation:operation];
+        operation = nil;
+        queue = nil;
+    }
     
-    
+}
+
+- (void)shareAction:(NSData *)data
+{
+    if (data) {
+        [self.imageArr addObject:data];
+        if (self.imageArr.count == self.imageCount) {
+            //发送内容给微信
+            WXMediaMessage *message = [WXMediaMessage message];
+            [message setThumbImage:nil];
+            
+            WXImageObject *ext = [WXImageObject object];
+            ext.imageData = data;
+            
+            message.mediaObject = ext;
+            
+            SendMessageToWXReq* req = [[SendMessageToWXReq alloc] init];
+            req.bText = NO;
+            req.message = message;
+            req.scene = 1;
+            
+            [WXApi sendReq:req];
+            req = nil;
+            [self.imageArr removeAllObjects];
+        }
+    }
 }
 
 -(NSString *)docPath
@@ -424,6 +468,26 @@ static int page = 1;
 {
     UILabel *lable = [aTimer userInfo];
     lable.hidden = YES;
+}
+
+//遍历类属性
+- (NSMutableArray *)properties_aps:(Class)aClass objc:(id)aObjc
+{
+    //NSMutableDictionary *props = [NSMutableDictionary dictionary];
+    NSMutableArray *props = [NSMutableArray array];
+    unsigned int outCount, i;
+    objc_property_t *properties = class_copyPropertyList(aClass, &outCount);
+    for (i = 0; i < outCount; i++)
+    {
+        objc_property_t property = properties[i];
+        const char* char_f =property_getName(property);
+        NSString *propertyName = [NSString stringWithUTF8String:char_f];
+        [props addObject:propertyName];
+        //        id propertyValue = [aObjc valueForKey:(NSString *)propertyName];
+        //        if (propertyValue) [props setObject:propertyValue forKey:propertyName];
+    }
+    free(properties);
+    return props;
 }
 
 - (void)didReceiveMemoryWarning
