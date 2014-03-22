@@ -105,29 +105,26 @@
         UIImageView *imageView = [[UIImageView alloc]initWithFrame:CGRectMake(1+(320*i), 0, 318, self.HeaderScrollView.frame.size.height)];
         imageView.image = [UIImage imageNamed:@"loading.png"];
         if (i == 0) {
-            if (_chanpin.cpid != 0) {
-                [imageView setImageWithURL:[NSURL URLWithString:IMAGE_URL_BY_CPID(_chanpin.cpid, w, h, _chanpin.pics - 1)]];
-            }else if (tableName == 1){
-                [imageView setImageWithURL:[NSURL URLWithString:IMAGE_URL_BY_TN(_chanpin.Id, w, h, _chanpin.pics - 1)]];
+            if (_chanpin.address) {
+                [imageView setImageWithURL:[NSURL URLWithString:IMAGE_URL_BY_CPID(_chanpin.address, w, h, _chanpin.pics - 1)]];
             }else{
-                [imageView setImageWithURL:[NSURL URLWithString:IMAGE_URL_BY_TN_ID(tableName, _chanpin.Id, w, h, _chanpin.pics - 1)]];
+                NSString *str = [NSString stringWithFormat:@"%d-%d",tableName,_chanpin.Id];
+                [imageView setImageWithURL:[NSURL URLWithString:IMAGE_URL_BY_CPID(str, w, h, _chanpin.pics - 1)]];
             }
             
         }else if (i == _chanpin.pics + 1){
-            if (_chanpin.cpid != 0) {
-                [imageView setImageWithURL:[NSURL URLWithString:IMAGE_URL_BY_CPID(_chanpin.cpid, w, h, 0)]];
-            }else if (tableName == 1){
-                [imageView setImageWithURL:[NSURL URLWithString:IMAGE_URL_BY_TN(_chanpin.Id, w, h, 0)]];
+            if (_chanpin.address) {
+                [imageView setImageWithURL:[NSURL URLWithString:IMAGE_URL_BY_CPID(_chanpin.address, w, h, 0)]];
             }else{
-                [imageView setImageWithURL:[NSURL URLWithString:IMAGE_URL_BY_TN_ID(tableName, _chanpin.Id, w, h, 0)]];
+                NSString *str = [NSString stringWithFormat:@"%d-%d",tableName,_chanpin.Id];
+                [imageView setImageWithURL:[NSURL URLWithString:IMAGE_URL_BY_CPID(str, w, h, 0)]];
             }
         }else{
-            if (_chanpin.cpid != 0) {
-                [imageView setImageWithURL:[NSURL URLWithString:IMAGE_URL_BY_CPID(_chanpin.cpid, w, h, i - 1)]];
-            }else if (tableName == 1){
-                [imageView setImageWithURL:[NSURL URLWithString:IMAGE_URL_BY_TN(_chanpin.Id, w, h, i - 1)]];
+            if (_chanpin.address) {
+                [imageView setImageWithURL:[NSURL URLWithString:IMAGE_URL_BY_CPID(_chanpin.address, w, h, i - 1)]];
             }else{
-                [imageView setImageWithURL:[NSURL URLWithString:IMAGE_URL_BY_TN_ID(tableName, _chanpin.Id, w, h, i)]];
+                NSString *str = [NSString stringWithFormat:@"%d-%d",tableName,_chanpin.Id];
+                [imageView setImageWithURL:[NSURL URLWithString:IMAGE_URL_BY_CPID(str, w, h, i - 1)]];
             }
         }
         
@@ -294,9 +291,9 @@
     UserEntity *ue = [UserEntity shareCurrentUe];
     
     if (ue.qx == 0) {
-        if (ue.level < 1) {
-            price.text = @"代理价格：不详！";
-        }
+//        if (ue.level < 1) {
+//            price.text = @"代理价格：不详！";
+//        }
         copy = nil;
         headerView.frame = CGRectMake(0, 0, 320, hight + 40);
     }else if(ue.qx == 2){

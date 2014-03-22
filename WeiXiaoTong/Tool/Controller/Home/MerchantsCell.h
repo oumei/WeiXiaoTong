@@ -10,13 +10,17 @@
 @protocol  MerchantsCellDelegate <NSObject>
 
 - (void)deleted:(UIButton *)sender IndexPath:(NSIndexPath *)indexPath;
+- (void)note:(UIButton *)sender IndexPath:(NSIndexPath *)indexPath;
+- (void)selected:(UIButton *)sender IndexPath:(NSIndexPath *)indexPath;
 
 @end
 @interface MerchantsCell : UITableViewCell
 @property (copy, nonatomic) NSIndexPath *indexPath;
 @property (weak, nonatomic) id<MerchantsCellDelegate> delegate;
 @property (weak, nonatomic) IBOutlet UILabel *name;
-@property (weak, nonatomic) IBOutlet UILabel *Id;
-@property (weak, nonatomic) IBOutlet UILabel *xzCount;
+@property (weak, nonatomic) IBOutlet UILabel *signature;
+@property (weak, nonatomic) IBOutlet UIButton *deleteBtn;
+@property (weak, nonatomic) IBOutlet UIButton *noteBtn;
+
 
 @end

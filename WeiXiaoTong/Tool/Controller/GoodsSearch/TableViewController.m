@@ -55,7 +55,7 @@
     headerView = nil;
     
     //********************************footView******************************//
-    UIView *footView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 230, 75)];
+    UIView *footView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 230, 40)];
     UIButton *footBtn1 = [UIButton buttonWithType:UIButtonTypeCustom];
     footBtn1.frame = CGRectMake(0, 0, 230, 35);
     [footBtn1 setBackgroundImage:[UIImage imageNamed:@"long_button.png"] forState:0];
@@ -72,31 +72,10 @@
     [footBtn1 addSubview:titleLable1];
     [footView addSubview:footBtn1];
     
-    UIButton *footBtn2 = [UIButton buttonWithType:UIButtonTypeCustom];
-    footBtn2.frame = CGRectMake(0, 36, 230, 35);
-    if (ue.level < 1) {
-        footBtn2.hidden = YES;
-    }
-    [footBtn2 setBackgroundImage:[UIImage imageNamed:@"long_button.png"] forState:0];
-    [footBtn2 setBackgroundImage:[UIImage imageNamed:@"long_button_over.png"] forState:UIControlStateHighlighted];
-    [footBtn2 addTarget:self action:@selector(footBtnAction:) forControlEvents:UIControlEventTouchUpInside];
-    UIImageView *imgView2 = [[UIImageView alloc]initWithFrame:CGRectMake(2, 8, 20, 20)];
-    imgView2.image = [UIImage imageNamed:@"seach_icon.png"];
-    [footBtn2 addSubview:imgView2];
-    UILabel *titleLable2 = [[UILabel alloc]initWithFrame:CGRectMake(25, 0, 150, 35)];
-    titleLable2.backgroundColor = [UIColor clearColor];
-    titleLable2.text = @"查询我的商品";
-    titleLable2.textColor = [UIColor blueColor];
-    titleLable2.font = [UIFont systemFontOfSize:18];
-    [footBtn2 addSubview:titleLable2];
-    [footView addSubview:footBtn2];
     self.table.tableFooterView = footView;
     footBtn1 = nil;
-    footBtn2 = nil;
     imgView1 = nil;
-    imgView2 = nil;
     titleLable1 = nil;
-    titleLable2 = nil;
     footView = nil;
 
     [self.view addSubview:self.table];
@@ -138,13 +117,6 @@
 {
     if (self.delegate && [self.delegate respondsToSelector:@selector(removeSelectedAttributes:)]) {
         [self.delegate performSelector:@selector(removeSelectedAttributes:) withObject:sender];
-    }
-}
-
-- (void)footBtnAction:(id)sender
-{
-    if (self.delegate && [self.delegate respondsToSelector:@selector(queryMyGoods:)]) {
-        [self.delegate performSelector:@selector(queryMyGoods:) withObject:sender];
     }
 }
 

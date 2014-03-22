@@ -8,7 +8,6 @@
 
 #import "ResourceNavigationViewController.h"
 #import "UIViewController+AKTabBarController.h"
-#import "UINavigationBar+Custom.h"
 #import "NavigationViewController.h"
 #import "ObjectVo.h"
 #import "Link.h"
@@ -34,21 +33,7 @@
 {
     [super viewDidLoad];
     
-    [self.navigationController.navigationBar setBackgroundImage:[self image]];
-    
     self.bazaars = [[[ObjectVo shareCurrentObjectVo] valueForKey:@"baseData"] valueForKey:@"bazaars"];
-//    NSLog(@"___________________________________________/n%@",[[[ObjectVo shareCurrentObjectVo] valueForKey:@"baseData"] valueForKey:@"links"]);
-}
-
-- (UIImage *)image
-{
-    CGSize imageSize = CGSizeMake(320, 44);
-    UIGraphicsBeginImageContextWithOptions(imageSize, 0, [UIScreen mainScreen].scale);
-    [[UIColor blackColor] set];
-    UIRectFill(CGRectMake(0, 0, imageSize.width, imageSize.height));
-    UIImage *pressedColorImg = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    return pressedColorImg;
 }
 
 
@@ -67,11 +52,6 @@
 - (NSString *)tabTitle
 {
 	return nil;
-}
-
-- (void)initUI
-{
-    
 }
 
 #pragma mark - tableView delegate -

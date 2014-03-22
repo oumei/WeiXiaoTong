@@ -22,13 +22,7 @@
 @synthesize upload = _upload;
 @synthesize state = _state;
 @synthesize categorys = _categorys;
-@synthesize cpid = _cpid;
-- (id)init
-{
-    if (self = [super init]) {
-        self.cpid = 0;
-    }
-    return self;
-}
+@synthesize address = _address;
+
 
 @end

@@ -8,7 +8,6 @@
 
 #import "GoodSearchViewController.h"
 #import "UIViewController+AKTabBarController.h"
-//#import "UINavigationBar+Custom.h"
 #import "TableCell.h"
 #import "ObjectVo.h"
 #import "UserEntity.h"
@@ -16,6 +15,7 @@
 #import "ProductViewController.h"
 #import "JSON.h"
 #import "ChanPin.h"
+#include<objc/runtime.h>
 
 @interface GoodSearchViewController ()
 
@@ -28,7 +28,7 @@
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        // Custom initialization
+        _lastIndexPath = nil;
     }
     return self;
 }
@@ -36,8 +36,19 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.navigationController.navigationBar.hidden = YES;
-    //[self.navigationController.navigationBar setBackgroundImage:[self image]];
+    
+    UIView *leftView = [[UIView alloc]initWithFrame:CGRectMake(0, 5, 30, 30)];
+    UIImageView *icon = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 30, 30)];
+    icon.image = [UIImage imageNamed:@"up_icon.png"];
+    [leftView addSubview:icon];
+    UIBarButtonItem *leftBarButton = [[UIBarButtonItem alloc]initWithCustomView:leftView];
+    self.navigationItem.leftBarButtonItem = leftBarButton;
+    leftView = nil;
+    icon = nil;
+    leftBarButton = nil;
+    
+    self.title = @"我的商家";
+    
     ObjectVo *ob = [ObjectVo shareCurrentObjectVo];
     NSDictionary *baseData = [ob valueForKey:@"baseData"];
     _categorys = [baseData valueForKey:@"lxs"];
@@ -64,17 +75,6 @@
 
 }
 
-- (UIImage *)image
-{
-    CGSize imageSize = CGSizeMake(320, 44);
-    UIGraphicsBeginImageContextWithOptions(imageSize, 0, [UIScreen mainScreen].scale);
-    [[UIColor blackColor] set];
-    UIRectFill(CGRectMake(0, 0, imageSize.width, imageSize.height));
-    UIImage *pressedColorImg = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    return pressedColorImg;
-}
-
 - (IBAction)cancelAction:(id)sender
 {
     self.searchText.text = nil;
@@ -95,13 +95,25 @@
     }
     cell.delegate = self;
     cell.indexPath = indexPath;
+    cell.categoryBtn.clipsToBounds = YES;
+    
     if (indexPath.row == 0) {
         [cell.categoryBtn setTitle:@"全部" forState:0];
-        cell.categoryBtn.selected = YES;
-        _lastIndexPath = indexPath;
+        if (_lastIndexPath == nil) {
+            cell.categoryBtn.selected = YES;
+            _lastIndexPath = indexPath;
+        }
     }else{
         [cell.categoryBtn setTitle:[[_categorys objectAtIndex:indexPath.row - 1] valueForKey:@"name"] forState:0];
     }
+    if (_lastIndexPath) {
+        if (indexPath.row == _lastIndexPath.row) {
+            cell.categoryBtn.selected = YES;
+        }else{
+            cell.categoryBtn.selected = NO;
+        }
+    }
+    
     return cell;
 }
 
@@ -112,7 +124,6 @@
     }else{
         CategoryCell *cell = (CategoryCell *)[self.table cellForRowAtIndexPath:_lastIndexPath];
         [cell.categoryBtn setSelected:NO];
-        _lastIndexPath = nil;
         _lastIndexPath = indexPath;
     }
     [sender setSelected:YES];
@@ -374,15 +385,26 @@
             NSArray *arr = [objectVoDic valueForKey:@"cps"];
             for (int i = 0; i < arr.count; i++) {
                 NSDictionary *dic = [arr objectAtIndex:i];
+                NSLog(@"%@",dic);
                 ChanPin *chanpin = [[ChanPin alloc]init];
+                NSArray *cpArr = [self properties_aps:[ChanPin class] objc:chanpin];
                 for (NSString *key in dic) {
-                    [chanpin setValue:[dic valueForKey:key] forKey:key];
+                    for (NSString *k in cpArr) {
+                        if ([key isEqualToString:k]) {
+                            [chanpin setValue:[dic valueForKey:key] forKey:key];
+                        }
+                        if ([key isEqualToString:@"id"]) {
+                            [chanpin setValue:[dic valueForKey:key] forKey:@"Id"];
+                            break;
+                        }
+                    }
                 }
                 [cps addObject:chanpin];
                 chanpin = nil;
             }
         }
         if (cps.count > 0) {
+            
             ProductViewController *productViewController = [[ProductViewController alloc]initWithNibName:@"ProductViewController" bundle:nil cpsArr:cps];
             productViewController.lx = _lx;
             productViewController.xb = _xb;
@@ -395,136 +417,6 @@
     } failureBlock:^(NSError *error, NSString *responseString) {
         //
     }];
-}
-
-- (void)queryMyGoods:(id)sender
-{
-    if (_indexPath == nil || _indexPath.row == 0) {
-        _lx = @"-1";
-    }else{
-        _lx = [[_categorys objectAtIndex:_indexPath.row - 1] valueForKey:@"id"];
-    }
-    if (_xb == nil) {
-        _xb = @"-1";
-    }
-    NSString *text = @"";
-    if (_ss != nil && [_ss intValue] != -1) {
-        text = [NSString stringWithFormat:@"6/_%@",_ss];
-    }
-    if (_tableViewController.dataArr.count > 2) {
-        if (_sts != nil && [_sts intValue] != -1) {
-            if ([text isEqualToString:@""]) {
-                text = [NSString stringWithFormat:@"9/_%@",_sts];
-            }else{
-                text = [NSString stringWithFormat:@"%@|9/_%@",text,_sts];
-            }
-        }
-        if (_ms != nil && [_ms intValue] != -1) {
-            if ([text isEqualToString:@""]) {
-                text = [NSString stringWithFormat:@"5/_%@",_ms];
-            }else{
-                text = [NSString stringWithFormat:@"%@|5/_%@",text,_ms];
-            }
-        }
-        if (_bhs != nil && [_bhs intValue] != -1) {
-            if ([text isEqualToString:@""]) {
-                text = [NSString stringWithFormat:@"11/_%@",_bhs];
-            }else{
-                text = [NSString stringWithFormat:@"%@|11/_%@",text,_bhs];
-            }
-        }
-        if (_ms != nil && [_ms intValue] != -1) {
-            if ([text isEqualToString:@""]) {
-                text = [NSString stringWithFormat:@"5/_%@",_ms];
-            }else{
-                text = [NSString stringWithFormat:@"%@|5/_%@",text,_ms];
-            }
-        }
-        if (_cs != nil && [_cs intValue] != -1) {
-            if ([text isEqualToString:@""]) {
-                text = [NSString stringWithFormat:@"3/_%@",_cs];
-            }else{
-                text = [NSString stringWithFormat:@"%@|3/_%@",text,_cs];
-            }
-        }
-        if (_ws != nil && [_ws intValue] != -1) {
-            if ([text isEqualToString:@""]) {
-                text = [NSString stringWithFormat:@"10/_%@",_ws];
-            }else{
-                text = [NSString stringWithFormat:@"%@|10/_%@",text,_ws];
-            }
-        }
-        if (_bts != nil && [_bts intValue] != -1) {
-            if ([text isEqualToString:@""]) {
-                text = [NSString stringWithFormat:@"2/_%@",_bts];
-            }else{
-                text = [NSString stringWithFormat:@"%@|2/_%@",text,_bts];
-            }
-        }
-        if (_bqs != nil && [_bqs intValue] != -1) {
-            if ([text isEqualToString:@""]) {
-                text = [NSString stringWithFormat:@"1/_%@",_bqs];
-            }else{
-                text = [NSString stringWithFormat:@"%@|1/_%@",text,_bqs];
-            }
-        }
-        if (_cts != nil && [_cts intValue] != -1) {
-            if ([text isEqualToString:@""]) {
-                text = [NSString stringWithFormat:@"4/_%@",_cts];
-            }else{
-                text = [NSString stringWithFormat:@"%@|4/_%@",text,_cts];
-            }
-        }
-        if (_mts != nil && [_mts intValue] != -1) {
-            if ([text isEqualToString:@""]) {
-                text = [NSString stringWithFormat:@"12/_%@",_mts];
-            }else{
-                text = [NSString stringWithFormat:@"%@|12/_%@",text,_mts];
-            }
-        }
-    }
-    NSLog(@"text = %@,lx= %@,xb = %@",text,_lx,_xb);
-    UserEntity *ue = [UserEntity shareCurrentUe];
-    
-    NSDictionary *params;
-    if ([[self.searchText.text stringByReplacingOccurrencesOfString:@" " withString:@""] isEqualToString:@""]) {
-        params = @{@"interface": GET_CHANPIN,@"page": @"0",@"lx":_lx,@"xb": _xb,@"pp": @"-1",@"text": text,@"isSelf": @"1",@"uname": ue.userName,@"uuid": ue.uuid};
-    }else{
-        params = @{@"interface": GET_CHANPIN,@"page": @"0",@"lx":_lx,@"xb": _xb,@"pp": @"-1",@"miaoshu": [self.searchText.text stringByReplacingOccurrencesOfString:@" " withString:@""],@"text": text,@"isSelf": @"1",@"uname": ue.userName,@"uuid": ue.uuid};
-    }
-    
-    [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:params completionBlock:^(id object) {
-        NSString *ovo = [object valueForKey:@"ovo"];
-        NSDictionary *objectVoDic = [ovo JSONValue];
-        NSMutableArray *cps = [[NSMutableArray alloc]init];
-        NSString *code = [objectVoDic valueForKey:@"code"];
-        if ([code intValue] == 0) {
-            NSArray *arr = [objectVoDic valueForKey:@"cps"];
-            for (int i = 0; i < arr.count; i++) {
-                NSDictionary *dic = [arr objectAtIndex:i];
-                ChanPin *chanpin = [[ChanPin alloc]init];
-                for (NSString *key in dic) {
-                    [chanpin setValue:[dic valueForKey:key] forKey:key];
-                }
-                [cps addObject:chanpin];
-                chanpin = nil;
-            }
-        }
-        if (cps.count > 0) {
-            ProductViewController *productViewController = [[ProductViewController alloc]initWithNibName:@"ProductViewController" bundle:nil cpsArr:cps];
-            productViewController.lx = _lx;
-            productViewController.xb = _xb;
-            productViewController.text = text;
-            productViewController.isSelf = @"1";
-            [productViewController setHidesBottomBarWhenPushed:YES];
-            [self.navigationController pushViewController:productViewController animated:YES];
-            productViewController = nil;
-        }
-        
-    } failureBlock:^(NSError *error, NSString *responseString) {
-        //
-    }];
-
 }
 
 - (void)removeSelectedAttributes:(id)sender
@@ -675,6 +567,27 @@
 {
 	return nil;
 }
+
+//遍历类属性
+- (NSMutableArray *)properties_aps:(Class)aClass objc:(id)aObjc
+{
+    //NSMutableDictionary *props = [NSMutableDictionary dictionary];
+    NSMutableArray *props = [NSMutableArray array];
+    unsigned int outCount, i;
+    objc_property_t *properties = class_copyPropertyList(aClass, &outCount);
+    for (i = 0; i < outCount; i++)
+    {
+        objc_property_t property = properties[i];
+        const char* char_f =property_getName(property);
+        NSString *propertyName = [NSString stringWithUTF8String:char_f];
+        [props addObject:propertyName];
+        //        id propertyValue = [aObjc valueForKey:(NSString *)propertyName];
+        //        if (propertyValue) [props setObject:propertyValue forKey:propertyName];
+    }
+    free(properties);
+    return props;
+}
+
 
 
 

@@ -15,7 +15,9 @@
     NSIndexPath *_lastIndexPath;
 }
 @property (weak, nonatomic) IBOutlet UITableView *table;
-@property (weak, nonatomic) IBOutlet UIButton *addNewMer;
-@property (weak, nonatomic) IBOutlet UILabel *addLabel;
+@property (weak, nonatomic) IBOutlet UIButton *addFriend;
+@property (weak, nonatomic) IBOutlet UIButton *refreshFriend;
+@property (weak, nonatomic) IBOutlet UIButton *applicantList;
+
 
 @end

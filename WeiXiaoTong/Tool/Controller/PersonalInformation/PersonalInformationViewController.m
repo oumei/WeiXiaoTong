@@ -8,7 +8,6 @@
 
 #import "PersonalInformationViewController.h"
 #import "UIViewController+AKTabBarController.h"
-#import "UINavigationBar+Custom.h"
 #import "ControlCenter.h"
 #import "UserEntity.h"
 #import "UploadViewController.h"
@@ -32,24 +31,11 @@
 {
     [super viewDidLoad];
     
-    [self.navigationController.navigationBar setBackgroundImage:[self image]];
-    
     UserEntity *ue = [UserEntity shareCurrentUe];
     self.userName.text = ue.userName;
-    self.level.text = [NSString stringWithFormat:@"用户等级：%d",ue.level];
+//    self.level.text = [NSString stringWithFormat:@"用户等级：%d",ue.level];
     self.mersNum.text = [NSString stringWithFormat:@"商家数量上限："];
     
-}
-
-- (UIImage *)image
-{
-    CGSize imageSize = CGSizeMake(320, 44);
-    UIGraphicsBeginImageContextWithOptions(imageSize, 0, [UIScreen mainScreen].scale);
-    [[UIColor blackColor] set];
-    UIRectFill(CGRectMake(0, 0, imageSize.width, imageSize.height));
-    UIImage *pressedColorImg = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    return pressedColorImg;
 }
 
 - (IBAction)closeAction:(id)sender {

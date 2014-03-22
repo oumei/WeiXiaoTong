@@ -23,7 +23,7 @@
     int _upload;
     int _state;
     NSString *_categorys;
-    int _cpid;
+    NSString *_address;
 }
 @property(nonatomic,assign)int Id;
 @property(nonatomic,copy)NSString *miaoshu;
@@ -38,7 +38,7 @@
 @property(nonatomic,assign)int upload;
 @property(nonatomic,assign)int state;
 @property(nonatomic,copy)NSString *categorys;
-@property(nonatomic,assign)int cpid;
+@property(nonatomic,copy)NSString *address;
 
 
 @end

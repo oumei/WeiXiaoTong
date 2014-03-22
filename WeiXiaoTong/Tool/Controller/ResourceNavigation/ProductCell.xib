@@ -124,6 +124,6 @@
     <resources>
         <image name="button_yd_over.png" width="190" height="80"/>
         <image name="list_bg.png" width="720" height="220"/>
-        <image name="xiangqing_on.png" width="127" height="68"/>
+        <image name="xiangqing_on.png" width="37" height="33"/>
     </resources>
 </document>

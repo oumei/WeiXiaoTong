@@ -24,6 +24,18 @@
         [self.delegate performSelector:@selector(deleted:IndexPath:) withObject:sender withObject:self.indexPath];
     }
 }
+- (IBAction)noteAction:(id)sender {
+    if (self.delegate && [self.delegate respondsToSelector:@selector(note:IndexPath:)]) {
+        [self.delegate performSelector:@selector(note:IndexPath:) withObject:sender withObject:self.indexPath];
+    }
+}
+
+- (IBAction)selected:(id)sender
+{
+    if (self.delegate && [self.delegate respondsToSelector:@selector(selected:IndexPath:)]) {
+        [self.delegate performSelector:@selector(selected:IndexPath:) withObject:sender withObject:self.indexPath];
+    }
+}
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated
 {

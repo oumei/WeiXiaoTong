@@ -13,7 +13,6 @@
 @synthesize userName = _userName;
 @synthesize psd = _psd;
 @synthesize tell = _tell;
-@synthesize xzStr = _xzStr;
 @synthesize xzCount = _xzCount;
 @synthesize qx = _qx;
 @synthesize state = _state;
@@ -21,8 +20,6 @@
 @synthesize resetUuid = _resetUuid;
 @synthesize daoqi = _daoqi;
 @synthesize registerTime = _registerTime;
-@synthesize level = _level;
-@synthesize firends = _firends;
 @synthesize tableName = _tableName;
 @synthesize description = _description;
 @synthesize friendCout = _friendCout;
@@ -62,7 +59,7 @@
     }
 }
 
-- (id)initWithUname:(NSString *)aUname psd:(NSString *)aPsd tell:(int)aTell uuid:(NSString *)aUuid id:(int)aId xzStr:(NSString *)aXzStr xzCount:(int)aXzCount qx:(int)aQx state:(int)aState resetUuid:(int)aResetUuid daoqi:(int)aDaoqi registerTime:(NSString *)aRegisterTime level:(int)aLevel firends:(NSString *)aFirends tableName:(int)aTableName description:(NSString *)aDescription friendCout:(int)aFriendCout chanPinCout:(int)aChanPinCout upCount:(int)aUpCount
+- (id)initWithUname:(NSString *)aUname psd:(NSString *)aPsd tell:(int)aTell uuid:(NSString *)aUuid id:(int)aId xzCount:(int)aXzCount qx:(int)aQx state:(int)aState resetUuid:(int)aResetUuid daoqi:(int)aDaoqi registerTime:(NSString *)aRegisterTime tableName:(int)aTableName description:(NSString *)aDescription friendCout:(int)aFriendCout chanPinCout:(int)aChanPinCout upCount:(int)aUpCount
 {
     if (self = [super init])
     {
@@ -72,14 +69,11 @@
         self.uuid = aUuid;
         self.Id = aId;
         self.xzCount = aXzCount;
-        self.xzStr = aXzStr;
         self.qx = aQx;
         self.state = aState;
         self.resetUuid = aResetUuid;
         self.daoqi = aDaoqi;
         self.registerTime = aRegisterTime;
-        self.level = aLevel;
-        self.firends = aFirends;
         self.tableName = aTableName;
         self.description = aDescription;
         self.friendCout = aFriendCout;
@@ -96,15 +90,12 @@
     [encoder encodeObject:self.psd forKey:@"psd"];
     [encoder encodeObject:self.uuid forKey:@"uuid"];
     [encoder encodeInt:self.Id forKey:@"id"];
-    [encoder encodeObject:self.xzStr forKey:@"xzStr"];
     [encoder encodeInt:self.xzCount forKey:@"xzCount"];
     [encoder encodeInt:self.qx forKey:@"qx"];
     [encoder encodeInt:self.state forKey:@"state"];
     [encoder encodeInt:self.resetUuid forKey:@"resetUuid"];
     [encoder encodeInt:self.daoqi forKey:@"daoqi"];
     [encoder encodeObject:self.registerTime forKey:@"registerTime"];
-    [encoder encodeInt:self.level forKey:@"level"];
-    [encoder encodeObject:self.firends forKey:@"firends"];
     [encoder encodeInt:self.tableName forKey:@"tableName"];
     [encoder encodeObject:self.description forKey:@"description"];
     [encoder encodeInt:self.friendCout forKey:@"friendCout"];
@@ -121,15 +112,12 @@
         self.psd = [decoder decodeObjectForKey:@"psd"];
         self.uuid = [decoder decodeObjectForKey:@"uuid"];
         self.Id = [decoder decodeIntForKey:@"id"];
-        self.xzStr = [decoder decodeObjectForKey:@"xzStr"];
         self.xzCount = [decoder decodeIntForKey:@"xzCount"];
         self.qx = [decoder decodeIntForKey:@"qx"];
         self.state = [decoder decodeIntForKey:@"state"];
         self.resetUuid = [decoder decodeIntForKey:@"resetUuid"];
         self.daoqi = [decoder decodeIntForKey:@"daoqi"];
         self.registerTime = [decoder decodeObjectForKey:@"registerTime"];
-        self.level = [decoder decodeIntForKey:@"level"];
-        self.firends = [decoder decodeObjectForKey:@"firends"];
         self.tableName = [decoder decodeIntForKey:@"tableName"];
         self.description = [decoder decodeObjectForKey:@"description"];
         self.friendCout = [decoder decodeIntForKey:@"friendCout"];

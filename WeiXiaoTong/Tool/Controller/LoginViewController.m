@@ -9,7 +9,6 @@
 #import "LoginViewController.h"
 #import "Config.h"
 #import "RegisterViewController.h"
-#import "UINavigationBar+Custom.h"
 #import "ControlCenter.h"
 #import "UserModel.h"
 #import "HttpService.h"
@@ -41,7 +40,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self initUI];
+    //[self.navigationController.navigationBar setBackgroundImage:[self image]];
     self.psd.secureTextEntry = YES;
     
     UIView *leftView = [[UIView alloc]initWithFrame:CGRectMake(0, 5, 150, 30)];
@@ -50,7 +49,7 @@
     [leftView addSubview:icon];
     UILabel *label = [[UILabel alloc]initWithFrame:CGRectMake(35, 5, 100, 20)];
     label.text = @"用户登录";
-    label.textColor = [UIColor whiteColor];
+    label.backgroundColor = [UIColor clearColor];
     [leftView addSubview:label];
     UIBarButtonItem *leftBarButton = [[UIBarButtonItem alloc]initWithCustomView:leftView];
     self.navigationItem.leftBarButtonItem = leftBarButton;
@@ -110,21 +109,16 @@
     }];
 }
 
-- (void)initUI
-{
-    [self.navigationController.navigationBar setBackgroundImage:[self image]];
-}
-
-- (UIImage *)image
-{
-    CGSize imageSize = CGSizeMake(320, 44);
-    UIGraphicsBeginImageContextWithOptions(imageSize, 0, [UIScreen mainScreen].scale);
-    [[UIColor blackColor] set];
-    UIRectFill(CGRectMake(0, 0, imageSize.width, imageSize.height));
-    UIImage *pressedColorImg = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    return pressedColorImg;
-}
+//- (UIImage *)image
+//{
+//    CGSize imageSize = CGSizeMake(320, 44);
+//    UIGraphicsBeginImageContextWithOptions(imageSize, 0, [UIScreen mainScreen].scale);
+//    [[UIColor blackColor] set];
+//    UIRectFill(CGRectMake(0, 0, imageSize.width, imageSize.height));
+//    UIImage *pressedColorImg = UIGraphicsGetImageFromCurrentImageContext();
+//    UIGraphicsEndImageContext();
+//    return pressedColorImg;
+//}
 
 - (IBAction)registerAction:(id)sender
 {
