@@ -29,7 +29,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    UserEntity *ue = [UserEntity shareCurrentUe];
+    //UserEntity *ue = [UserEntity shareCurrentUe];
     
     //*******************************headerView*****************************//
     UIView *headerView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 230, 35)];

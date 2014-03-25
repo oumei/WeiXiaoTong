@@ -9,10 +9,13 @@
 #import "CommonViewController.h"
 #import "MerchantsCell.h"
 
-@interface HomeViewController : CommonViewController<UITableViewDataSource,UITableViewDelegate,MerchantsCellDelegate>
+@interface HomeViewController : CommonViewController<UITableViewDataSource,UITableViewDelegate,MerchantsCellDelegate,UITextFieldDelegate>
 {
     NSMutableArray *_friendsMutArr;
     NSIndexPath *_lastIndexPath;
+    NSIndexPath *_targetIndexPath;
+    UIView *alertView;
+    UITextField *textMsg;
 }
 @property (weak, nonatomic) IBOutlet UITableView *table;
 @property (weak, nonatomic) IBOutlet UIButton *addFriend;

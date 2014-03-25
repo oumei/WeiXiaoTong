@@ -20,10 +20,8 @@
 @property (weak, nonatomic) id<ProductCellDelegate> delegate;
 @property (weak, nonatomic) IBOutlet UIImageView *image;
 @property (weak, nonatomic) IBOutlet UIButton *name;
-@property (weak, nonatomic) IBOutlet UILabel *type;
-@property (weak, nonatomic) IBOutlet UILabel *applicablePeople;
-@property (weak, nonatomic) IBOutlet UILabel *service;
-@property (weak, nonatomic) IBOutlet UILabel *cost;
+@property (weak, nonatomic) IBOutlet UIWebView *nameWeb;
+@property (weak, nonatomic) IBOutlet UIWebView *serviceWeb;
 @property (weak, nonatomic) IBOutlet UILabel *describe;
 @property (weak, nonatomic) IBOutlet UILabel *serialNum;
 @property (weak, nonatomic) IBOutlet UILabel *time;

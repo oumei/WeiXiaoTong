@@ -47,7 +47,7 @@
     icon = nil;
     leftBarButton = nil;
     
-    self.title = @"我的商家";
+    self.title = @"商品查找";
     
     ObjectVo *ob = [ObjectVo shareCurrentObjectVo];
     NSDictionary *baseData = [ob valueForKey:@"baseData"];
@@ -55,19 +55,19 @@
     
     _all = @[@"选择适用人群",@"选择售后服务"];
     _other = @[@"选择适用人群",@"选择售后服务"];
-    _shoes = @[@"选择适用人群",@"选择售后服务",@"选择鞋子类型",@"选择产品材质",@"选择闭合方式"];
+    _shoes = @[@"选择适用人群",@"选择售后服务",@"选择鞋子类型"];
     _watch = @[@"选择适用人群",@"选择售后服务",@"选择手表机芯",@"选择手表表带"];
-    _bag = @[@"选择适用人群",@"选择售后服务",@"选择包包类型",@"选择产品品质",@"选择产品材质"];
+    _bag = @[@"选择适用人群",@"选择售后服务",@"选择包包类型",@"选择产品品质"];
     _wallet = @[@"选择适用人群",@"选择售后服务"];
-    _silk = @[@"选择适用人群",@"选择售后服务",@"选择产品材质"];
-    _belt = @[@"选择适用人群",@"选择售后服务",@"选择产品品质",@"选择产品材质"];
+    _silk = @[@"选择适用人群",@"选择售后服务"];
+    _belt = @[@"选择适用人群",@"选择售后服务",@"选择产品品质"];
     _clothes = @[@"选择适用人群",@"选择售后服务",@"选择服装类型"];
     _hat = @[@"选择适用人群",@"选择售后服务"];
     _glasses = @[@"选择适用人群",@"选择售后服务"];
     _jewelry = @[@"选择适用人群",@"选择售后服务"];
     _cosmetics = @[@"选择适用人群",@"选择售后服务",@"选择彩妆类型"];
     
-    _categoryArr = [[NSArray alloc]initWithObjects:_all,_other,_shoes,_watch,_bag,_wallet,_silk,_belt,_clothes,_hat,_glasses,_jewelry,_cosmetics, nil];
+    _categoryArr = [[NSArray alloc]initWithObjects:_all,_bag,_cosmetics,_hat,_belt,_wallet,_other,_watch,_jewelry,_silk,_shoes,_glasses,_clothes, nil];
     
     _tableViewController = [[TableViewController alloc]initWithNibName:@"TableViewController" bundle:nil data:_all];
     _tableViewController.delegate = self;
@@ -151,22 +151,22 @@
                         [cell.btn setTitle:[NSString stringWithFormat:@"  鞋子类型：%@",[[sts objectAtIndex:i] valueForKey:@"name"]] forState:0];
                     }
                 }
-            }else if ([cell.btn.titleLabel.text rangeOfString:@"产品材质"].location != NSNotFound && _ms != nil) {
-                NSLog(@"cell.text = %@",cell.btn.titleLabel.text);
-                NSArray *ms = [baseData valueForKey:@"ms"];
-                for (int i = 0; i < ms.count; i++) {
-                    if ([[ms objectAtIndex:i] valueForKey:@"id"] == _ms && [_ms intValue] != -1) {
-                        [cell.btn setTitle:[NSString stringWithFormat:@"  产品材质：%@",[[ms objectAtIndex:i] valueForKey:@"name"]] forState:0];
-                    }
-                }
-            }else if ([cell.btn.titleLabel.text rangeOfString:@"闭合方式"].location != NSNotFound && _bhs != nil) {
-                NSLog(@"cell.text = %@",cell.btn.titleLabel.text);
-                NSArray *bhs = [baseData valueForKey:@"bhs"];
-                for (int i = 0; i < bhs.count; i++) {
-                    if ([[bhs objectAtIndex:i] valueForKey:@"id"] == _bhs && [_bhs intValue] != -1) {
-                        [cell.btn setTitle:[NSString stringWithFormat:@"  闭合方式：%@",[[bhs objectAtIndex:i] valueForKey:@"name"]] forState:0];
-                    }
-                }
+//            }else if ([cell.btn.titleLabel.text rangeOfString:@"产品材质"].location != NSNotFound && _ms != nil) {
+//                NSLog(@"cell.text = %@",cell.btn.titleLabel.text);
+//                NSArray *ms = [baseData valueForKey:@"ms"];
+//                for (int i = 0; i < ms.count; i++) {
+//                    if ([[ms objectAtIndex:i] valueForKey:@"id"] == _ms && [_ms intValue] != -1) {
+//                        [cell.btn setTitle:[NSString stringWithFormat:@"  产品材质：%@",[[ms objectAtIndex:i] valueForKey:@"name"]] forState:0];
+//                    }
+//                }
+//            }else if ([cell.btn.titleLabel.text rangeOfString:@"闭合方式"].location != NSNotFound && _bhs != nil) {
+//                NSLog(@"cell.text = %@",cell.btn.titleLabel.text);
+//                NSArray *bhs = [baseData valueForKey:@"bhs"];
+//                for (int i = 0; i < bhs.count; i++) {
+//                    if ([[bhs objectAtIndex:i] valueForKey:@"id"] == _bhs && [_bhs intValue] != -1) {
+//                        [cell.btn setTitle:[NSString stringWithFormat:@"  闭合方式：%@",[[bhs objectAtIndex:i] valueForKey:@"name"]] forState:0];
+//                    }
+//                }
             }else if ([cell.btn.titleLabel.text rangeOfString:@"手表机芯"].location != NSNotFound && _cs != nil) {
                 NSLog(@"cell.text = %@",cell.btn.titleLabel.text);
                 NSArray *cs = [baseData valueForKey:@"cs"];
@@ -280,8 +280,9 @@
     applicablePeopleViewController = nil;
 }
 
-- (void)queryGoods:(id)sender
+- (void)queryGoods:(UIButton *)sender
 {
+    sender.enabled = NO;
     if (_indexPath == nil || _indexPath.row == 0) {
         _lx = @"-1";
     }else{
@@ -302,27 +303,20 @@
                 text = [NSString stringWithFormat:@"%@|9/_%@",text,_sts];
             }
         }
-        if (_ms != nil && [_ms intValue] != -1) {
-            if ([text isEqualToString:@""]) {
-                text = [NSString stringWithFormat:@"5/_%@",_ms];
-            }else{
-                text = [NSString stringWithFormat:@"%@|5/_%@",text,_ms];
-            }
-        }
-        if (_bhs != nil && [_bhs intValue] != -1) {
-            if ([text isEqualToString:@""]) {
-                text = [NSString stringWithFormat:@"11/_%@",_bhs];
-            }else{
-                text = [NSString stringWithFormat:@"%@|11/_%@",text,_bhs];
-            }
-        }
-        if (_ms != nil && [_ms intValue] != -1) {
-            if ([text isEqualToString:@""]) {
-                text = [NSString stringWithFormat:@"5/_%@",_ms];
-            }else{
-                text = [NSString stringWithFormat:@"%@|5/_%@",text,_ms];
-            }
-        }
+//        if (_ms != nil && [_ms intValue] != -1) {
+//            if ([text isEqualToString:@""]) {
+//                text = [NSString stringWithFormat:@"5/_%@",_ms];
+//            }else{
+//                text = [NSString stringWithFormat:@"%@|5/_%@",text,_ms];
+//            }
+//        }
+//        if (_bhs != nil && [_bhs intValue] != -1) {
+//            if ([text isEqualToString:@""]) {
+//                text = [NSString stringWithFormat:@"11/_%@",_bhs];
+//            }else{
+//                text = [NSString stringWithFormat:@"%@|11/_%@",text,_bhs];
+//            }
+//        }
         if (_cs != nil && [_cs intValue] != -1) {
             if ([text isEqualToString:@""]) {
                 text = [NSString stringWithFormat:@"3/_%@",_cs];
@@ -366,26 +360,24 @@
             }
         }
     }
-    NSLog(@"text = %@,lx= %@,xb = %@",text,_lx,_xb);
+//    NSLog(@"text = %@,lx= %@,xb = %@",text,_lx,_xb);
     UserEntity *ue = [UserEntity shareCurrentUe];
 
+    ObjectVo *ob= [ObjectVo shareCurrentObjectVo];
     NSDictionary *params;
-    if ([[self.searchText.text stringByReplacingOccurrencesOfString:@" " withString:@""] isEqualToString:@""]) {
-        params = @{@"interface": GET_CHANPIN,@"page": @"0",@"lx":_lx,@"xb": _xb,@"pp": @"-1",@"text": text,@"uname": ue.userName,@"uuid": ue.uuid};
-    }else{
-        params = @{@"interface": GET_CHANPIN,@"page": @"0",@"lx":_lx,@"xb": _xb,@"pp": @"-1",@"miaoshu": [self.searchText.text stringByReplacingOccurrencesOfString:@" " withString:@""],@"text": text,@"uname": ue.userName,@"uuid": ue.uuid};
-    }
-    
+    params = @{@"interface": GET_CHANPIN,@"page": @"0",@"lx":_lx,@"xb": _xb,@"pp": @"-1",@"miaoshu": [self.searchText.text stringByReplacingOccurrencesOfString:@" " withString:@""],@"text": text,@"uname": ue.userName,@"uuid": ue.uuid,@"dataVersions":ob.dataVersions};
+    [self.view showWithType:0 Title:@"正在获取商品列表..."];
     [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:params completionBlock:^(id object) {
         NSString *ovo = [object valueForKey:@"ovo"];
         NSDictionary *objectVoDic = [ovo JSONValue];
         NSMutableArray *cps = [[NSMutableArray alloc]init];
         NSString *code = [objectVoDic valueForKey:@"code"];
+//        NSLog(@"%@",[objectVoDic valueForKey:@"msg"]);
+//        NSLog(@"%@",objectVoDic);
         if ([code intValue] == 0) {
             NSArray *arr = [objectVoDic valueForKey:@"cps"];
             for (int i = 0; i < arr.count; i++) {
                 NSDictionary *dic = [arr objectAtIndex:i];
-                NSLog(@"%@",dic);
                 ChanPin *chanpin = [[ChanPin alloc]init];
                 NSArray *cpArr = [self properties_aps:[ChanPin class] objc:chanpin];
                 for (NSString *key in dic) {
@@ -412,11 +404,16 @@
             [productViewController setHidesBottomBarWhenPushed:YES];
             [self.navigationController pushViewController:productViewController animated:YES];
             productViewController = nil;
+        }else{
+            [self.view LabelTitle:@"没有该类型的商品！"];
         }
-        
+        sender.enabled = YES;
+        [self.view endSynRequestSignal];
     } failureBlock:^(NSError *error, NSString *responseString) {
-        //
+        [self.view endSynRequestSignal];
+        sender.enabled = YES;
     }];
+    
 }
 
 - (void)removeSelectedAttributes:(id)sender
@@ -428,10 +425,10 @@
             _ss = nil;
         }else if ([[_tableViewController.dataArr objectAtIndex:i] rangeOfString:@"鞋子类型"].location != NSNotFound){
             _sts = nil;
-        }else if ([[_tableViewController.dataArr objectAtIndex:i] rangeOfString:@"产品材质"].location != NSNotFound){
-            _ms = nil;
-        }else if ([[_tableViewController.dataArr objectAtIndex:i] rangeOfString:@"闭合方式"].location != NSNotFound){
-            _bhs = nil;
+//        }else if ([[_tableViewController.dataArr objectAtIndex:i] rangeOfString:@"产品材质"].location != NSNotFound){
+//            _ms = nil;
+//        }else if ([[_tableViewController.dataArr objectAtIndex:i] rangeOfString:@"闭合方式"].location != NSNotFound){
+//            _bhs = nil;
         }else if ([[_tableViewController.dataArr objectAtIndex:i] rangeOfString:@"手表机芯"].location != NSNotFound){
             _cs = nil;
         }else if ([[_tableViewController.dataArr objectAtIndex:i] rangeOfString:@"手表表带"].location != NSNotFound){
@@ -495,10 +492,10 @@
         _ss = [_ids objectAtIndex:apIndexPath.row];
     }else if ([cell.btn.titleLabel.text rangeOfString:@"鞋子类型"].location != NSNotFound){
         _sts = [_ids objectAtIndex:apIndexPath.row];
-    }else if ([cell.btn.titleLabel.text rangeOfString:@"产品材质"].location != NSNotFound){
-        _ms = [_ids objectAtIndex:apIndexPath.row];
-    }else if ([cell.btn.titleLabel.text rangeOfString:@"闭合方式"].location != NSNotFound){
-        _bhs = [_ids objectAtIndex:apIndexPath.row];
+//    }else if ([cell.btn.titleLabel.text rangeOfString:@"产品材质"].location != NSNotFound){
+//        _ms = [_ids objectAtIndex:apIndexPath.row];
+//    }else if ([cell.btn.titleLabel.text rangeOfString:@"闭合方式"].location != NSNotFound){
+//        _bhs = [_ids objectAtIndex:apIndexPath.row];
     }else if ([cell.btn.titleLabel.text rangeOfString:@"手表机芯"].location != NSNotFound){
         _cs = [_ids objectAtIndex:apIndexPath.row];
     }else if ([cell.btn.titleLabel.text rangeOfString:@"手表表带"].location != NSNotFound){
@@ -525,10 +522,10 @@
         _ss = nil;
     }else if ([cell.btn.titleLabel.text rangeOfString:@"鞋子类型"].location != NSNotFound){
         _sts = nil;
-    }else if ([cell.btn.titleLabel.text rangeOfString:@"产品材质"].location != NSNotFound){
-        _ms = nil;
-    }else if ([cell.btn.titleLabel.text rangeOfString:@"闭合方式"].location != NSNotFound){
-        _bhs = nil;
+//    }else if ([cell.btn.titleLabel.text rangeOfString:@"产品材质"].location != NSNotFound){
+//        _ms = nil;
+//    }else if ([cell.btn.titleLabel.text rangeOfString:@"闭合方式"].location != NSNotFound){
+//        _bhs = nil;
     }else if ([cell.btn.titleLabel.text rangeOfString:@"手表机芯"].location != NSNotFound){
         _cs = nil;
     }else if ([cell.btn.titleLabel.text rangeOfString:@"手表表带"].location != NSNotFound){
@@ -560,7 +557,7 @@
 
 - (NSString *)tabImageName
 {
-	return @"茶叶超市-图标（黑）";
+	return @"find_on.png";
 }
 
 - (NSString *)tabTitle

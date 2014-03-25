@@ -23,6 +23,8 @@
 @synthesize state = _state;
 @synthesize categorys = _categorys;
 @synthesize address = _address;
+@synthesize title = _title;
+@synthesize attrebute = _attrebute;
 
 
 @end

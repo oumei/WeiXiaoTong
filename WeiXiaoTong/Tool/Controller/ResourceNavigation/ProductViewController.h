@@ -9,9 +9,15 @@
 #import "CommonViewController.h"
 #import "ProductCell.h"
 #import "WXApi.h"
+#import "DetailsViewController.h"
 
-@interface ProductViewController : CommonViewController<UITableViewDataSource,UITableViewDelegate,ProductCellDelegate>
-
+@interface ProductViewController : CommonViewController<UITableViewDataSource,UITableViewDelegate,ProductCellDelegate,UITextFieldDelegate,DetailsViewControllerDelegate>
+{
+    UIView *alertView;
+    UITextField *textMsg;
+    NSIndexPath *targetIndexPath;
+    UILabel *_spinner;
+}
 @property (weak, nonatomic) IBOutlet UITableView *table;
 @property (copy, nonatomic) NSMutableArray *cpsArr;
 @property (copy, nonatomic) NSString *lx;

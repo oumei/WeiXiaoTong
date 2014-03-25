@@ -24,6 +24,8 @@
     int _state;
     NSString *_categorys;
     NSString *_address;
+    NSString *_title;
+    NSString *_attrebute;
 }
 @property(nonatomic,assign)int Id;
 @property(nonatomic,copy)NSString *miaoshu;
@@ -39,6 +41,8 @@
 @property(nonatomic,assign)int state;
 @property(nonatomic,copy)NSString *categorys;
 @property(nonatomic,copy)NSString *address;
+@property(nonatomic,copy)NSString *title;
+@property(nonatomic,copy)NSString *attrebute;
 
 
 @end

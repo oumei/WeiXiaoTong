@@ -10,8 +10,8 @@
 #import "UserEntity.h"
 #import "HttpService.h"
 #import "JSON.h"
-#import "UIView+SynRequestSignal.h"
 #import "Config.h"
+#import "ObjectVo.h"
 
 @interface AddMerchantsViewController ()
 
@@ -46,55 +46,26 @@
     if (![[self.account.text stringByReplacingOccurrencesOfString:@" " withString:@""] isEqualToString:@""] && self.account.text.length >= 6) {
         UserEntity *user = [UserEntity shareCurrentUe];
         [self.view showWithType:0 Title:@"正在发送验证信息..."];
-        [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": ADD_FRIEND,@"fname": self.account.text,@"msg": self.validationMsg.text,@"uname": user.userName,@"uuid": user.uuid} completionBlock:^(id object) {
+        ObjectVo *ob = [ObjectVo shareCurrentObjectVo];
+        [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": ADD_FRIEND,@"fname": self.account.text,@"msg": self.validationMsg.text,@"uname": user.userName,@"uuid": user.uuid,@"dataVersions":ob.dataVersions} completionBlock:^(id object) {
             
             NSString *ovo = [object valueForKey:@"ovo"];
             NSDictionary *ovoDic = [ovo JSONValue];
             if ([[ovoDic valueForKey:@"code"] intValue] == 0) {
                 [self.view endSynRequestSignal];
-                UILabel *lable = [[UILabel alloc]initWithFrame:CGRectMake(20, 350, 280, 20)];
-                lable.backgroundColor = [UIColor blackColor];
-                lable.text = @"发送验证成功，请耐心等候商家审核！";
-                lable.textAlignment = NSTextAlignmentCenter;
-                lable.textColor = [UIColor whiteColor];
-                
-                [self.view addSubview:lable];
-                [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(hideCollectionLable:) userInfo:lable repeats:NO];
-                lable = nil;
+                [self.view LabelTitle:@"发送验证成功，请耐心等候商家审核！"];
             }else{
                 [self.view endSynRequestSignal];
-                UILabel *lable = [[UILabel alloc]initWithFrame:CGRectMake(40, 350, 240, 20)];
-                lable.backgroundColor = [UIColor blackColor];
-                lable.text = [ovoDic valueForKey:@"msg"];
-                lable.textAlignment = NSTextAlignmentCenter;
-                lable.textColor = [UIColor whiteColor];
-                
-                [self.view addSubview:lable];
-                [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(hideCollectionLable:) userInfo:lable repeats:NO];
-                lable = nil;
+                [self.view LabelTitle:[ovoDic valueForKey:@"msg"]];
             }
             
         } failureBlock:^(NSError *error, NSString *responseString) {
-            //
+            [self.view endSynRequestSignal];
         }];
 
     }else{
-        UILabel *lable = [[UILabel alloc]initWithFrame:CGRectMake(40, 350, 240, 20)];
-        lable.backgroundColor = [UIColor blackColor];
-        lable.text = @"商家用户名不符合规则";
-        lable.textAlignment = NSTextAlignmentCenter;
-        lable.textColor = [UIColor whiteColor];
-        
-        [self.view addSubview:lable];
-        [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(hideCollectionLable:) userInfo:lable repeats:NO];
-        lable = nil;
+        [self.view LabelTitle:@"商家用户名不符合规则"];
     }
-}
-
-- (void)hideCollectionLable:(NSTimer *)aTimer
-{
-    UILabel *lable = [aTimer userInfo];
-    lable.hidden = YES;
 }
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField

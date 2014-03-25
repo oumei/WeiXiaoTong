@@ -51,7 +51,7 @@
     }
 }
 
-- (id)initwithCode:(int)aCode msg:(NSString *)aMsg baseData:(NSDictionary *)aBaseData dataVersions:(int)aDataVersions userEntity:(NSDictionary *)aUE
+- (id)initwithCode:(int)aCode msg:(NSString *)aMsg baseData:(NSDictionary *)aBaseData dataVersions:(NSString *)aDataVersions userEntity:(NSDictionary *)aUE
 {
     if (self == [super init])
     {
@@ -69,7 +69,7 @@
     [encoder encodeObject:self.msg forKey:@"msg"];
     [encoder encodeInt:self.code forKey:@"code"];
     [encoder encodeObject:self.baseData forKey:@"baseData"];
-    [encoder encodeInt:self.dataVersions forKey:@"dataVersions"];
+    [encoder encodeObject:self.dataVersions forKey:@"dataVersions"];
     [encoder encodeObject:self.ue forKey:@"ue"];
 }
 
@@ -80,7 +80,7 @@
         self.msg = [decoder decodeObjectForKey:@"msg"];
         self.code = [decoder decodeIntForKey:@"code"];
         self.baseData = [decoder decodeObjectForKey:@"baseData"];
-        self.dataVersions = [decoder decodeIntForKey:@"dataVersions"];
+        self.dataVersions = [decoder decodeObjectForKey:@"dataVersions"];
         self.ue = [decoder decodeObjectForKey:@"ue"];
     }
     return self;

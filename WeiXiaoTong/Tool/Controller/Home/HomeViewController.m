@@ -17,7 +17,9 @@
 #import "CheckApplicationViewController.h"
 #import "AddMerchantsViewController.h"
 #import "ApplyFriend.h"
-#import "UIView+SynRequestSignal.h"
+#import "UploadViewController.h"
+#import "CustomAlertView.h"
+#import "ObjectVo.h"
 
 @interface HomeViewController ()
 
@@ -63,8 +65,8 @@
 
     _friendsMutArr = [[NSMutableArray alloc]init];
     UserEntity *user = [UserEntity shareCurrentUe];
-    
-    [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": GET_FRIENDS,@"uname": user.userName,@"uuid": user.uuid} completionBlock:^(id object) {
+    ObjectVo *ob= [ObjectVo shareCurrentObjectVo];
+    [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": GET_FRIENDS,@"uname": user.userName,@"uuid": user.uuid,@"dataVersions":ob.dataVersions} completionBlock:^(id object) {
         
         NSString *ovo = [object valueForKey:@"ovo"];
         NSDictionary *ovoDic = [ovo JSONValue];
@@ -86,15 +88,7 @@
             _friendsMutArr = mutArr;
             [self.table reloadData];
         }else{
-            UILabel *lable = [[UILabel alloc]initWithFrame:CGRectMake(40, 350, 240, 20)];
-            lable.backgroundColor = [UIColor blackColor];
-            lable.text = [ovoDic valueForKey:@"msg"];
-            lable.textAlignment = NSTextAlignmentCenter;
-            lable.textColor = [UIColor whiteColor];
-            
-            [self.view addSubview:lable];
-            [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(hideCollectionLable:) userInfo:lable repeats:NO];
-            lable = nil;
+            [self.view LabelTitle:[ovoDic valueForKey:@"msg"]];
         }
         
     } failureBlock:^(NSError *error, NSString *responseString) {
@@ -103,17 +97,12 @@
     
 }
 
-- (void)hideCollectionLable:(NSTimer *)aTimer
-{
-    UILabel *lable = [aTimer userInfo];
-    lable.hidden = YES;
-}
-
 - (IBAction)checkApplicantList:(id)sender
 {
     UserEntity *ue = [UserEntity shareCurrentUe];
     [self.view showWithType:0 Title:@"请求商家申请列表中..."];
-    [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": GET_APPLY_FRIENDS,@"uname": ue.userName,@"uuid": ue.uuid} completionBlock:^(id object) {
+    ObjectVo *ob= [ObjectVo shareCurrentObjectVo];
+    [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": GET_APPLY_FRIENDS,@"uname": ue.userName,@"uuid": ue.uuid, @"dataVersions":ob.dataVersions} completionBlock:^(id object) {
         NSLog(@"object = %@",object);
         NSString *ovo = [object valueForKey:@"ovo"];
         NSDictionary *ovoDic = [ovo JSONValue];
@@ -139,29 +128,15 @@
                 afs = nil;
             }else{
                 [self.view endSynRequestSignal];
-                UILabel *lable = [[UILabel alloc]initWithFrame:CGRectMake(100, 200, 120, 20)];
-                lable.backgroundColor = [UIColor blackColor];
-                lable.text = @"暂无商家申请！";
-                lable.textAlignment = NSTextAlignmentCenter;
-                lable.textColor = [UIColor whiteColor];
-                [self.view addSubview:lable];
-                [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(hideCollectionLable:) userInfo:lable repeats:NO];
-                lable = nil;
+                [self.view LabelTitle:@"暂无商家申请！"];
             }
         }else{
             [self.view endSynRequestSignal];
-            UILabel *lable = [[UILabel alloc]initWithFrame:CGRectMake(40, 200, 240, 20)];
-            lable.backgroundColor = [UIColor blackColor];
-            lable.text = [ovoDic valueForKey:@"msg"];
-            lable.textAlignment = NSTextAlignmentCenter;
-            lable.textColor = [UIColor whiteColor];
-            [self.view addSubview:lable];
-            [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(hideCollectionLable:) userInfo:lable repeats:NO];
-            lable = nil;
+            [self.view LabelTitle:[ovoDic valueForKey:@"msg"]];
         }
         
     } failureBlock:^(NSError *error, NSString *responseString) {
-        //
+        [self.view endSynRequestSignal];
     }];
     
 }
@@ -170,8 +145,8 @@
 {
     [self.view showWithType:0 Title:@"请求商家列表中..."];
     UserEntity *user = [UserEntity shareCurrentUe];
-    
-    [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": GET_FRIENDS,@"uname": user.userName,@"uuid": user.uuid} completionBlock:^(id object) {
+    ObjectVo *ob= [ObjectVo shareCurrentObjectVo];
+    [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": GET_FRIENDS,@"uname": user.userName,@"uuid": user.uuid,@"dataVersions":ob.dataVersions} completionBlock:^(id object) {
         
         NSString *ovo = [object valueForKey:@"ovo"];
         NSDictionary *ovoDic = [ovo JSONValue];
@@ -192,19 +167,11 @@
             [self.view endSynRequestSignal];
         }else{
             [self.view endSynRequestSignal];
-            UILabel *lable = [[UILabel alloc]initWithFrame:CGRectMake(40, 350, 240, 20)];
-            lable.backgroundColor = [UIColor blackColor];
-            lable.text = [ovoDic valueForKey:@"msg"];
-            lable.textAlignment = NSTextAlignmentCenter;
-            lable.textColor = [UIColor whiteColor];
-            
-            [self.view addSubview:lable];
-            [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(hideCollectionLable:) userInfo:lable repeats:NO];
-            lable = nil;
+            [self.view LabelTitle:[ovoDic valueForKey:@"msg"]];
         }
-        
+        [self.view LabelTitle:@"刷新完成"];
     } failureBlock:^(NSError *error, NSString *responseString) {
-        //
+        [self.view endSynRequestSignal];
     }];
 }
 
@@ -251,40 +218,48 @@
 
 - (void)deleted:(UIButton *)sender IndexPath:(NSIndexPath *)indexPath
 {
-    [self.view showWithType:0 Title:@"正在删除商家信息中..."];
-    UserEntity *user = [UserEntity shareCurrentUe];
-     Friend *friend = [_friendsMutArr objectAtIndex:indexPath.row];
-    [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": DELETE_FRIENDS,@"fname":friend.fname,@"uname": user.userName,@"uuid":user.uuid} completionBlock:^(id object) {
-        NSString *ovo = [object valueForKey:@"ovo"];
-        NSDictionary *ovoDic = [ovo JSONValue];
-        if ([[ovoDic valueForKey:@"code"] intValue] == 0) {
-            NSMutableArray *arr = [[NSMutableArray alloc]initWithArray:_friendsMutArr];
-            [arr removeObjectAtIndex:indexPath.row];
-            _friendsMutArr = arr;
-            [self.table reloadData];
+    Friend *friend = [_friendsMutArr objectAtIndex:indexPath.row];
+    if ([friend.fname isEqualToString:friend.uname]) {
+        UploadViewController *uploadViewController = [[UploadViewController alloc]initWithNibName:@"UploadViewController" bundle:nil];
+        [self.navigationController pushViewController:uploadViewController animated:YES];
+        uploadViewController = nil;
+    }else{
+        [self.view showWithType:0 Title:@"正在删除商家信息中..."];
+        UserEntity *user = [UserEntity shareCurrentUe];
+        ObjectVo *ob= [ObjectVo shareCurrentObjectVo];
+        [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": DELETE_FRIENDS,@"fname":friend.fname,@"uname": user.userName,@"uuid":user.uuid, @"dataVersions":ob.dataVersions} completionBlock:^(id object) {
+            NSString *ovo = [object valueForKey:@"ovo"];
+            NSDictionary *ovoDic = [ovo JSONValue];
+//            NSLog(@"%@",ovoDic);
+            if ([[ovoDic valueForKey:@"code"] intValue] == 0) {
+                NSMutableArray *arr = [[NSMutableArray alloc]initWithArray:_friendsMutArr];
+                [arr removeObjectAtIndex:indexPath.row];
+                _friendsMutArr = arr;
+                [self.table reloadData];
+                [self.view endSynRequestSignal];
+                [self.view LabelTitle:@"删除成功"];
+                arr = nil;
+            }else{
+                [self.view endSynRequestSignal];
+                [self.view LabelTitle:[ovoDic valueForKey:@"msg"]];
+            }
+        } failureBlock:^(NSError *error, NSString *responseString) {
             [self.view endSynRequestSignal];
-            arr = nil;
-        }else{
-            [self.view endSynRequestSignal];
-            UILabel *lable = [[UILabel alloc]initWithFrame:CGRectMake(50, 200, 220, 20)];
-            lable.backgroundColor = [UIColor blackColor];
-            lable.text = [ovoDic valueForKey:@"msg"];
-            lable.textAlignment = NSTextAlignmentCenter;
-            lable.textColor = [UIColor whiteColor];
-            [self.view addSubview:lable];
-            [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(hideCollectionLable:) userInfo:lable repeats:NO];
-            lable = nil;
-        }
-    } failureBlock:^(NSError *error, NSString *responseString) {
-        //
-    }];
-//    [_friendsMutArr removeObjectAtIndex:indexPath.row];
-//    [self.table reloadData];
+        }];
+
+    }
+    [self refreshAction:nil];
 }
 
 - (void)note:(UIButton *)sender IndexPath:(NSIndexPath *)indexPath
 {
-    
+    Friend *friend = [_friendsMutArr objectAtIndex:indexPath.row];
+    _targetIndexPath = indexPath;
+    if ([friend.fname isEqualToString:friend.uname]){
+        [self label:@"输入个性签名" content:friend.description];
+    }else{
+        [self label:@"请输入好友备注" content:friend.remark];
+    }
 }
 
 - (void)selected:(UIButton *)sender IndexPath:(NSIndexPath *)indexPath
@@ -292,8 +267,8 @@
     UserEntity *ue = [UserEntity shareCurrentUe];
     Friend *friend = [_friendsMutArr objectAtIndex:indexPath.row];
     [self.view showWithType:0 Title:@"切换商家中..."];
-    
-    [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": CHANGE_TABLE,@"fname": friend.fname,@"uname": ue.userName,@"uuid": ue.uuid} completionBlock:^(id object) {
+    ObjectVo *ob= [ObjectVo shareCurrentObjectVo];
+    [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": CHANGE_TABLE,@"fname": friend.fname,@"uname": ue.userName,@"uuid": ue.uuid,@"dataVersions":ob.dataVersions} completionBlock:^(id object) {
         NSLog(@"ob=%@",object);
         NSString *ovo = [object valueForKey:@"ovo"];
         NSDictionary *ovoDic = [ovo JSONValue];
@@ -310,32 +285,164 @@
             MerchantsCell *cell = (MerchantsCell *)[self.table cellForRowAtIndexPath:indexPath];
             cell.name.textColor = [UIColor redColor];
             
-            UILabel *lable = [[UILabel alloc]initWithFrame:CGRectMake(100, 350, 120, 20)];
-            lable.backgroundColor = [UIColor blackColor];
-            lable.text = @"切换商家成功！";
-            lable.textAlignment = NSTextAlignmentCenter;
-            lable.textColor = [UIColor whiteColor];
-            
-            [self.view addSubview:lable];
-            [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(hideCollectionLable:) userInfo:lable repeats:NO];
-            lable = nil;
+            [self.view LabelTitle:@"切换商家成功！"];
+            self.tabBarController.selectedIndex = 1;
         }else{
             [self.view endSynRequestSignal];
-            UILabel *lable = [[UILabel alloc]initWithFrame:CGRectMake(40, 350, 240, 20)];
-            lable.backgroundColor = [UIColor blackColor];
-            lable.text = [ovoDic valueForKey:@"msg"];
-            lable.textAlignment = NSTextAlignmentCenter;
-            lable.textColor = [UIColor whiteColor];
-            
-            [self.view addSubview:lable];
-            [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(hideCollectionLable:) userInfo:lable repeats:NO];
-            lable = nil;
+            [self.view LabelTitle:[ovoDic valueForKey:@"msg"]];
         }
         
     } failureBlock:^(NSError *error, NSString *responseString) {
-        //
+        [self.view endSynRequestSignal];
     }];
 
+}
+
+
+- (void)label:(NSString *)title content:(NSString *)content
+{
+    alertView.hidden = NO;
+    alertView = [[UIView alloc]initWithFrame:[UIScreen mainScreen].bounds];
+    alertView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"bg_transparent.png"]];
+    
+    UIView *backgroundView = [[UIView alloc]initWithFrame:CGRectMake(20, 70, 280, 120)];
+    backgroundView.layer.borderWidth = 1.0;
+    backgroundView.layer.borderColor = [UIColor lightGrayColor].CGColor;
+    backgroundView.layer.cornerRadius = 6.0;
+    backgroundView.backgroundColor = [UIColor whiteColor];
+    
+    UIImageView *image = [[UIImageView alloc]initWithFrame:CGRectMake(10, 5, 30, 30)];
+    image.image = [UIImage imageNamed:@"ic_launcher.png"];
+    [backgroundView addSubview:image];
+    
+    UILabel *label = [[UILabel alloc]initWithFrame:CGRectMake(55, 10, 220, 20)];
+    label.backgroundColor = [UIColor clearColor];
+    label.textColor = [UIColor blueColor];
+    label.text = title;
+    [backgroundView addSubview:label];
+    
+    UIView *line = [[UIView alloc]initWithFrame:CGRectMake(0, 40, 280, 1)];
+    line.backgroundColor = [UIColor blueColor];
+    [backgroundView addSubview:line];
+    
+    textMsg = [[UITextField alloc]initWithFrame:CGRectMake(15, 50, 250, 30)];
+    textMsg.backgroundColor = [UIColor clearColor];
+    textMsg.delegate = self;
+    textMsg.placeholder = @"请输入...";
+    textMsg.text = content;
+    [backgroundView addSubview:textMsg];
+    
+    UIView *line2 = [[UIView alloc]initWithFrame:CGRectMake(0, 85, 280, 1)];
+    line2.backgroundColor = [UIColor lightGrayColor];
+    [backgroundView addSubview:line2];
+    
+    UIButton *cancel = [UIButton buttonWithType:UIButtonTypeCustom];
+    cancel.backgroundColor = [UIColor clearColor];
+    cancel.frame = CGRectMake(0, 90, 140, 30);
+    [cancel setTitle:@"取消" forState:0];
+    cancel.titleLabel.font = [UIFont systemFontOfSize:14];
+    [cancel setTitleColor:[UIColor blackColor] forState:0];
+    [cancel addTarget:self action:@selector(cancelAction:) forControlEvents:UIControlEventTouchUpInside];
+    [backgroundView addSubview:cancel];
+    
+    UIView *line3 = [[UIView alloc]initWithFrame:CGRectMake(140, 85, 1, 35)];
+    line3.backgroundColor = [UIColor lightGrayColor];
+    [backgroundView addSubview:line3];
+    
+    UIButton *modify = [UIButton buttonWithType:UIButtonTypeCustom];
+    modify.backgroundColor = [UIColor clearColor];
+    modify.frame = CGRectMake(141, 90, 139, 30);
+    [modify setTitle:@"修改" forState:0];
+    modify.titleLabel.font = [UIFont systemFontOfSize:14];
+    [modify setTitleColor:[UIColor blackColor] forState:0];
+    [modify addTarget:self action:@selector(modifyAction:) forControlEvents:UIControlEventTouchUpInside];
+    [backgroundView addSubview:modify];
+    
+    [alertView addSubview:backgroundView];
+    [self.view addSubview:alertView];
+    [self.view bringSubviewToFront:alertView];
+    
+    backgroundView = nil;
+    image = nil;
+    label = nil;
+    line = nil;
+    line2 = nil;
+    line3 = nil;
+    cancel = nil;
+    modify = nil;
+}
+
+- (void)cancelAction:(UIButton *)sender
+{
+    [self textFieldShouldReturn:textMsg];
+    alertView.hidden = YES;
+    textMsg = nil;
+    alertView = nil;
+}
+
+- (void)modifyAction:(UIButton *)sender
+{
+    alertView.hidden = YES;
+    [self textFieldShouldReturn:textMsg];
+    UserEntity *ue = [UserEntity shareCurrentUe];
+    ObjectVo *ob= [ObjectVo shareCurrentObjectVo];
+    Friend *friend = [_friendsMutArr objectAtIndex:_targetIndexPath.row];
+    if ([friend.fname isEqualToString:friend.uname]){
+        NSLog(@"%@",textMsg.text);
+        [self.view showWithType:0 Title:@"修改签名中..."];
+        
+        [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": UPDATE_DESCRIPTION,@"description": textMsg.text,@"uname": ue.userName,@"uuid": ue.uuid,@"dataVersions":ob.dataVersions} completionBlock:^(id object) {
+            NSLog(@"ob=%@",object);
+            NSString *ovo = [object valueForKey:@"ovo"];
+            NSDictionary *ovoDic = [ovo JSONValue];
+            if ([[ovoDic valueForKey:@"code"] intValue] == 0) {
+                [self.view endSynRequestSignal];
+                [self.view LabelTitle:@"修改成功！"];
+            }else{
+                [self.view endSynRequestSignal];
+                [self.view LabelTitle:[ovoDic valueForKey:@"msg"]];
+            }
+            
+        } failureBlock:^(NSError *error, NSString *responseString) {
+            [self.view endSynRequestSignal];
+        }];
+    }else{
+        [self.view showWithType:0 Title:@"修改备注中..."];
+        NSDictionary *params = @{@"interface": REMARK_FRIENDS,@"uname": ue.userName,@"uuid": ue.uuid,@"remark": textMsg.text,@"fid": [NSString stringWithFormat:@"%d",friend.Id],@"dataVersions":ob.dataVersions};
+        [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:params completionBlock:^(id object) {
+            NSString *ovo = [object valueForKey:@"ovo"];
+            NSDictionary *ovoDic = [ovo JSONValue];
+            if ([[ovoDic valueForKey:@"code"] intValue] == 0) {
+                [self.view endSynRequestSignal];
+                [self.view LabelTitle:@"修改成功！"];
+            }else{
+                [self.view endSynRequestSignal];
+                [self.view LabelTitle:[ovoDic valueForKey:@"msg"]];
+            }
+        } failureBlock:^(NSError *error, NSString *responseString) {
+            [self.view endSynRequestSignal];
+        }];
+    }
+    [self refreshAction:nil];
+    textMsg = nil;
+    alertView = nil;
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    [textField endEditing:YES];
+    return YES;
+}
+
+#pragma mark - Private Methods
+- (NSString *)tabImageName
+{
+	return @"friends_on.png";
+}
+
+- (NSString *)tabTitle
+{
+	return nil;
 }
 
 - (void)didReceiveMemoryWarning
@@ -344,31 +451,9 @@
     // Dispose of any resources that can be recreated.
 }
 
-
 - (void)dealloc
 {
     [self setView:nil];
 }
-
-
-#pragma mark - Private Methods
-- (NSString *)tabImageName
-{
-	return @"首页-图标（黑）";
-}
-
-- (NSString *)tabTitle
-{
-	return nil;
-}
-//- (IBAction)pushaction:(id)sender
-//{
-//    LoginViewController *lo = [[LoginViewController alloc]initWithNibName:@"LoginViewController" bundle:nil];
-//    [self presentViewController:lo animated:YES completion:^{
-//        //
-//    }];
-//    lo = nil;
-//}
-
 
 @end

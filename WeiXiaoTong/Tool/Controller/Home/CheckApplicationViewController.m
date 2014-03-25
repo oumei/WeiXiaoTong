@@ -11,7 +11,7 @@
 #import "HttpService.h"
 #import "UserEntity.h"
 #import "JSON.h"
-#import "UIView+SynRequestSignal.h"
+#import "ObjectVo.h"
 
 @interface CheckApplicationViewController ()
 
@@ -72,7 +72,8 @@
     [self.view showWithType:0 Title:@"正在拒绝好友请求..."];
     ApplyFriend *af = [self.afs objectAtIndex:indexPath.row];
     UserEntity *ue = [UserEntity shareCurrentUe];
-    [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": DECLINE_FRIEND,@"afid":[NSString stringWithFormat:@"%d",af.Id],@"uname":ue.userName,@"uuid":ue.uuid} completionBlock:^(id object) {
+    ObjectVo *ob= [ObjectVo shareCurrentObjectVo];
+    [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": DECLINE_FRIEND,@"afid":[NSString stringWithFormat:@"%d",af.Id],@"uname":ue.userName,@"uuid":ue.uuid,@"dataVersions":ob.dataVersions} completionBlock:^(id object) {
         NSLog(@"ob = %@",object);
         NSString *ovo = [object valueForKey:@"ovo"];
         NSDictionary *ovoDic = [ovo JSONValue];
@@ -84,28 +85,15 @@
             [self.view endSynRequestSignal];
             arr = nil;
             
-            UILabel *lable = [[UILabel alloc]initWithFrame:CGRectMake(100, 200, 120, 20)];
-            lable.backgroundColor = [UIColor blackColor];
-            lable.text = @"操作成功";
-            lable.textAlignment = NSTextAlignmentCenter;
-            lable.textColor = [UIColor whiteColor];
-            [self.view addSubview:lable];
-            [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(hideCollectionLable:) userInfo:lable repeats:NO];
-            lable = nil;
+            [self.view LabelTitle:@"操作成功"];
             
         }else{
-            UILabel *lable = [[UILabel alloc]initWithFrame:CGRectMake(40, 200, 240, 20)];
-            lable.backgroundColor = [UIColor blackColor];
-            lable.text = [ovoDic valueForKey:@"msg"];
-            lable.textAlignment = NSTextAlignmentCenter;
-            lable.textColor = [UIColor whiteColor];
-            [self.view addSubview:lable];
-            [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(hideCollectionLable:) userInfo:lable repeats:NO];
-            lable = nil;
+            [self.view endSynRequestSignal];
+            [self.view LabelTitle:[ovoDic valueForKey:@"msg"]];
         }
 
     } failureBlock:^(NSError *error, NSString *responseString) {
-        //
+        [self.view endSynRequestSignal];
     }];
 }
 
@@ -114,7 +102,8 @@
     [self.view showWithType:0 Title:@"正在同意好友请求..."];
     ApplyFriend *af = [self.afs objectAtIndex:indexPath.row];
     UserEntity *ue = [UserEntity shareCurrentUe];
-    [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": ALLOW_FRIEND,@"afid":[NSString stringWithFormat:@"%d",af.Id],@"uname":ue.userName,@"uuid":ue.uuid} completionBlock:^(id object) {
+    ObjectVo *ob= [ObjectVo shareCurrentObjectVo];
+    [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": ALLOW_FRIEND,@"afid":[NSString stringWithFormat:@"%d",af.Id],@"uname":ue.userName,@"uuid":ue.uuid,@"dataVersions":ob.dataVersions} completionBlock:^(id object) {
         NSLog(@"ob = %@",object);
         NSString *ovo = [object valueForKey:@"ovo"];
         NSDictionary *ovoDic = [ovo JSONValue];
@@ -126,38 +115,18 @@
             [self.view endSynRequestSignal];
             arr = nil;
             
-            UILabel *lable = [[UILabel alloc]initWithFrame:CGRectMake(100, 200, 120, 20)];
-            lable.backgroundColor = [UIColor blackColor];
-            lable.text = @"操作成功";
-            lable.textAlignment = NSTextAlignmentCenter;
-            lable.textColor = [UIColor whiteColor];
-            [self.view addSubview:lable];
-            [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(hideCollectionLable:) userInfo:lable repeats:NO];
-            lable = nil;
+            [self.view LabelTitle:@"操作成功"];
             
         }else{
-            UILabel *lable = [[UILabel alloc]initWithFrame:CGRectMake(40, 200, 240, 20)];
-            lable.backgroundColor = [UIColor blackColor];
-            lable.text = [ovoDic valueForKey:@"msg"];
-            lable.textAlignment = NSTextAlignmentCenter;
-            lable.textColor = [UIColor whiteColor];
-            [self.view addSubview:lable];
-            [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(hideCollectionLable:) userInfo:lable repeats:NO];
-            lable = nil;
+            [self.view endSynRequestSignal];
+            [self.view LabelTitle:[ovoDic valueForKey:@"msg"]];
         }
         
     } failureBlock:^(NSError *error, NSString *responseString) {
-        //
+        [self.view endSynRequestSignal];
     }];
 
 }
-
-- (void)hideCollectionLable:(NSTimer *)aTimer
-{
-    UILabel *lable = [aTimer userInfo];
-    lable.hidden = YES;
-}
-
 - (void)reloadTableData:(NSIndexPath *)indexPath
 {
     

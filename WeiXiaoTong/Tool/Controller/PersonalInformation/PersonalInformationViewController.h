@@ -7,12 +7,15 @@
 //
 
 #import "CommonViewController.h"
+#import "ApplicablePeopleCell.h"
 
-@interface PersonalInformationViewController : CommonViewController
+@interface PersonalInformationViewController : CommonViewController<UITableViewDataSource,UITableViewDelegate,ApplicablePeopleCellDelegate>
 @property (weak, nonatomic) IBOutlet UILabel *userName;
 @property (weak, nonatomic) IBOutlet UILabel *current;
 @property (weak, nonatomic) IBOutlet UILabel *validityTime;
 @property (weak, nonatomic) IBOutlet UILabel *level;
 @property (weak, nonatomic) IBOutlet UILabel *mersNum;
+@property (weak, nonatomic) IBOutlet UITableView *table;
+@property (copy, nonatomic) NSArray *data;
 
 @end

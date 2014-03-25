@@ -33,7 +33,7 @@
     AppDelegate * appDelegate = [[self class] appDelegate];
     appDelegate.window = [[self class] newWindow];
     AKTabBarController * tabBarController = [[AKTabBarController alloc] initWithTabBarHeight:49];
-    [tabBarController setBackgroundImageName:@"tabbar_bg"];
+    [tabBarController setBackgroundImageName:@"tabbar.png"];
     [tabBarController setSelectedBackgroundImageName:nil];
     tabBarController.iconGlossyIsHidden = NO;
     tabBarController.tabTitleIsHidden = YES;
@@ -50,7 +50,7 @@
     [tabBarController setTabStrokeColor:[UIColor clearColor]];
     [tabBarController setTabEdgeColor:[UIColor clearColor]];
     tabBarController.viewControllers = [NSMutableArray arrayWithObjects:nav_1,nav_2,nav_3,nav_4,nil];
-    tabBarController.selectedViewController = nav_2;
+//    tabBarController.selectedViewController = nav_2;
     appDelegate.akTabBarController = tabBarController;
     [appDelegate.window setRootViewController:appDelegate.akTabBarController];
     

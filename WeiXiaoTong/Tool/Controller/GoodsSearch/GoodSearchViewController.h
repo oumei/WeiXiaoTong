@@ -22,8 +22,8 @@
     NSString *_xb;         //适用人群
     NSString *_ss;         //售后服务
     NSString *_sts;        //鞋子类型
-    NSString *_ms;         //产品材质
-    NSString *_bhs;        //闭合方式
+//    NSString *_ms;         //产品材质
+//    NSString *_bhs;        //闭合方式
     NSString *_cs;         //手表机芯
     NSString *_ws;         //手表表带
     NSString *_bts;        //包包类型

@@ -10,13 +10,12 @@
 #import "HttpService.h"
 #import "JSON.h"
 #import "ChanPin.h"
-#import "DetailsViewController.h"
 #import "UIImageView+WebCache.h"
 #import "UserEntity.h"
-#import "UIView+SynRequestSignal.h"
 #import "ObjectVo.h"
 #import "DownloadImageOperation.h"
 #include<objc/runtime.h>
+#import "Reachability.h"
 
 
 @interface ProductViewController ()
@@ -25,7 +24,7 @@
 
 @implementation ProductViewController
 static int page = 1;
-
+static int progressNum = 0;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil cpsArr:(NSMutableArray *)cps
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -60,16 +59,21 @@ static int page = 1;
 
 - (void)downMoreData:(id)sender
 {
+//    params = @{@"interface": GET_CHANPIN,@"page": @"0",@"lx":_lx,@"xb": _xb,@"pp": @"-1",@"text": text,@"uname": ue.userName,@"uuid": ue.uuid};
     UserEntity *user = [UserEntity shareCurrentUe];
+    [self.view showWithType:0 Title:@"正在加载..."];
+    ObjectVo *ob = [ObjectVo shareCurrentObjectVo];
     if (self.title == nil) {
-        [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": GET_CHANPIN,@"page": [NSString stringWithFormat:@"%d",page],@"lx":self.lx,@"xb": self.xb,@"pp": @"-1",@"text": self.text,@"uname": user.userName,@"uuid": user.uuid,} completionBlock:^(id object) {
-            NSLog(@"ob = %@",object);
+        [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": GET_CHANPIN,@"page": [NSString stringWithFormat:@"%d",page],@"lx":self.lx,@"xb": self.xb,@"pp": @"-1",@"text": self.text,@"uname": user.userName,@"uuid": user.uuid,@"dataVersions":ob.dataVersions} completionBlock:^(id object) {
             NSString *ovo = [object valueForKey:@"ovo"];
             NSDictionary *objectVoDic = [ovo JSONValue];
             NSMutableArray *cpsArr = [[NSMutableArray alloc]initWithArray:self.cpsArr];
             NSString *code = [objectVoDic valueForKey:@"code"];
             if ([code intValue] == 0) {
                 NSArray *arr = [objectVoDic valueForKey:@"cps"];
+                if (arr.count < 50) {
+                    self.table.tableFooterView = nil;
+                }
                 for (int i = 0; i < arr.count; i++) {
                     NSDictionary *dic = [arr objectAtIndex:i];
                     ChanPin *chanpin = [[ChanPin alloc]init];
@@ -78,6 +82,10 @@ static int page = 1;
                         for (NSString *k in cpArr) {
                             if ([key isEqualToString:k]) {
                                 [chanpin setValue:[dic valueForKey:key] forKey:key];
+                            }
+                            if ([key isEqualToString:@"id"]) {
+                                [chanpin setValue:[dic valueForKey:key] forKey:@"Id"];
+                                break;
                             }
                         }
                     }
@@ -89,19 +97,23 @@ static int page = 1;
                 self.cpsArr = cpsArr;
             }
             [self.table reloadData];
+            [self.view endSynRequestSignal];
         } failureBlock:^(NSError *error, NSString *responseString) {
-            //
+            [self.view endSynRequestSignal];
         }];
-        
+        [self.view endSynRequestSignal];
     }else if (self.isSelf != nil && self.title == nil){
-        [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": GET_CHANPIN,@"page": [NSString stringWithFormat:@"%d",page],@"lx":self.lx,@"xb": self.xb,@"pp": @"-1",@"text": self.text,@"isSelf": @"1",@"uname": user.userName,@"uuid": user.uuid,} completionBlock:^(id object) {
-            NSLog(@"ob = %@",object);
+        [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": GET_CHANPIN,@"page": [NSString stringWithFormat:@"%d",page],@"lx":self.lx,@"xb": self.xb,@"pp": @"-1",@"text": self.text,@"isSelf": @"1",@"uname": user.userName,@"uuid": user.uuid,@"dataVersions":ob.dataVersions} completionBlock:^(id object) {
+//            NSLog(@"ob = %@",object);
             NSString *ovo = [object valueForKey:@"ovo"];
             NSDictionary *objectVoDic = [ovo JSONValue];
             NSMutableArray *cpsArr = [[NSMutableArray alloc]initWithArray:self.cpsArr];
             NSString *code = [objectVoDic valueForKey:@"code"];
             if ([code intValue] == 0) {
                 NSArray *arr = [objectVoDic valueForKey:@"cps"];
+                if (arr.count < 50) {
+                    self.table.tableFooterView = nil;
+                }
                 for (int i = 0; i < arr.count; i++) {
                     NSDictionary *dic = [arr objectAtIndex:i];
                     ChanPin *chanpin = [[ChanPin alloc]init];
@@ -110,6 +122,10 @@ static int page = 1;
                         for (NSString *k in cpArr) {
                             if ([key isEqualToString:k]) {
                                 [chanpin setValue:[dic valueForKey:key] forKey:key];
+                            }
+                            if ([key isEqualToString:@"id"]) {
+                                [chanpin setValue:[dic valueForKey:key] forKey:@"Id"];
+                                break;
                             }
                         }
                     }
@@ -121,12 +137,13 @@ static int page = 1;
                 self.cpsArr = cpsArr;
             }
             [self.table reloadData];
+            [self.view endSynRequestSignal];
         } failureBlock:^(NSError *error, NSString *responseString) {
-            //
+            [self.view endSynRequestSignal];
         }];
-        
+        [self.view endSynRequestSignal];
     }else{
-        [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": GET_CHANPIN_BY_DANGKOU,@"page":[NSString stringWithFormat:@"%d",page],@"dangkou":self.title,@"uname": user.userName,@"uuid": user.uuid} completionBlock:^(id object) {
+        [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": GET_CHANPIN_BY_DANGKOU,@"page":[NSString stringWithFormat:@"%d",page],@"dangkou":self.title,@"uname": user.userName,@"uuid": user.uuid,@"dataVersions":ob.dataVersions} completionBlock:^(id object) {
             
             NSDictionary *ovoDic = [[object valueForKey:@"ovo"] JSONValue];
             if ([[ovoDic valueForKey:@"code"] intValue] == 0) {
@@ -144,6 +161,10 @@ static int page = 1;
                             if ([key isEqualToString:k]) {
                                 [chanPin setValue:[[arr objectAtIndex:i] valueForKey:key] forKey:key];
                             }
+                            if ([key isEqualToString:@"id"]) {
+                                [chanPin setValue:[[arr objectAtIndex:i] valueForKey:key] forKey:@"Id"];
+                                break;
+                            }
                         } 
                     }
                     [cpsArr addObject:chanPin];
@@ -157,11 +178,10 @@ static int page = 1;
                 arr = nil;
             }
             [self.table reloadData];
+            [self.view endSynRequestSignal];
         } failureBlock:^(NSError *error, NSString *responseString) {
-            //
+            [self.view endSynRequestSignal];
         }];
-        
-
     }
 }
 
@@ -174,16 +194,10 @@ static int page = 1;
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UserEntity *user = [UserEntity shareCurrentUe];
-    ObjectVo *ob = [ObjectVo shareCurrentObjectVo];
-    NSDictionary *baseData = [ob valueForKey:@"baseData"];
     static NSString *identifier = @"productCell";
     ProductCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
     if (cell == nil) {
         cell= (ProductCell *)[[[NSBundle  mainBundle]  loadNibNamed:@"ProductCell" owner:self options:nil]  lastObject];
-//        UIView *line = [[UIView alloc]init];
-//        line.backgroundColor = [UIColor blackColor];
-//        line.tag = 200;
-//        [cell.name addSubview:line];
     }
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.delegate = self;
@@ -199,34 +213,16 @@ static int page = 1;
         [cell.image setImageWithURL:[NSURL URLWithString:IMAGE_URL(str)]];
     }
     
-    [cell.name setTitle:chanPin.dangkou forState:0];
-    cell.cost.text = [NSString stringWithFormat:@"进价：%d",chanPin.jiage];
+    cell.nameWeb.opaque = NO;
+    cell.serviceWeb.opaque = NO;
+    cell.nameWeb.scrollView.bounces = NO;
+    cell.serviceWeb.scrollView.bounces = NO;
+    [cell.nameWeb loadHTMLString:chanPin.title baseURL:[[NSBundle mainBundle] bundleURL]];
+    [cell.serviceWeb loadHTMLString:chanPin.attrebute baseURL:[[NSBundle mainBundle] bundleURL]];
     cell.describe.text = chanPin.miaoshu;
     cell.serialNum.text = [NSString stringWithFormat:@"编号：%d",chanPin.Id];
     cell.time.text = [NSString stringWithFormat:@"日期：%@",[chanPin.shijian substringToIndex:10]];
-    
-    NSArray *categorys = [chanPin.categorys componentsSeparatedByString:@"|"];
-    NSArray *categoryArr = [[categorys objectAtIndex:0] componentsSeparatedByString:@"_"];
-    if ([[categoryArr objectAtIndex:0] intValue] == 6) {
-        for (int i = 0; i < [[baseData valueForKey:@"ss"] count]; i++) {
-            if ([[[[baseData valueForKey:@"ss"] objectAtIndex:i] valueForKey:@"id"] intValue] == [[categoryArr objectAtIndex:1] intValue]) {
-                cell.service.text = [[[baseData valueForKey:@"ss"] objectAtIndex:i] valueForKey:@"name"];
-            }
-        }
-        //cell.service.text = [[[baseData valueForKey:@"ss"] objectAtIndex:[[categoryArr objectAtIndex:1] intValue]] valueForKey:@"name"];
-        if ([cell.service.text rangeOfString:@"7天包退换"].location != NSNotFound) {
-            cell.service.textColor = [UIColor orangeColor];
-        }else if ([cell.service.text rangeOfString:@"支持换款"].location != NSNotFound){
-            cell.service.textColor = [UIColor redColor];
-        }else if ([cell.service.text rangeOfString:@"可换大小"].location != NSNotFound){
-            cell.service.textColor = [UIColor cyanColor];
-        }else if ([cell.service.text rangeOfString:@"不退不换"].location != NSNotFound){
-            cell.service.textColor = [UIColor grayColor];
-        }else if ([cell.service.text rangeOfString:@"质量包换"].location != NSNotFound){
-            cell.service.textColor = [UIColor magentaColor];
-        }
-    }
-    
+
     NSFileManager *fm = [NSFileManager defaultManager];
     if ([fm fileExistsAtPath:[self docPath]]) {
         NSMutableArray *arr = [NSMutableArray arrayWithContentsOfFile:[self docPath]];
@@ -234,93 +230,55 @@ static int page = 1;
             int _Id = [[arr objectAtIndex:i] intValue];
             if (_Id == chanPin.Id) {
                 [cell.collection setTitle:@"已收藏" forState:0];
-            }}}
-    
-//    if (ue.level == 0) {
-//        cell.collection.hidden = YES;
-//    }else{}
-    
-    if (user.qx == 2) {
-//        UIView *line = [cell.name viewWithTag:200];
-//        CGSize size = [cell.name.titleLabel.text sizeWithFont:cell.name.titleLabel.font];
-//        line.frame = CGRectMake(0, 18, size.width, 1);
-        cell.type.hidden = YES;
-        cell.applicablePeople.hidden = YES;
-    }else{
-        cell.name.hidden = YES;
-        cell.type.text = [NSString stringWithFormat:@"类型：%@",[[[baseData valueForKey:@"lxs"] objectAtIndex:chanPin.leixing] valueForKey:@"name"]];
-        cell.cost.text = [NSString stringWithFormat:@"类型：%@",[[[baseData valueForKey:@"lxs"] objectAtIndex:chanPin.leixing] valueForKey:@"name"]];
-        cell.cost.textColor = [UIColor blackColor];
-        cell.collection.hidden = YES;
-        cell.applicablePeople.text = [NSString stringWithFormat:@"适用人群：%@",[[[baseData valueForKey:@"xbs"] objectAtIndex:chanPin.xingbie] valueForKey:@"name"]];
+            }
+        }
+    }
+    if (user.Id == chanPin.upload) {
+        [cell.collection setTitle:@"改价" forState:0];
     }
     
     return cell;
-        
-//    }else {
-//        static NSString *identifier = @"productTwoCell";
-//        ProductTwoCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
-//        if (cell == nil) {
-//            cell= (ProductTwoCell *)[[[NSBundle  mainBundle]  loadNibNamed:@"ProductTwoCell" owner:self options:nil]  lastObject];
-//        }
-//        cell.selectionStyle = UITableViewCellSelectionStyleNone;
-//        cell.delegate = self;
-//        cell.indexPath = indexPath;
-//        ObjectVo *ob = [ObjectVo shareCurrentObjectVo];
-//        NSDictionary *baseData = [ob valueForKey:@"baseData"];
-//        
-//        ChanPin *chanPin = [self.cpsArr objectAtIndex:indexPath.row];
-//        [cell.image setImageWithURL:[NSURL URLWithString:IMAGE_URL(chanPin.Id)]];
-//        cell.type.text = [NSString stringWithFormat:@"类型：%@",[[[baseData valueForKey:@"lxs"] objectAtIndex:chanPin.leixing] valueForKey:@"name"]];
-//        cell.type2.text = [NSString stringWithFormat:@"类型：%@",[[[baseData valueForKey:@"lxs"] objectAtIndex:chanPin.leixing] valueForKey:@"name"]];
-//        NSArray *categorys = [chanPin.categorys componentsSeparatedByString:@"|"];
-//        NSArray *categoryArr = [[categorys objectAtIndex:0] componentsSeparatedByString:@"_"];
-//        if ([[categoryArr objectAtIndex:0] intValue] == 6) {
-//            for (int i = 0; i < [[baseData valueForKey:@"ss"] count]; i++) {
-//                if ([[[[baseData valueForKey:@"ss"] objectAtIndex:i] valueForKey:@"id"] intValue] == [[categoryArr objectAtIndex:1] intValue]) {
-//                    cell.service.text = [[[baseData valueForKey:@"ss"] objectAtIndex:i] valueForKey:@"name"];
-//                }
-//            }
-//            //cell.service.text = [[[baseData valueForKey:@"ss"] objectAtIndex:[[categoryArr objectAtIndex:1] intValue]] valueForKey:@"name"];
-//            if ([cell.service.text rangeOfString:@"7天包退换"].location != NSNotFound) {
-//                cell.service.textColor = [UIColor orangeColor];
-//            }else if ([cell.service.text rangeOfString:@"支持换款"].location != NSNotFound){
-//                cell.service.textColor = [UIColor redColor];
-//            }else if ([cell.service.text rangeOfString:@"可换大小"].location != NSNotFound){
-//                cell.service.textColor = [UIColor cyanColor];
-//            }else if ([cell.service.text rangeOfString:@"不退不换"].location != NSNotFound){
-//                cell.service.textColor = [UIColor grayColor];
-//            }else if ([cell.service.text rangeOfString:@"质量包换"].location != NSNotFound){
-//                cell.service.textColor = [UIColor magentaColor];
-//            }
-//        }
-//        cell.applicablePeople.text = [NSString stringWithFormat:@"适用人群：%@",[[[baseData valueForKey:@"xbs"] objectAtIndex:chanPin.xingbie] valueForKey:@"name"]];
-//        cell.describe.text = chanPin.miaoshu;
-//        cell.serialNum.text = [NSString stringWithFormat:@"编号：%d",chanPin.Id];
-//        cell.time.text = [NSString stringWithFormat:@"日期：%@",[chanPin.shijian substringToIndex:10]];
-//        
-//        return cell;
-//    }
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    ChanPin *chanPin = [self.cpsArr objectAtIndex:indexPath.row];
-    self.imageCount = chanPin.pics;
-    for (int i = 0; i < chanPin.pics; i++) {
-        NSString *url = IMAGE_URL_ID(chanPin.Id, i);
-        DownloadImageOperation *operation = [[DownloadImageOperation alloc]initWithTarget:self selector:@selector(shareAction:) url:url];
-        NSOperationQueue *queue = [[NSOperationQueue alloc]init];
-        [queue addOperation:operation];
-        operation = nil;
-        queue = nil;
+    if ([Reachability reachabilityForInternetConnection].currentReachabilityStatus == NotReachable && [Reachability reachabilityForLocalWiFi].currentReachabilityStatus == NotReachable)
+    {
+        [self.view LabelTitle:@"无网络连接！"];
+        return;
     }
     
+    ChanPin *chanPin = [self.cpsArr objectAtIndex:indexPath.row];
+    self.imageCount = chanPin.pics;
+    if (self.imageCount > 0) {
+        _spinner = [self.view showSpinner:0 Title:[NSString stringWithFormat:@"正在下载 0/%d",self.imageCount]];
+        UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+        pasteboard.string = chanPin.miaoshu;
+        for (int i = 0; i < chanPin.pics; i++) {
+            NSString *url;
+            if (chanPin.address) {
+                url = IMAGE_URL_ID(chanPin.address, i);
+            }else{
+                NSString *str = [NSString stringWithFormat:@"%d",chanPin.Id];
+                url = IMAGE_URL_ID(str, i);
+            }
+            DownloadImageOperation *operation = [[DownloadImageOperation alloc]initWithTarget:self selector:@selector(shareAction:) url:url];
+            NSOperationQueue *queue = [[NSOperationQueue alloc]init];
+            [queue addOperation:operation];
+            operation = nil;
+            queue = nil;
+        }
+    }else{
+        [self.view endSynRequestSignal];
+        [self.view LabelTitle:@"无图片分享！"];
+    }
 }
 
 - (void)shareAction:(NSData *)data
 {
     if (data) {
+        progressNum = progressNum + 1;
+        _spinner.text = [NSString stringWithFormat:@"正在下载 %d/%d",progressNum,self.imageCount];
         [self.imageArr addObject:data];
         if (self.imageArr.count == self.imageCount) {
             //发送内容给微信
@@ -339,8 +297,15 @@ static int page = 1;
             
             [WXApi sendReq:req];
             req = nil;
+            progressNum = 0;
             [self.imageArr removeAllObjects];
+            [self.view endSynRequestSignal];
         }
+    }else{
+        progressNum = 0;
+        [self.imageArr removeAllObjects];
+        [self.view endSynRequestSignal];
+        [self.view LabelTitle:@"图片下载失败"];
     }
 }
 
@@ -355,20 +320,35 @@ static int page = 1;
 - (void)checkDetail:(UIButton *)sender IndexPath:(NSIndexPath *)indexPath
 {
     ChanPin *chanPin = [self.cpsArr objectAtIndex:indexPath.row];
-    NSDictionary *dic = @{@"Id": [NSString stringWithFormat:@"%d",chanPin.Id],@"miaoshu": chanPin.miaoshu,@"pinpai": [NSString stringWithFormat:@"%d",chanPin.pinpai],@"leixing": [NSString stringWithFormat:@"%d",chanPin.leixing],@"xingbie": [NSString stringWithFormat:@"%d",chanPin.xingbie],@"shijian": chanPin.shijian,@"dangkou": chanPin.dangkou,@"jiage": [NSString stringWithFormat:@"%d",chanPin.jiage],@"pics": [NSString stringWithFormat:@"%d",chanPin.pics],@"price":[NSString stringWithFormat:@"%d", chanPin.price],@"upload": [NSString stringWithFormat:@"%d",chanPin.upload],@"state": [NSString stringWithFormat:@"%d",chanPin.state],@"categorys": chanPin.categorys,@"address": chanPin.address};
-    DetailsViewController *detailsViewController = [[DetailsViewController alloc]initWithNibName:@"DetailsViewController" bundle:nil chanPin:dic];
+    DetailsViewController *detailsViewController = [[DetailsViewController alloc]initWithNibName:@"DetailsViewController" bundle:nil chanPin:chanPin];
+    detailsViewController.delegate = self;
     [detailsViewController setHidesBottomBarWhenPushed:YES];
     [self.navigationController pushViewController:detailsViewController animated:YES];
     detailsViewController = nil;
     chanPin = nil;
-    dic = nil;
+}
+
+- (void)deleteChanpin:(ChanPin *)chanpin
+{
+    NSMutableArray *arr = [[NSMutableArray alloc]init];
+    for (int i = 0; i < self.cpsArr.count; i++) {
+        ChanPin *cp = [self.cpsArr objectAtIndex:i];
+        if (cp.Id == chanpin.Id) {
+            //
+        }else{
+            [arr addObject:cp];
+        }
+    }
+    self.cpsArr = arr;
+    [self.table reloadData];
+    arr = nil;
 }
 
 - (void)collection:(UIButton *)sender IndexPath:(NSIndexPath *)indexPath
 {
     ProductCell *cell = (ProductCell *)[self.table cellForRowAtIndexPath:indexPath];
-    ChanPin *chanPin = [self.cpsArr objectAtIndex:indexPath.row];
-     UserEntity *user = [UserEntity shareCurrentUe];
+    targetIndexPath = indexPath;
+    
     if ([cell.collection.titleLabel.text isEqualToString:@"已收藏"]) {
         UILabel *lable = [[UILabel alloc]initWithFrame:CGRectMake(100, 350, 120, 20)];
         lable.backgroundColor = [UIColor blackColor];
@@ -380,12 +360,177 @@ static int page = 1;
         [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(hideCollectionLable:) userInfo:lable repeats:NO];
         lable = nil;
     }else{
-        [self.view showWithType:0 Title:@"正在收藏产品..."];
-        [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": COLLECT_CHANPIN,@"cpid": [NSString stringWithFormat:@"%d",chanPin.Id],@"price": [NSString stringWithFormat:@"%d",chanPin.price],@"uname": user.userName,@"uuid": user.uuid} completionBlock:^(id object) {
+        [self label:@"输入代理价格"];
+    }
+}
+
+- (void)dangkou:(UIButton *)sender IndexPath:(NSIndexPath *)indexPath
+{
+    UserEntity *user = [UserEntity shareCurrentUe];
+    ChanPin *chanPin = [self.cpsArr objectAtIndex:indexPath.row];
+    [self.view showWithType:0 Title:@"正在获取商品列表..."];
+    ObjectVo *ob = [ObjectVo shareCurrentObjectVo];
+    [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": GET_CHANPIN_BY_DANGKOU,@"page":@"0",@"dangkou":chanPin.dangkou,@"uname": user.userName,@"uuid": user.uuid,@"dataVersions":ob.dataVersions} completionBlock:^(id object) {
+        
+        NSDictionary *ovoDic = [[object valueForKey:@"ovo"] JSONValue];
+        if ([[ovoDic valueForKey:@"code"] intValue] == 0) {
+            [self.view endSynRequestSignal];
+            NSMutableArray *cpsArr = [[NSMutableArray alloc]init];
+            NSArray *arr = [[NSArray alloc]init];
+            arr = [ovoDic valueForKey:@"cps"];
+            for (int i = 0; i < arr.count; i++) {
+                ChanPin *chanPin = [[ChanPin alloc]init];
+                for (NSString *key in [[arr objectAtIndex:i] allKeys]) {
+                    NSArray *cpArr = [self properties_aps:[ChanPin class] objc:chanPin];
+                    for (NSString *k in cpArr) {
+                        if ([key isEqualToString:k]) {
+                            [chanPin setValue:[[arr objectAtIndex:i] valueForKey:key] forKey:key];
+                        }
+                        if ([key isEqualToString:@"id"]) {
+                            [chanPin setValue:[[arr objectAtIndex:i] valueForKey:key] forKey:@"Id"];
+                            break;
+                        }
+                    }
+                }
+                [cpsArr addObject:chanPin];
+                chanPin = nil;
+            }
+            
+            if (cpsArr.count > 0) {
+                ProductViewController *productViewController = [[ProductViewController alloc]initWithNibName:@"ProductViewController" bundle:nil cpsArr:cpsArr];
+                productViewController.title = chanPin.dangkou;
+                [productViewController setHidesBottomBarWhenPushed:YES];
+                [self.navigationController pushViewController:productViewController animated:YES];
+                productViewController = nil;
+            }else{
+                [self.view LabelTitle:@"暂无数据"];
+            }
+            cpsArr = nil;
+            arr = nil;
+        }
+        [self.view endSynRequestSignal];
+    } failureBlock:^(NSError *error, NSString *responseString) {
+        [self.view endSynRequestSignal];
+    }];
+
+}
+
+#pragma mark - 收藏 －
+- (void)label:(NSString *)title
+{
+    alertView.hidden = NO;
+    alertView = [[UIView alloc]initWithFrame:[UIScreen mainScreen].bounds];
+    alertView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"bg_transparent.png"]];
+    
+    UIView *backgroundView = [[UIView alloc]initWithFrame:CGRectMake(20, 70, 280, 120)];
+    backgroundView.layer.borderWidth = 1.0;
+    backgroundView.layer.borderColor = [UIColor lightGrayColor].CGColor;
+    backgroundView.layer.cornerRadius = 6.0;
+    backgroundView.backgroundColor = [UIColor whiteColor];
+    
+    UIImageView *image = [[UIImageView alloc]initWithFrame:CGRectMake(10, 5, 30, 30)];
+    image.image = [UIImage imageNamed:@"ic_launcher.png"];
+    [backgroundView addSubview:image];
+    
+    UILabel *label = [[UILabel alloc]initWithFrame:CGRectMake(55, 10, 220, 20)];
+    label.backgroundColor = [UIColor clearColor];
+    label.textColor = [UIColor blueColor];
+    label.text = title;
+    [backgroundView addSubview:label];
+    
+    UIView *line = [[UIView alloc]initWithFrame:CGRectMake(0, 40, 280, 1)];
+    line.backgroundColor = [UIColor blueColor];
+    [backgroundView addSubview:line];
+    
+    textMsg = [[UITextField alloc]initWithFrame:CGRectMake(15, 50, 250, 30)];
+    textMsg.backgroundColor = [UIColor clearColor];
+    textMsg.delegate = self;
+    textMsg.placeholder = @"请输入...";
+    [backgroundView addSubview:textMsg];
+    
+    UIView *line2 = [[UIView alloc]initWithFrame:CGRectMake(0, 85, 280, 1)];
+    line2.backgroundColor = [UIColor lightGrayColor];
+    [backgroundView addSubview:line2];
+    
+    UIButton *cancel = [UIButton buttonWithType:UIButtonTypeCustom];
+    cancel.backgroundColor = [UIColor clearColor];
+    cancel.frame = CGRectMake(0, 90, 140, 30);
+    [cancel setTitle:@"取消" forState:0];
+    cancel.titleLabel.font = [UIFont systemFontOfSize:14];
+    [cancel setTitleColor:[UIColor blackColor] forState:0];
+    [cancel addTarget:self action:@selector(cancelAction:) forControlEvents:UIControlEventTouchUpInside];
+    [backgroundView addSubview:cancel];
+    
+    UIView *line3 = [[UIView alloc]initWithFrame:CGRectMake(140, 85, 1, 35)];
+    line3.backgroundColor = [UIColor lightGrayColor];
+    [backgroundView addSubview:line3];
+    
+    UIButton *modify = [UIButton buttonWithType:UIButtonTypeCustom];
+    modify.backgroundColor = [UIColor clearColor];
+    modify.frame = CGRectMake(141, 90, 139, 30);
+    [modify setTitle:@"确定" forState:0];
+    modify.titleLabel.font = [UIFont systemFontOfSize:14];
+    [modify setTitleColor:[UIColor blackColor] forState:0];
+    [modify addTarget:self action:@selector(modifyAction:) forControlEvents:UIControlEventTouchUpInside];
+    [backgroundView addSubview:modify];
+    
+    [alertView addSubview:backgroundView];
+    [self.view addSubview:alertView];
+    [self.view bringSubviewToFront:alertView];
+    
+    backgroundView = nil;
+    image = nil;
+    label = nil;
+    line = nil;
+    line2 = nil;
+    line3 = nil;
+    cancel = nil;
+    modify = nil;
+}
+
+- (void)cancelAction:(UIButton *)sender
+{
+    [self textFieldShouldReturn:textMsg];
+    alertView.hidden = YES;
+    textMsg = nil;
+    alertView = nil;
+}
+
+- (void)modifyAction:(UIButton *)sender
+{
+    alertView.hidden = YES;
+    [self textFieldShouldReturn:textMsg];
+    ChanPin *chanPin = [self.cpsArr objectAtIndex:targetIndexPath.row];
+    UserEntity *user = [UserEntity shareCurrentUe];
+    ObjectVo *ob = [ObjectVo shareCurrentObjectVo];
+    if (chanPin.upload == user.Id) {
+        [self.view showWithType:0 Title:@"正在修改价格..."];
+        [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": UPDATE_SELF_CHANPIN_PRICE,@"cpid": [NSString stringWithFormat:@"%d",chanPin.Id],@"price": [NSString stringWithFormat:@"%d",[textMsg.text intValue]],@"uname": user.userName,@"uuid": user.uuid,@"dataVersions":ob.dataVersions} completionBlock:^(id object) {
             NSDictionary *ovoDic = [[object valueForKey:@"ovo"] JSONValue];
-            ObjectVo *ob = [[ObjectVo alloc]init];
+            ObjectVo *obje = [[ObjectVo alloc]init];
             for (NSString *key in [ovoDic allKeys]) {
-                [ob setValue:[ovoDic valueForKey:key] forKey:key];
+                [obje setValue:[ovoDic valueForKey:key] forKey:key];
+            }
+            if ([[ovoDic valueForKey:@"code"] intValue] == 0) {
+                [self.view endSynRequestSignal];
+                [self.view LabelTitle:@"修改成功"];
+            }else if ([[ovoDic valueForKey:@"code"] intValue] == -1){
+                [self.view endSynRequestSignal];
+                [self.view LabelTitle:obje.msg];
+            }else{
+                [self.view endSynRequestSignal];
+                [self.view LabelTitle:@"修改失败"];
+            }
+        } failureBlock:^(NSError *error, NSString *responseString) {
+            [self.view endSynRequestSignal];
+        }];
+    }else{
+        [self.view showWithType:0 Title:@"正在收藏产品..."];
+        [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": COLLECT_CHANPIN,@"cpid": [NSString stringWithFormat:@"%d",chanPin.Id],@"price": [NSString stringWithFormat:@"%d",[textMsg.text intValue]],@"uname": user.userName,@"uuid": user.uuid,@"dataVersions":ob.dataVersions} completionBlock:^(id object) {
+            NSDictionary *ovoDic = [[object valueForKey:@"ovo"] JSONValue];
+            ObjectVo *obje = [[ObjectVo alloc]init];
+            for (NSString *key in [ovoDic allKeys]) {
+                [obje setValue:[ovoDic valueForKey:key] forKey:key];
             }
             if ([[ovoDic valueForKey:@"code"] intValue] == 0) {
                 NSFileManager *fm = [NSFileManager defaultManager];
@@ -400,94 +545,28 @@ static int page = 1;
                 }
                 [self.table reloadData];
                 [self.view endSynRequestSignal];
-                UILabel *lable = [[UILabel alloc]initWithFrame:CGRectMake(100, 350, 120, 20)];
-                lable.backgroundColor = [UIColor blackColor];
-                lable.text = @"收藏成功";
-                lable.textAlignment = NSTextAlignmentCenter;
-                lable.textColor = [UIColor whiteColor];
-                
-                [self.view addSubview:lable];
-                [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(hideCollectionLable:) userInfo:lable repeats:NO];
-                lable = nil;
+                [self.view LabelTitle:@"收藏成功"];
             }else if ([[ovoDic valueForKey:@"code"] intValue] == -1){
                 [self.view endSynRequestSignal];
-                UILabel *lable = [[UILabel alloc]initWithFrame:CGRectMake(100, 350, 120, 20)];
-                lable.backgroundColor = [UIColor blackColor];
-                lable.text = ob.msg;
-                lable.textAlignment = NSTextAlignmentCenter;
-                lable.textColor = [UIColor whiteColor];
-                
-                [self.view addSubview:lable];
-                [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(hideCollectionLable:) userInfo:lable repeats:NO];
-                lable = nil;
+                [self.view LabelTitle:obje.msg];
             }else{
                 [self.view endSynRequestSignal];
-                UILabel *lable = [[UILabel alloc]initWithFrame:CGRectMake(100, 350, 120, 20)];
-                lable.backgroundColor = [UIColor blackColor];
-                lable.text = @"收藏失败";
-                lable.textAlignment = NSTextAlignmentCenter;
-                lable.textColor = [UIColor whiteColor];
-                
-                [self.view addSubview:lable];
-                [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(hideCollectionLable:) userInfo:lable repeats:NO];
-                lable = nil;
+                [self.view LabelTitle:@"收藏失败"];
             }
         } failureBlock:^(NSError *error, NSString *responseString) {
             [self.view endSynRequestSignal];
         }];
     }
+    textMsg = nil;
+    alertView = nil;
 }
 
-- (void)dangkou:(UIButton *)sender IndexPath:(NSIndexPath *)indexPath
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
-    UserEntity *user = [UserEntity shareCurrentUe];
-    ChanPin *chanPin = [self.cpsArr objectAtIndex:indexPath.row];
-    [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": GET_CHANPIN_BY_DANGKOU,@"page":@"0",@"dangkou":chanPin.dangkou,@"uname": user.userName,@"uuid": user.uuid} completionBlock:^(id object) {
-        
-        NSDictionary *ovoDic = [[object valueForKey:@"ovo"] JSONValue];
-        if ([[ovoDic valueForKey:@"code"] intValue] == 0) {
-            NSMutableArray *cpsArr = [[NSMutableArray alloc]init];
-            NSArray *arr = [[NSArray alloc]init];
-            arr = [ovoDic valueForKey:@"cps"];
-            for (int i = 0; i < arr.count; i++) {
-                ChanPin *chanPin = [[ChanPin alloc]init];
-                chanPin.Id = [[[arr objectAtIndex:i] valueForKey:@"id"] intValue];
-                chanPin.miaoshu = [[arr objectAtIndex:i] valueForKey:@"miaoshu"];
-                chanPin.pinpai = [[[arr objectAtIndex:i] valueForKey:@"pinpai"] intValue];
-                chanPin.leixing = [[[arr objectAtIndex:i] valueForKey:@"leixing"] intValue];
-                chanPin.shijian = [[arr objectAtIndex:i] valueForKey:@"shijian"];
-                chanPin.dangkou = [[arr objectAtIndex:i] valueForKey:@"dangkou"];
-                chanPin.jiage = [[[arr objectAtIndex:i] valueForKey:@"jiage"] intValue];
-                chanPin.pics = [[[arr objectAtIndex:i] valueForKey:@"pics"] intValue];
-                chanPin.price = [[[arr objectAtIndex:i] valueForKey:@"price"] intValue];
-                chanPin.upload = [[[arr objectAtIndex:i] valueForKey:@"upload"] intValue];
-                chanPin.state = [[[arr objectAtIndex:i] valueForKey:@"state"] intValue];
-                chanPin.categorys = [[arr objectAtIndex:i] valueForKey:@"categorys"];
-                [cpsArr addObject:chanPin];
-                chanPin = nil;
-            }
-            
-            if (cpsArr.count > 0) {
-                ProductViewController *productViewController = [[ProductViewController alloc]initWithNibName:@"ProductViewController" bundle:nil cpsArr:cpsArr];
-                productViewController.title = chanPin.dangkou;
-                [productViewController setHidesBottomBarWhenPushed:YES];
-                [self.navigationController pushViewController:productViewController animated:YES];
-                productViewController = nil;
-            }
-            cpsArr = nil;
-            arr = nil;
-        }
-    } failureBlock:^(NSError *error, NSString *responseString) {
-        //
-    }];
-
+    [textField endEditing:YES];
+    return YES;
 }
 
-- (void)hideCollectionLable:(NSTimer *)aTimer
-{
-    UILabel *lable = [aTimer userInfo];
-    lable.hidden = YES;
-}
 
 //遍历类属性
 - (NSMutableArray *)properties_aps:(Class)aClass objc:(id)aObjc

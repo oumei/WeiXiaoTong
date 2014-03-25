@@ -16,24 +16,24 @@
     NSString *_msg;
 //    BaseData *_baseData;
 //    UserEntity *_ue;
-    int _dataVersions;
+    NSString *_dataVersions;
     NSDictionary *_ue;
     NSDictionary *_baseData;
 }
 @property(nonatomic,assign)int code;
 @property(nonatomic,copy)NSString *msg;
 //@property(nonatomic,copy)BaseData *baseData;
-@property(nonatomic,assign)int dataVersions;
 //@property(nonatomic,copy)UserEntity *ue;
 @property(nonatomic,copy)NSDictionary *baseData;
 @property(nonatomic,copy)NSDictionary *ue;
+@property(nonatomic,copy)NSString *dataVersions;
 
 + (ObjectVo *)shareCurrentObjectVo;
 + (void)clearCurrentObjectVo;
 - (id)initwithCode:(int)aCode
                msg:(NSString *)aMsg
           baseData:(NSDictionary *)aBaseData
-      dataVersions:(int)aDataVersions
+      dataVersions:(NSString *)aDataVersions
         userEntity:(NSDictionary *)aUE;
 
 @end

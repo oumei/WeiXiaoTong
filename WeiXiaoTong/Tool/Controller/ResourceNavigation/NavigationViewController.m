@@ -14,6 +14,8 @@
 #import "JSON.h"
 #import "ChanPin.h"
 #import "UserEntity.h"
+#include <objc/runtime.h>
+#import "ObjectVo.h"
 
 @interface NavigationViewController ()
 
@@ -69,34 +71,35 @@
     
     UserEntity *user = [UserEntity shareCurrentUe];
     Link *link = [self.linksArr objectAtIndex:indexPath.row];
-    [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": GET_CHANPIN_BY_DANGKOU,@"page":@"0",@"dangkou":link.name,@"uname": user.userName,@"uuid": user.uuid} completionBlock:^(id object) {
+    [self.view showWithType:0 Title:@"正在获取商品列表..."];
+    ObjectVo *ob = [ObjectVo shareCurrentObjectVo];
+    [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": GET_CHANPIN_BY_DANGKOU,@"page":@"0",@"dangkou":link.name,@"uname": user.userName,@"uuid": user.uuid,@"dataVersions":ob.dataVersions} completionBlock:^(id object) {
         
         NSDictionary *ovoDic = [[object valueForKey:@"ovo"] JSONValue];
-        NSLog(@"ovoallkey=%@",[ovoDic allKeys]);
+
         if ([[ovoDic valueForKey:@"code"] intValue] == 0) {
             NSMutableArray *cpsArr = [[NSMutableArray alloc]init];
             NSArray *arr = [[NSArray alloc]init];
             arr = [ovoDic valueForKey:@"cps"];
             for (int i = 0; i < arr.count; i++) {
-                NSLog(@"chanpin=%@",[arr objectAtIndex:i]);
-                ChanPin *chanPin = [[ChanPin alloc]init];
-                chanPin.Id = [[[arr objectAtIndex:i] valueForKey:@"id"] intValue];
-                chanPin.miaoshu = [[arr objectAtIndex:i] valueForKey:@"miaoshu"];
-                chanPin.pinpai = [[[arr objectAtIndex:i] valueForKey:@"pinpai"] intValue];
-                chanPin.leixing = [[[arr objectAtIndex:i] valueForKey:@"leixing"] intValue];
-                chanPin.shijian = [[arr objectAtIndex:i] valueForKey:@"shijian"];
-                chanPin.dangkou = [[arr objectAtIndex:i] valueForKey:@"dangkou"];
-                chanPin.jiage = [[[arr objectAtIndex:i] valueForKey:@"jiage"] intValue];
-                chanPin.pics = [[[arr objectAtIndex:i] valueForKey:@"pics"] intValue];
-                chanPin.price = [[[arr objectAtIndex:i] valueForKey:@"price"] intValue];
-                chanPin.upload = [[[arr objectAtIndex:i] valueForKey:@"upload"] intValue];
-                chanPin.state = [[[arr objectAtIndex:i] valueForKey:@"state"] intValue];
-                chanPin.categorys = [[arr objectAtIndex:i] valueForKey:@"categorys"];
-                [cpsArr addObject:chanPin];
-                chanPin = nil;
+                NSDictionary *dic = [arr objectAtIndex:i];
+                ChanPin *chanpin = [[ChanPin alloc]init];
+                NSArray *cpArr = [self properties_aps:[ChanPin class] objc:chanpin];
+                for (NSString *key in dic) {
+                    for (NSString *k in cpArr) {
+                        if ([key isEqualToString:k]) {
+                            [chanpin setValue:[dic valueForKey:key] forKey:key];
+                        }
+                        if ([key isEqualToString:@"id"]) {
+                            [chanpin setValue:[dic valueForKey:key] forKey:@"Id"];
+                            break;
+                        }
+                    }
+                }
+                [cpsArr addObject:chanpin];
+                chanpin = nil;
+
             }
-//            NSLog(@"cps0=%@",[[ovoDic valueForKey:@"cps"] objectAtIndex:0]);
-//            NSLog(@"cps= %@",[ovoDic valueForKey:@"cps"]);
             
             if (cpsArr.count > 0) {
                 ProductViewController *productViewController = [[ProductViewController alloc]initWithNibName:@"ProductViewController" bundle:nil cpsArr:cpsArr];
@@ -104,12 +107,15 @@
                 [productViewController setHidesBottomBarWhenPushed:YES];
                 [self.navigationController pushViewController:productViewController animated:YES];
                 productViewController = nil;
+            }else{
+                [self.view LabelTitle:@"暂无数据！"];
             }
             cpsArr = nil;
             arr = nil;
         }
+        [self.view endSynRequestSignal];
     } failureBlock:^(NSError *error, NSString *responseString) {
-        //
+        [self.view endSynRequestSignal];
     }];
 }
 
@@ -142,21 +148,31 @@
     [self.table reloadData];
 }
 
-
-- (void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:YES];
-//    AKTabBarController *tab = [[AKTabBarController alloc]initWithTabBarHeight:49];
-//    //[tab.tabBarItem setSelectedTab:[tabBar.tabs objectAtIndex:0]];
-//    [tab hideTabBar:AKShowHideFromLeft animated:YES];
-    
-}
-
 - (void)dealloc
 {
     self.table.delegate = nil;
     self.table.dataSource = nil;
     self.table = nil;
+}
+
+//遍历类属性
+- (NSMutableArray *)properties_aps:(Class)aClass objc:(id)aObjc
+{
+    //NSMutableDictionary *props = [NSMutableDictionary dictionary];
+    NSMutableArray *props = [NSMutableArray array];
+    unsigned int outCount, i;
+    objc_property_t *properties = class_copyPropertyList(aClass, &outCount);
+    for (i = 0; i < outCount; i++)
+    {
+        objc_property_t property = properties[i];
+        const char* char_f =property_getName(property);
+        NSString *propertyName = [NSString stringWithUTF8String:char_f];
+        [props addObject:propertyName];
+        //        id propertyValue = [aObjc valueForKey:(NSString *)propertyName];
+        //        if (propertyValue) [props setObject:propertyValue forKey:propertyName];
+    }
+    free(properties);
+    return props;
 }
 
 

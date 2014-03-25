@@ -22,7 +22,6 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         self.st = aRegisterText;
-        NSLog(@"self = %@",aRegisterText);
     }
     return self;
 }
@@ -50,25 +49,11 @@
     if (![self.uname.text isEqualToString:@""] && ![self.psd.text isEqualToString:@""] && ![self.cpsd.text isEqualToString:@""] && ![self.tell.text isEqualToString:@""] && self.uname.text.length >= 6 && self.psd.text.length >= 6 && self.cpsd.text.length >= 6)
     {
         if (![self.psd.text isEqualToString:self.cpsd.text]) {
-            UILabel *lable = [[UILabel alloc]initWithFrame:CGRectMake(50, 350, 220, 20)];
-            lable.backgroundColor = [UIColor blackColor];
-            lable.text = @"两次密码填写不一致！";
-            lable.textAlignment = NSTextAlignmentCenter;
-            lable.textColor = [UIColor whiteColor];
-            [self.view addSubview:lable];
-            [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(hideCollectionLable:) userInfo:lable repeats:NO];
-            lable = nil;
+            [self.view LabelTitle:@"两次密码填写不一致！"];
             return;
         }
         if (![NSString isValidateMobile:self.tell.text]) {
-            UILabel *lable = [[UILabel alloc]initWithFrame:CGRectMake(50, 350, 220, 20)];
-            lable.backgroundColor = [UIColor blackColor];
-            lable.text = @"手机号码格式错误！";
-            lable.textAlignment = NSTextAlignmentCenter;
-            lable.textColor = [UIColor whiteColor];
-            [self.view addSubview:lable];
-            [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(hideCollectionLable:) userInfo:lable repeats:NO];
-            lable = nil;
+            [self.view LabelTitle:@"手机号码格式错误！"];
             return;
         }
         
@@ -77,12 +62,13 @@
         //204220CE-384B-4D31-8834-FF39365A8E77
         //02508B0C-9059-498F-A8C0-BD9B5B8C7AF2
         //***************************缺少uuid的值*******************************//
-        [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": USER_REGISTER,@"uname": self.uname.text,@"psd": self.psd.text,@"tell": self.tell.text,@"uuid": @"uuid"} completionBlock:^(id object) {
+        [self.view showWithType:0 Title:@"提交注册信息中..."];
+        NSString *uuid = [self uuid];
+        [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": USER_REGISTER,@"uname": self.uname.text,@"psd": self.psd.text,@"tell": self.tell.text,@"uuid": uuid} completionBlock:^(id object) {
             if ([[object valueForKey:@"code"] integerValue] == 0) {
+                [self.view endSynRequestSignal];
                 [UserModel clearCurrrentUser];
                 UserModel *userModel = [UserModel shareCurrentUser];
-                NSString *uuid = [self uuid];
-                NSLog(@"2014uuid = %@",uuid);
                 
                 [userModel setValue:self.uname.text forKey:@"uname"];
                 [userModel setValue:self.psd.text forKey:@"psd"];
@@ -96,41 +82,23 @@
                 [archiver finishEncoding];
                 NSString *userModelInfoPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/userModelInfo.txt"];
                 [mData writeToFile:userModelInfoPath atomically:YES];
-                
+                [self.view LabelTitle:@"注册成功"];
+                [self.navigationController popViewControllerAnimated:YES];
             }else{
-                UILabel *lable = [[UILabel alloc]initWithFrame:CGRectMake(20, 350, 280, 20)];
-                lable.backgroundColor = [UIColor blackColor];
-                lable.text = [object objectForKey:@"msg"];
-                lable.textAlignment = NSTextAlignmentCenter;
-                lable.textColor = [UIColor whiteColor];
-                [self.view addSubview:lable];
-                [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(hideCollectionLable:) userInfo:lable repeats:NO];
-                lable = nil;
+                [self.view endSynRequestSignal];
+                [self.view LabelTitle:[object objectForKey:@"msg"]];
             }
             
         } failureBlock:^(NSError *error, NSString *responseString) {
-            //
+            [self.view endSynRequestSignal];
         }];
     }
     else
     {
-        UILabel *lable = [[UILabel alloc]initWithFrame:CGRectMake(40, 350, 240, 20)];
-        lable.backgroundColor = [UIColor blackColor];
-        lable.text = @"注册信息不完整，请继续填写！";
-        lable.textAlignment = NSTextAlignmentCenter;
-        lable.textColor = [UIColor whiteColor];
-        [self.view addSubview:lable];
-        [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(hideCollectionLable:) userInfo:lable repeats:NO];
-        lable = nil;
-        
+        [self.view LabelTitle:@"注册信息不完整，请继续填写！"];
     }
 }
 
-- (void)hideCollectionLable:(NSTimer *)aTimer
-{
-    UILabel *lable = [aTimer userInfo];
-    lable.hidden = YES;
-}
 
 - (NSString*) uuid {
     CFUUIDRef puuid = CFUUIDCreate( nil );

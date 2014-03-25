@@ -10,17 +10,24 @@
 #import "ChanPin.h"
 #import "StyledPageControl.h"
 
-@interface DetailsViewController : CommonViewController<UITableViewDelegate,UITableViewDataSource,UIScrollViewDelegate>
+@protocol DetailsViewControllerDelegate <NSObject>
+
+- (void)deleteChanpin:(ChanPin *)chanpin;
+
+@end
+
+@interface DetailsViewController : CommonViewController<UITableViewDelegate,UITableViewDataSource,UIScrollViewDelegate,UIAlertViewDelegate>
 {
     ChanPin *_chanpin;
     NSMutableArray *_contents;
 }
 @property (weak, nonatomic) IBOutlet UIScrollView *HeaderScrollView;
 @property (weak, nonatomic) IBOutlet UITableView *table;
-@property (copy, nonatomic) NSDictionary *chanPin;
+@property (strong, nonatomic) ChanPin *chanPin;
 @property (weak, nonatomic) IBOutlet StyledPageControl *sPageControl;
+@property (weak, nonatomic) id<DetailsViewControllerDelegate> delegate;
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil chanPin:(NSDictionary *)chanPin;
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil chanPin:(ChanPin *)chanPin;
 
 
 @end

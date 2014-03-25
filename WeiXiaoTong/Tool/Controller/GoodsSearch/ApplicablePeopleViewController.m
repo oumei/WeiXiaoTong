@@ -114,7 +114,8 @@
     return YES;
 }
 
-- (void)changedata{
+- (void)changedata
+{
     if ([[self.searchText.text stringByReplacingOccurrencesOfString:@" " withString:@""] isEqualToString:@""]) {
         _contents = _changeData;
     }else{

@@ -44,14 +44,17 @@
 #import "BaseData.h"
 #import "UserEntity.h"
 #include<objc/runtime.h>
+#import "HttpService.h"
+#import "JSON.h"
 
 @interface DetailsViewController ()
 
 @end
 
 @implementation DetailsViewController
+@synthesize chanPin = _chanpin;
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil chanPin:(NSDictionary *)chanPin
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil chanPin:(ChanPin *)chanPin
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
@@ -63,22 +66,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+//    NSLog(@"%d,%@,%@",self.chanPin.pics,self.chanPin.address,self.chanPin.attrebute);
     _contents = [[NSMutableArray alloc]init];
-    
-    _chanpin = [[ChanPin alloc]init];
-    for (NSString *key in [self.chanPin allKeys]) {
-        NSArray *cpArr = [self properties_aps:[ChanPin class] objc:_chanPin];
-        for (NSString *k in cpArr) {
-            if ([key isEqualToString:k]) {
-                if ([[self.chanPin valueForKey:key] isKindOfClass:[NSString class]]) {
-                    [_chanpin setValue:[self.chanPin valueForKey:key] forKey:key];
-                }else{
-                    [_chanpin setValue:[NSString stringWithFormat:@"%d",[[self.chanPin valueForKey:key] intValue]] forKey:key];
-                }
-            }
-        }
-    }
     
     [self.sPageControl setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
     [self.sPageControl setBackgroundColor:[UIColor clearColor]];
@@ -93,14 +82,11 @@
     self.HeaderScrollView.showsHorizontalScrollIndicator = NO;
     self.HeaderScrollView.showsVerticalScrollIndicator = NO;
     self.HeaderScrollView.contentOffset = CGPointMake(320, self.HeaderScrollView.frame.origin.y);
-    CGFloat h = [UIScreen mainScreen].bounds.size.height/4 * 3;
-    CGFloat w = [UIScreen mainScreen].bounds.size.width;
+    CGFloat h = 240*2;
+    CGFloat w = [UIScreen mainScreen].bounds.size.width*2;
     
     
     ObjectVo *ob = [ObjectVo shareCurrentObjectVo];
-    int tableName = [[[ob valueForKey:@"ue"] valueForKey:@"tableName"] intValue];
-    ;
-    
     for (int i = 0; i < (_chanpin.pics + 2); i++) {
         UIImageView *imageView = [[UIImageView alloc]initWithFrame:CGRectMake(1+(320*i), 0, 318, self.HeaderScrollView.frame.size.height)];
         imageView.image = [UIImage imageNamed:@"loading.png"];
@@ -108,7 +94,7 @@
             if (_chanpin.address) {
                 [imageView setImageWithURL:[NSURL URLWithString:IMAGE_URL_BY_CPID(_chanpin.address, w, h, _chanpin.pics - 1)]];
             }else{
-                NSString *str = [NSString stringWithFormat:@"%d-%d",tableName,_chanpin.Id];
+                NSString *str = [NSString stringWithFormat:@"%d",_chanpin.Id];
                 [imageView setImageWithURL:[NSURL URLWithString:IMAGE_URL_BY_CPID(str, w, h, _chanpin.pics - 1)]];
             }
             
@@ -116,14 +102,14 @@
             if (_chanpin.address) {
                 [imageView setImageWithURL:[NSURL URLWithString:IMAGE_URL_BY_CPID(_chanpin.address, w, h, 0)]];
             }else{
-                NSString *str = [NSString stringWithFormat:@"%d-%d",tableName,_chanpin.Id];
+                NSString *str = [NSString stringWithFormat:@"%d",_chanpin.Id];
                 [imageView setImageWithURL:[NSURL URLWithString:IMAGE_URL_BY_CPID(str, w, h, 0)]];
             }
         }else{
             if (_chanpin.address) {
                 [imageView setImageWithURL:[NSURL URLWithString:IMAGE_URL_BY_CPID(_chanpin.address, w, h, i - 1)]];
             }else{
-                NSString *str = [NSString stringWithFormat:@"%d-%d",tableName,_chanpin.Id];
+                NSString *str = [NSString stringWithFormat:@"%d",_chanpin.Id];
                 [imageView setImageWithURL:[NSURL URLWithString:IMAGE_URL_BY_CPID(str, w, h, i - 1)]];
             }
         }
@@ -135,7 +121,6 @@
     BaseData *baseData = [[BaseData alloc]init];
     for (NSString *key in [[ob valueForKey:@"baseData"] allKeys]) {
         [baseData setValue:[[ob valueForKey:@"baseData"] valueForKey:key] forKey:key];
-        //NSLog(@"bd = %@",[[ob valueForKey:@"baseData"] valueForKey:key]);
     }
     for (int i = 0; i < baseData.xbs.count; i++) {
         int _ID = [[[baseData.xbs objectAtIndex:i] valueForKey:@"id"] intValue];
@@ -254,10 +239,7 @@
                 }
             }
         }
-        
-        //
     }
-    NSLog(@"_con = %@",_contents);
     [self.table reloadData];
     
     UIView *headerView = [[UIView alloc]init];
@@ -280,26 +262,44 @@
     [headerView addSubview:price];
     price = nil;
     
+    NSString *weixin;
+    for (int i = 0; i < baseData.links.count; i++) {
+        NSDictionary *dic = [baseData.links objectAtIndex:i];
+        if ([self.chanPin.dangkou isEqualToString:[dic valueForKey:@"name"]]) {
+            weixin = [dic valueForKey:@"link"];
+        }
+    }
+    
     UIButton *copy = [UIButton buttonWithType:UIButtonTypeCustom];
     copy.frame = CGRectMake(0, hight + 40, 320, 40);
-    [copy setTitle:[NSString stringWithFormat:@" 点击复制供货商微信%d",86452852] forState:0];
+    if (weixin) {
+        [copy setTitle:[NSString stringWithFormat:@" 点击复制供货商微信%@",weixin] forState:0];
+    }else{
+        [copy setTitle:@" 供货商未知" forState:0];
+    }
     [copy setTitleColor:[UIColor blueColor] forState:0];
+    UserEntity *ue = [UserEntity shareCurrentUe];
+    if (self.chanPin.upload == ue.Id) {
+        [copy setTitle:@" 点击删除此款商产品" forState:0];
+        [copy setTitleColor:[UIColor redColor] forState:0];
+    }
     [copy setBackgroundImage:[UIImage imageNamed:@"button_noborder_on.png"] forState:0];
     [copy setBackgroundImage:[UIImage imageNamed:@"button_noborder_over.png"] forState:UIControlStateHighlighted];
     [copy setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];//设置button的title靠左
     [copy addTarget:self action:@selector(copyContact:) forControlEvents:UIControlEventTouchUpInside];
-    UserEntity *ue = [UserEntity shareCurrentUe];
     
-    if (ue.qx == 0) {
-//        if (ue.level < 1) {
-//            price.text = @"代理价格：不详！";
-//        }
-        copy = nil;
-        headerView.frame = CGRectMake(0, 0, 320, hight + 40);
-    }else if(ue.qx == 2){
+    if (ue.qx == 2 && self.chanPin.address == nil) {
         [headerView addSubview:copy];
         copy = nil;
         headerView.frame = CGRectMake(0, 0, 320, hight + 40 + 40);
+        
+    }else if([copy.titleLabel.text rangeOfString:@"点击删除此款商产品"].location != NSNotFound){
+        [headerView addSubview:copy];
+        copy = nil;
+        headerView.frame = CGRectMake(0, 0, 320, hight + 40 + 40);
+    }else{
+        copy = nil;
+        headerView.frame = CGRectMake(0, 0, 320, hight + 40);
     }
     self.table.tableHeaderView = headerView;
     headerView = nil;
@@ -315,23 +315,44 @@
 
 - (void)copyContact:(UIButton *)sender
 {
-    UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
-    pasteboard.string = [sender.titleLabel.text substringWithRange:NSMakeRange(8, sender.titleLabel.text.length - 8)];
+    if ([sender.titleLabel.text rangeOfString:@"点击删除此款商产品"].location != NSNotFound) {
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:nil message:@"确定要删除此款产品吗？" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
+        [alert show];
+        alert = nil;
+    }else{
+        if (sender.titleLabel.text.length > 7) {
+            UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+            pasteboard.string = [sender.titleLabel.text substringWithRange:NSMakeRange(8, sender.titleLabel.text.length - 8)];
+        }
+    }
     
-    UILabel *lable = [[UILabel alloc]initWithFrame:CGRectMake(100, 200, 120, 20)];
-    lable.backgroundColor = [UIColor blackColor];
-    lable.text = @"无网络连接！";
-    lable.textAlignment = NSTextAlignmentCenter;
-    lable.textColor = [UIColor whiteColor];
-    [self.view addSubview:lable];
-    [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(hideCollectionLable:) userInfo:lable repeats:NO];
-    lable = nil;
 }
 
-- (void)hideCollectionLable:(NSTimer *)aTimer
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    UILabel *lable = [aTimer userInfo];
-    lable.hidden = YES;
+    UserEntity *ue = [UserEntity shareCurrentUe];
+    ObjectVo *ob = [ObjectVo shareCurrentObjectVo];
+    if (buttonIndex == 1) {
+        [self.view showWithType:0 Title:@"正在删除..."];
+        [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": DELETE_CHANPIN,@"cpid": [NSString stringWithFormat:@"%d",self.chanPin.Id],@"uuid": ue.uuid,@"uname": ue.userName,@"dataVersions":ob.dataVersions} completionBlock:^(id object) {
+            NSString *ovo = [object valueForKey:@"ovo"];
+            NSDictionary *objectVoDic = [ovo JSONValue];
+            NSString *code = [objectVoDic valueForKey:@"code"];
+            if ([code intValue] == 0){
+                [self.view endSynRequestSignal];
+                [self.view LabelTitle:@"删除成功"];
+                if (self.delegate && [self.delegate respondsToSelector:@selector(deleteChanpin:)]) {
+                    [self.delegate performSelector:@selector(deleteChanpin:) withObject:self.chanPin];
+                }
+                [self.navigationController popViewControllerAnimated:YES];
+            }else{
+                [self.view endSynRequestSignal];
+                [self.view LabelTitle:[objectVoDic valueForKey:@"msg"]];
+            }
+        } failureBlock:^(NSError *error, NSString *responseString) {
+            [self.view endSynRequestSignal];
+        }];
+    }
 }
 
 #pragma UIScrollView delegate

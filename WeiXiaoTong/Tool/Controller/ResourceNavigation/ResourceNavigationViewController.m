@@ -33,6 +33,18 @@
 {
     [super viewDidLoad];
     
+    UIView *leftView = [[UIView alloc]initWithFrame:CGRectMake(0, 5, 30, 30)];
+    UIImageView *icon = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 30, 30)];
+    icon.image = [UIImage imageNamed:@"up_icon.png"];
+    [leftView addSubview:icon];
+    UIBarButtonItem *leftBarButton = [[UIBarButtonItem alloc]initWithCustomView:leftView];
+    self.navigationItem.leftBarButtonItem = leftBarButton;
+    leftView = nil;
+    icon = nil;
+    leftBarButton = nil;
+    
+    self.title = @"资源导航";
+    
     self.bazaars = [[[ObjectVo shareCurrentObjectVo] valueForKey:@"baseData"] valueForKey:@"bazaars"];
 }
 
@@ -46,7 +58,7 @@
 #pragma mark - Private Methods
 - (NSString *)tabImageName
 {
-	return @"市场行情-图标（黑）";
+	return @"source_on.png";
 }
 
 - (NSString *)tabTitle
@@ -105,15 +117,7 @@
             }
         }
         if (arr.count == 0) {
-            UILabel *lable = [[UILabel alloc]initWithFrame:CGRectMake(110, 300, 100, 30)];
-            lable.backgroundColor = [UIColor blackColor];
-            lable.text = @"暂无数据！";
-            lable.textAlignment = NSTextAlignmentCenter;
-            lable.textColor = [UIColor whiteColor];
-            
-            [self.view addSubview:lable];
-            [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(hideCollectionLable:) userInfo:lable repeats:NO];
-            lable = nil;
+            [self.view LabelTitle:@"暂无数据！"];
             return;
         }
         NavigationViewController *navigationViewController = [[NavigationViewController alloc]initWithNibName:@"NavigationViewController" bundle:nil links:arr];
@@ -130,11 +134,6 @@
     lable.hidden = YES;
 }
 
-//- (void)viewWillAppear:(BOOL)animated
-//{
-//    [super viewWillAppear:YES];
-//    [self.navigationController setHidesBottomBarWhenPushed:NO];
-//}
 
 - (void)dealloc
 {

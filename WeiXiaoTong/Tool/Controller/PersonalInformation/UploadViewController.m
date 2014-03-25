@@ -10,6 +10,8 @@
 #import "ObjectVo.h"
 #import "UserEntity.h"
 #import "UploadOperation.h"
+#import "HttpService.h"
+#import "JSON.h"
 
 @interface UploadViewController ()
 
@@ -30,16 +32,18 @@ static int progressNum = 0;
 {
     [super viewDidLoad];
     _images = [[NSMutableArray alloc]init];
+    _bad = [[NSMutableArray alloc]init];
+    _well = [[NSMutableArray alloc]init];
     
     self.data = @[@"选择产品类型"];
     _all = @[@"选择产品类型",@"选择适用人群",@"选择售后服务"];
     _other = @[@"选择产品类型",@"选择适用人群",@"选择售后服务"];
-    _shoes = @[@"选择产品类型",@"选择适用人群",@"选择售后服务",@"选择鞋子类型",@"选择产品材质",@"选择闭合方式"];
+    _shoes = @[@"选择产品类型",@"选择适用人群",@"选择售后服务",@"选择鞋子类型"];
     _watch = @[@"选择产品类型",@"选择适用人群",@"选择售后服务",@"选择手表机芯",@"选择手表表带"];
-    _bag = @[@"选择产品类型",@"选择适用人群",@"选择售后服务",@"选择包包类型",@"选择产品品质",@"选择产品材质"];
+    _bag = @[@"选择产品类型",@"选择适用人群",@"选择售后服务",@"选择包包类型",@"选择产品品质"];
     _wallet = @[@"选择产品类型",@"选择适用人群",@"选择售后服务"];
-    _silk = @[@"选择产品类型",@"选择适用人群",@"选择售后服务",@"选择产品材质"];
-    _belt = @[@"选择产品类型",@"选择适用人群",@"选择售后服务",@"选择产品品质",@"选择产品材质"];
+    _silk = @[@"选择产品类型",@"选择适用人群",@"选择售后服务"];
+    _belt = @[@"选择产品类型",@"选择适用人群",@"选择售后服务",@"选择产品品质"];
     _clothes = @[@"选择产品类型",@"选择适用人群",@"选择售后服务",@"选择服装类型"];
     _hat = @[@"选择产品类型",@"选择适用人群",@"选择售后服务"];
     _glasses = @[@"选择产品类型",@"选择适用人群",@"选择售后服务"];
@@ -135,70 +139,184 @@ static int progressNum = 0;
     footerView.frame = CGRectMake(0, 0, 320, 320);
     self.table.tableFooterView = footerView;
     
-    self.progress = [[UIProgressView alloc]initWithProgressViewStyle:UIProgressViewStyleBar];
-    self.progress.frame=CGRectMake(60, 100, 200, 20);
-    [self.view addSubview:self.progress];
+//    self.progress = [[UIProgressView alloc]initWithProgressViewStyle:UIProgressViewStyleBar];
+//    self.progress.frame=CGRectMake(60, 100, 200, 20);
+//    [self.view addSubview:self.progress];
     
 }
 
 - (void)uploadImageAtion:(UIButton *)sender
 {
-//    if (_images.count > 0) {
-        NSDate *date = [NSDate date];
-        NSTimeZone *zone = [NSTimeZone systemTimeZone];
-        NSInteger interval = [zone secondsFromGMTForDate: date];
-        NSDate *localeDate = [date  dateByAddingTimeInterval: interval];
-        NSString *timeSp = [NSString stringWithFormat:@"%.0f", [localeDate timeIntervalSince1970]*1000];
-        NSLog(@"timeSp:%@",timeSp); //时间戳的值
-    
-        UserEntity *ue = [UserEntity shareCurrentUe];
-        NSString *cpid = [NSString stringWithFormat:@"%@%d",timeSp,ue.Id];
-        //NSLog(@"ti:%@",cpid);
-        //数据要提交到此url
-        for (int i = 0; i < _images.count; i++) {
-            NSString *url = [NSString stringWithFormat:@"http://192.168.1.107:8080/service/upload.do?cpid=%@&name=%d.jpg",cpid,i];
-            UploadOperation *operation = [[UploadOperation alloc]initWithTarget:self selector:@selector(uploadFinish:) url:url image:[_images objectAtIndex:i]];
-            NSOperationQueue *queue = [[NSOperationQueue alloc]init];
-            [queue addOperation:operation];
+    if (![[self.describeText.text stringByReplacingOccurrencesOfString:@" " withString:@""]isEqualToString:@""] && ![[self.address.text stringByReplacingOccurrencesOfString:@" " withString:@""]isEqualToString:@""] && ![[self.price.text stringByReplacingOccurrencesOfString:@" " withString:@""]isEqualToString:@""] && ![[self.agentPrice.text stringByReplacingOccurrencesOfString:@" " withString:@""]isEqualToString:@""])
+    {
+        
+        if (self.describeText.text.length < 15) {
+            [self.view LabelTitle:@"产品描述过短！"];
+            return;
         }
-//    }
+        for (int i = 0; i < self.data.count; i++) {
+            if ([[self.data objectAtIndex:i] length] < 5) {
+                [self.view LabelTitle:@"请选择类型信息"];
+                return;
+            }
+        }
+        if (_images.count > 0) {
+            NSDate *date = [NSDate date];
+            NSTimeZone *zone = [NSTimeZone systemTimeZone];
+            NSInteger interval = [zone secondsFromGMTForDate: date];
+            NSDate *localeDate = [date  dateByAddingTimeInterval: interval];
+            NSString *timeSp = [NSString stringWithFormat:@"%.0f", [localeDate timeIntervalSince1970]*1000];
+            NSLog(@"timeSp:%@",timeSp); //时间戳的值
+            
+            UserEntity *ue = [UserEntity shareCurrentUe];
+            cpid = [NSString stringWithFormat:@"%@%d",timeSp,ue.Id];
+            //NSLog(@"ti:%@",cpid);
+            //数据要提交到此url
+            _spinner = [self.view showSpinner:0 Title:[NSString stringWithFormat:@"正在上传 0/%d",_images.count]];
+            for (int i = 0; i < _images.count; i++) {
+                NSString *url = [NSString stringWithFormat:@"http://115.28.17.18:8080/service/upload.do?cpid=%@&name=%d.jpg",cpid,i];
+                UploadOperation *operation = [[UploadOperation alloc]initWithTarget:self selector:@selector(uploadFinish:) url:url image:[_images objectAtIndex:i]];
+                NSOperationQueue *queue = [[NSOperationQueue alloc]init];
+                [queue addOperation:operation];
+            }
+        }else{
+            [self.view LabelTitle:@"请选择图片"];
+            return;
+        }
+    }else{
+        [self.view LabelTitle:@"信息不完整，请继续填写"];
+    }
+    
 }
 
 - (void)uploadFinish:(NSData *)data
 {
     NSString *str = [[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
+    progressNum = progressNum + 1;
+    //self.progress.progress = progressNum/_images.count;
+    //self.progress.hidden = YES;
     if ([str isEqualToString:@"ok"]) {
-        progressNum = progressNum + 1;
-        self.progress.progress = progressNum/_images.count;
-        if (progressNum == _images.count) {
-            self.progress.hidden = YES;
-            UILabel *lable = [[UILabel alloc]initWithFrame:CGRectMake(100, 150, 120, 20)];
-            lable.backgroundColor = [UIColor blackColor];
-            lable.text = @"上传完成！";
-            lable.textAlignment = NSTextAlignmentCenter;
-            lable.textColor = [UIColor whiteColor];
-            
-            [self.view addSubview:lable];
-            [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(hideCollectionLable:) userInfo:lable repeats:NO];
-            lable = nil;
-        }
+        [_well addObject:str];
+        _spinner.text = [NSString stringWithFormat:@"正在上传 %d/%d",progressNum,_images.count];
     }else{
-        UILabel *lable = [[UILabel alloc]initWithFrame:CGRectMake(100, 200, 120, 20)];
-        lable.backgroundColor = [UIColor blackColor];
-        lable.text = @"上传失败！";
-        lable.textAlignment = NSTextAlignmentCenter;
-        lable.textColor = [UIColor whiteColor];
-        
-        [self.view addSubview:lable];
-        [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(hideCollectionLable:) userInfo:lable repeats:NO];
-        lable = nil;
+        [_bad addObject:str];
     }
-}
 
-- (void)hideCollectionLable:(NSTimer *)aTimer
-{
-    UILabel *lable = [aTimer userInfo];
-    lable.hidden = YES;
+    if (progressNum == _images.count) {
+        ObjectVo *ob = [ObjectVo shareCurrentObjectVo];
+        if (_well.count == _images.count) {
+            NSString *text = @"";
+            if (_ss != nil && [_ss intValue] != -1) {
+                if ([text isEqualToString:@""]) {
+                    text = [NSString stringWithFormat:@"6_%@",_ss];
+                }else{
+                    text = [NSString stringWithFormat:@"%@|6_%@",text,_ss];
+                }
+            }
+            if (_sts != nil && [_sts intValue] != -1) {
+                if ([text isEqualToString:@""]) {
+                    text = [NSString stringWithFormat:@"9_%@",_sts];
+                }else{
+                    text = [NSString stringWithFormat:@"%@|9_%@",text,_sts];
+                }
+            }
+            if (_cs != nil && [_cs intValue] != -1) {
+                if ([text isEqualToString:@""]) {
+                    text = [NSString stringWithFormat:@"3_%@",_cs];
+                }else{
+                    text = [NSString stringWithFormat:@"%@|3_%@",text,_cs];
+                }
+            }
+            if (_ws != nil && [_ws intValue] != -1) {
+                if ([text isEqualToString:@""]) {
+                    text = [NSString stringWithFormat:@"10_%@",_ws];
+                }else{
+                    text = [NSString stringWithFormat:@"%@|10_%@",text,_ws];
+                }
+            }
+            if (_bts != nil && [_bts intValue] != -1) {
+                if ([text isEqualToString:@""]) {
+                    text = [NSString stringWithFormat:@"2_%@",_bts];
+                }else{
+                    text = [NSString stringWithFormat:@"%@|2_%@",text,_bts];
+                }
+            }
+            if (_bqs != nil && [_bqs intValue] != -1) {
+                if ([text isEqualToString:@""]) {
+                    text = [NSString stringWithFormat:@"1_%@",_bqs];
+                }else{
+                    text = [NSString stringWithFormat:@"%@|1_%@",text,_bqs];
+                }
+            }
+            if (_cts != nil && [_cts intValue] != -1) {
+                if ([text isEqualToString:@""]) {
+                    text = [NSString stringWithFormat:@"4_%@",_cts];
+                }else{
+                    text = [NSString stringWithFormat:@"%@|4_%@",text,_cts];
+                }
+            }
+            if (_mts != nil && [_mts intValue] != -1) {
+                if ([text isEqualToString:@""]) {
+                    text = [NSString stringWithFormat:@"12_%@",_mts];
+                }else{
+                    text = [NSString stringWithFormat:@"%@|12_%@",text,_mts];
+                }
+            }
+            UserEntity *ue = [UserEntity shareCurrentUe];
+            NSDictionary *params = @{@"interface": UPLOAD_CHANPIN,@"code": @"1",@"tempId": cpid,@"uname": ue.userName,@"uuid": ue.uuid,@"miaoshu": self.describeText.text,@"pinpai": @"0",@"leixing": _lx,@"xingbie": _xb,@"jiage": self.price.text,@"pics": [NSString stringWithFormat:@"%d",_images.count],@"price": self.agentPrice.text,@"categorys": text,@"dangkou": self.address.text,@"isSelf": @"1",@"dataVersions":ob.dataVersions};
+            [[HttpService sharedInstance]postRequestWithUrl:DEFAULT_URL params:params completionBlock:^(id object) {
+                NSString *ovo = [object valueForKey:@"ovo"];
+                NSDictionary *objectVoDic = [ovo JSONValue];
+                NSString *code = [objectVoDic valueForKey:@"code"];
+                NSLog(@"%@",[objectVoDic valueForKey:@"msg"]);
+                if ([code intValue] == 0) {
+                    [self.view LabelTitle:@"上传完成！"];
+                    
+                    self.describeText.text = nil;
+                    self.address.text = nil;
+                    self.price.text = nil;
+                    self.agentPrice.text = nil;
+                    _images = nil;
+                    [_bad removeAllObjects];
+                    [_well removeAllObjects];
+                    _bad = nil;
+                    _well = nil;
+                    progressNum = 0;
+                    [self.imagesView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+                    self.chooseBtn.frame = CGRectMake(5, 5, 60, 60);
+                    [self.imagesView addSubview:self.chooseBtn];
+                    [self.table reloadData];
+                    [self.view endSynRequestSignal];
+                }else{
+                    [self.view endSynRequestSignal];
+                    [self.view LabelTitle:[objectVoDic valueForKey:@"msg"]];
+                }
+            } failureBlock:^(NSError *error, NSString *responseString) {
+                [self.view endSynRequestSignal];
+            }];
+            
+        }else{
+            [self.view endSynRequestSignal];
+            [_bad removeAllObjects];
+            [_well removeAllObjects];
+            _bad = nil;
+            _well = nil;
+            progressNum = 0;
+            UserEntity *ue = [UserEntity shareCurrentUe];
+            NSDictionary *params = @{@"interface": UPLOAD_CHANPIN,@"code": @"1",@"tempId": cpid,@"uname": ue.userName,@"uuid": ue.uuid,@"miaoshu": self.describeText.text,@"pinpai": @"0",@"leixing": _lx,@"xingbie": _xb,@"jiage": self.price.text,@"pics": [NSString stringWithFormat:@"%d",_images.count],@"price": self.agentPrice.text,@"categorys": @"",@"dangkou": self.address.text,@"dataVersions":ob.dataVersions};
+            [[HttpService sharedInstance]postRequestWithUrl:DEFAULT_URL params:params completionBlock:^(id object) {
+                NSString *ovo = [object valueForKey:@"ovo"];
+                NSDictionary *objectVoDic = [ovo JSONValue];
+                NSString *code = [objectVoDic valueForKey:@"code"];
+                //            NSLog(@"%@",[objectVoDic valueForKey:@"msg"]);
+                if ([code intValue] == 0) {
+                    [self.view LabelTitle:@"上传失败！"];
+                }
+            } failureBlock:^(NSError *error, NSString *responseString) {
+                //
+            }];
+        }
+    }
 }
 
 - (void)chooseImages:(UIButton *)sender
@@ -261,7 +379,7 @@ static int progressNum = 0;
         
         for (int i=0; i < assets.count; i++) {
             ALAsset *asset=assets[i];
-            NSLog(@"%lld",asset.defaultRepresentation.size);//图片的大小
+//            NSLog(@"%lld",asset.defaultRepresentation.size);//图片的大小
             UIImage *tempImg=[UIImage imageWithCGImage:asset.defaultRepresentation.fullScreenImage];
             [_images addObject:tempImg];
             
@@ -447,10 +565,6 @@ static int progressNum = 0;
             _ss = [_ids objectAtIndex:apIndexPath.row];
         }else if ([cell.btn.titleLabel.text rangeOfString:@"鞋子类型"].location != NSNotFound){
             _sts = [_ids objectAtIndex:apIndexPath.row];
-        }else if ([cell.btn.titleLabel.text rangeOfString:@"产品材质"].location != NSNotFound){
-            _ms = [_ids objectAtIndex:apIndexPath.row];
-        }else if ([cell.btn.titleLabel.text rangeOfString:@"闭合方式"].location != NSNotFound){
-            _bhs = [_ids objectAtIndex:apIndexPath.row];
         }else if ([cell.btn.titleLabel.text rangeOfString:@"手表机芯"].location != NSNotFound){
             _cs = [_ids objectAtIndex:apIndexPath.row];
         }else if ([cell.btn.titleLabel.text rangeOfString:@"手表表带"].location != NSNotFound){
@@ -485,22 +599,22 @@ static int progressNum = 0;
                         [cell.btn setTitle:[NSString stringWithFormat:@"  鞋子类型：%@",[[sts objectAtIndex:i] valueForKey:@"name"]] forState:0];
                     }
                 }
-            }else if ([cell.btn.titleLabel.text rangeOfString:@"产品材质"].location != NSNotFound && _ms != nil) {
-                NSLog(@"cell.text = %@",cell.btn.titleLabel.text);
-                NSArray *ms = [baseData valueForKey:@"ms"];
-                for (int i = 0; i < ms.count; i++) {
-                    if ([[ms objectAtIndex:i] valueForKey:@"id"] == _ms && [_ms intValue] != -1) {
-                        [cell.btn setTitle:[NSString stringWithFormat:@"  产品材质：%@",[[ms objectAtIndex:i] valueForKey:@"name"]] forState:0];
-                    }
-                }
-            }else if ([cell.btn.titleLabel.text rangeOfString:@"闭合方式"].location != NSNotFound && _bhs != nil) {
-                NSLog(@"cell.text = %@",cell.btn.titleLabel.text);
-                NSArray *bhs = [baseData valueForKey:@"bhs"];
-                for (int i = 0; i < bhs.count; i++) {
-                    if ([[bhs objectAtIndex:i] valueForKey:@"id"] == _bhs && [_bhs intValue] != -1) {
-                        [cell.btn setTitle:[NSString stringWithFormat:@"  闭合方式：%@",[[bhs objectAtIndex:i] valueForKey:@"name"]] forState:0];
-                    }
-                }
+//            }else if ([cell.btn.titleLabel.text rangeOfString:@"产品材质"].location != NSNotFound && _ms != nil) {
+//                NSLog(@"cell.text = %@",cell.btn.titleLabel.text);
+//                NSArray *ms = [baseData valueForKey:@"ms"];
+//                for (int i = 0; i < ms.count; i++) {
+//                    if ([[ms objectAtIndex:i] valueForKey:@"id"] == _ms && [_ms intValue] != -1) {
+//                        [cell.btn setTitle:[NSString stringWithFormat:@"  产品材质：%@",[[ms objectAtIndex:i] valueForKey:@"name"]] forState:0];
+//                    }
+//                }
+//            }else if ([cell.btn.titleLabel.text rangeOfString:@"闭合方式"].location != NSNotFound && _bhs != nil) {
+//                NSLog(@"cell.text = %@",cell.btn.titleLabel.text);
+//                NSArray *bhs = [baseData valueForKey:@"bhs"];
+//                for (int i = 0; i < bhs.count; i++) {
+//                    if ([[bhs objectAtIndex:i] valueForKey:@"id"] == _bhs && [_bhs intValue] != -1) {
+//                        [cell.btn setTitle:[NSString stringWithFormat:@"  闭合方式：%@",[[bhs objectAtIndex:i] valueForKey:@"name"]] forState:0];
+//                    }
+//                }
             }else if ([cell.btn.titleLabel.text rangeOfString:@"手表机芯"].location != NSNotFound && _cs != nil) {
                 NSLog(@"cell.text = %@",cell.btn.titleLabel.text);
                 NSArray *cs = [baseData valueForKey:@"cs"];
@@ -583,10 +697,10 @@ static int progressNum = 0;
         _ss = nil;
     }else if ([cell.btn.titleLabel.text rangeOfString:@"鞋子类型"].location != NSNotFound){
         _sts = nil;
-    }else if ([cell.btn.titleLabel.text rangeOfString:@"产品材质"].location != NSNotFound){
-        _ms = nil;
-    }else if ([cell.btn.titleLabel.text rangeOfString:@"闭合方式"].location != NSNotFound){
-        _bhs = nil;
+//    }else if ([cell.btn.titleLabel.text rangeOfString:@"产品材质"].location != NSNotFound){
+//        _ms = nil;
+//    }else if ([cell.btn.titleLabel.text rangeOfString:@"闭合方式"].location != NSNotFound){
+//        _bhs = nil;
     }else if ([cell.btn.titleLabel.text rangeOfString:@"手表机芯"].location != NSNotFound){
         _cs = nil;
     }else if ([cell.btn.titleLabel.text rangeOfString:@"手表表带"].location != NSNotFound){

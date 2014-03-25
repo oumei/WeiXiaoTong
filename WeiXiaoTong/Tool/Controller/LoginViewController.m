@@ -17,7 +17,6 @@
 #import "UserEntity.h"
 #import "BaseData.h"
 #import "Reachability.h"
-#import "UIView+SynRequestSignal.h"
 #include<objc/runtime.h>
 
 
@@ -74,7 +73,6 @@
 //    NSString *userModelInfoPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/userModelInfo.txt"];
 //    [mData writeToFile:userModelInfoPath atomically:YES];
 
-    
     [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": CONFIG} completionBlock:^(id object) {
         [Config clearCurrentConfig];
         Config *config = [Config shareCurrentConfig];
@@ -151,15 +149,7 @@
         //*****************************网络判断***************************************//
         if ([Reachability reachabilityForInternetConnection].currentReachabilityStatus == NotReachable && [Reachability reachabilityForLocalWiFi].currentReachabilityStatus == NotReachable)
         {
-            UILabel *lable = [[UILabel alloc]initWithFrame:CGRectMake(50, 200, 220, 20)];
-            lable.backgroundColor = [UIColor blackColor];
-            lable.text = @"无网络连接！";
-            lable.textAlignment = NSTextAlignmentCenter;
-            lable.textColor = [UIColor whiteColor];
-            
-            [self.view addSubview:lable];
-            [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(hideCollectionLable:) userInfo:lable repeats:NO];
-            lable = nil;
+            [self.view LabelTitle:@"无网络连接！"];
             //NSLog(@"无网络连接");
         }else{
             //**************************有网络的操作**************************************//
@@ -170,7 +160,7 @@
             //02508B0C-9059-498F-A8C0-BD9B5B8C7AF2
             
             [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": USER_LOGIN,@"psd": self.psd.text,@"uname": self.uname.text,@"uuid": user.uuid} completionBlock:^(id object) {
-                //            NSLog(@"dic = %@",object);
+                
                 NSString *ovo = [object valueForKey:@"ovo"];
                 NSDictionary *objectVoDic = [ovo JSONValue];
                 NSString *code = [objectVoDic valueForKey:@"code"];
@@ -179,8 +169,6 @@
                     ObjectVo *objectVo = [ObjectVo shareCurrentObjectVo];
                     
                     for (NSString *key in [objectVoDic allKeys]) {
-//                        NSLog(@"key = %@",key);
-//                        NSLog(@"value=%@",[objectVoDic valueForKey:@"ue"]);
                         NSArray *obArr = [self properties_aps:[ObjectVo class] objc:objectVo];
                         for (NSString *obKey in obArr) {
                             if ([key isEqualToString:obKey]) {
@@ -195,16 +183,16 @@
                                             NSArray *uArr = [self properties_aps:[UserEntity class] objc:ue];
                                             for (NSString *u in uArr) {
                                                 if ([uekey isEqualToString:u]) {
-                                                    if ([[ueDic valueForKey:uekey] isKindOfClass:[NSString class]]) {
-                                                        [ue setValue:[ueDic valueForKey:uekey] forKey:uekey];
-                                                    }else{
-                                                        [ue setValue:[NSString stringWithFormat:@"%d",[[ueDic valueForKey:uekey] intValue]] forKey:uekey];
-                                                    }
+                                                    [ue setValue:[ueDic valueForKey:uekey] forKey:uekey];
+                                                }
+                                                if ([uekey isEqualToString:@"id"]) {
+                                                    [ue setValue:[ueDic valueForKey:uekey] forKey:uekey];
+                                                    break;
                                                 }
                                             }
                                             
                                         }
-                                        
+
                                         // 将个人信息全部持久化到documents中，可通过ue的单例获取登录了的用户的个人信息
                                         NSMutableData *mData = [[NSMutableData alloc]init];
                                         NSKeyedArchiver *archiver=[[NSKeyedArchiver alloc] initForWritingWithMutableData:mData];
@@ -218,12 +206,7 @@
                                     
                                     [objectVo setValue:[objectVoDic valueForKey:key] forKey:key];
                                 }else{
-                                    
-                                    if ([[objectVoDic valueForKey:key] isKindOfClass:[NSString class]]) {
-                                        [objectVo setValue:[objectVoDic valueForKey:key] forKey:key];
-                                    }else{
-                                        [objectVo setValue:[NSString stringWithFormat:@"%d",[[objectVoDic valueForKey:key] intValue]] forKey:key];
-                                    }
+                                    [objectVo setValue:[objectVoDic valueForKey:key] forKey:key];
                                 }
                             }
                         }
@@ -240,42 +223,20 @@
                     [self.view endSynRequestSignal];
                     [ControlCenter makeKeyAndVisible];
                 }else{
-                    UILabel *lable = [[UILabel alloc]initWithFrame:CGRectMake(40, 350, 240, 20)];
-                    lable.backgroundColor = [UIColor blackColor];
-                    lable.text = [objectVoDic valueForKey:@"msg"];
-                    lable.textAlignment = NSTextAlignmentCenter;
-                    lable.textColor = [UIColor whiteColor];
-                    
-                    [self.view addSubview:lable];
-                    [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(hideCollectionLable:) userInfo:lable repeats:NO];
-                    lable = nil;
+                    [self.view LabelTitle:[objectVoDic valueForKey:@"msg"]];
                     [self.view endSynRequestSignal];
                 }
             } failureBlock:^(NSError *error, NSString *responseString) {
-                //
+                [self.view endSynRequestSignal];
             }];
         }
     }
     else{
         
-        UILabel *lable = [[UILabel alloc]initWithFrame:CGRectMake(40, 350, 240, 20)];
-        lable.backgroundColor = [UIColor blackColor];
-        lable.text = @"注册信息不完整，请继续填写！";
-        lable.textAlignment = NSTextAlignmentCenter;
-        lable.textColor = [UIColor whiteColor];
-        
-        [self.view addSubview:lable];
-        [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(hideCollectionLable:) userInfo:lable repeats:NO];
-        lable = nil;
+        [self.view LabelTitle:@"注册信息不完整，请继续填写！"];
     }
     
     
-}
-
-- (void)hideCollectionLable:(NSTimer *)aTimer
-{
-    UILabel *lable = [aTimer userInfo];
-    lable.hidden = YES;
 }
 
 
@@ -288,15 +249,7 @@
     
     if ([Reachability reachabilityForInternetConnection].currentReachabilityStatus == NotReachable && [Reachability reachabilityForLocalWiFi].currentReachabilityStatus == NotReachable)
     {
-        UILabel *lable = [[UILabel alloc]initWithFrame:CGRectMake(50, 200, 220, 20)];
-        lable.backgroundColor = [UIColor blackColor];
-        lable.text = @"无网络连接！";
-        lable.textAlignment = NSTextAlignmentCenter;
-        lable.textColor = [UIColor whiteColor];
-        
-        [self.view addSubview:lable];
-        [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(hideCollectionLable:) userInfo:lable repeats:NO];
-        lable = nil;
+        [self.view LabelTitle:@"无网络连接！"];
         //NSLog(@"无网络连接");
     }
     

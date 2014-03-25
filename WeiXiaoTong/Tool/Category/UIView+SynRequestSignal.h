@@ -18,5 +18,7 @@ typedef enum {
 
 - (void)showWithType:(requestSignalType)aType Title:(NSString *)aTitle;
 - (void)endSynRequestSignal;
+- (void)LabelTitle:(NSString *)aTitle;
+- (UILabel *)showSpinner:(requestSignalType)aType Title:(NSString *)aTitle;
 
 @end
