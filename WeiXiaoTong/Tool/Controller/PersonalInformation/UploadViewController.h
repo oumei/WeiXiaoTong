@@ -59,6 +59,6 @@
 @property (strong, nonatomic) UIView *lineFour;
 @property (strong, nonatomic) UIView *imagesView;
 @property (strong, nonatomic) UIButton *chooseBtn;
-//@property (strong, nonatomic) UIProgressView *progress;
-
+@property (strong, nonatomic) NSString *addressText;
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil address:(NSString *)address;
 @end

@@ -37,6 +37,7 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:YES];
+    self.registerWebView.scrollView.bounces = NO;
     [self.registerWebView loadHTMLString:self.st baseURL:[[NSBundle mainBundle] bundleURL]];
 }
 

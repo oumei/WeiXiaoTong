@@ -19,6 +19,7 @@
     NSString *_dataVersions;
     NSDictionary *_ue;
     NSDictionary *_baseData;
+    NSDictionary *_suser;
 }
 @property(nonatomic,assign)int code;
 @property(nonatomic,copy)NSString *msg;
@@ -26,6 +27,7 @@
 //@property(nonatomic,copy)UserEntity *ue;
 @property(nonatomic,copy)NSDictionary *baseData;
 @property(nonatomic,copy)NSDictionary *ue;
+@property(nonatomic,copy)NSDictionary *suser;
 @property(nonatomic,copy)NSString *dataVersions;
 
 + (ObjectVo *)shareCurrentObjectVo;
@@ -34,6 +36,7 @@
                msg:(NSString *)aMsg
           baseData:(NSDictionary *)aBaseData
       dataVersions:(NSString *)aDataVersions
-        userEntity:(NSDictionary *)aUE;
+        userEntity:(NSDictionary *)aUE
+           suser:(NSDictionary *)aSuser;
 
 @end

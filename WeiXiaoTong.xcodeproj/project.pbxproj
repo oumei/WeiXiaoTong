@@ -82,7 +82,6 @@
 		35A57BB018BA238000339A66 /* ObjectVo.m in Sources */ = {isa = PBXBuildFile; fileRef = 35A57BAF18BA238000339A66 /* ObjectVo.m */; };
 		35A57BB918BA249800339A66 /* ConfigVo.m in Sources */ = {isa = PBXBuildFile; fileRef = 35A57BB818BA249800339A66 /* ConfigVo.m */; };
 		35A57BBC18BA250600339A66 /* FriendsVo.m in Sources */ = {isa = PBXBuildFile; fileRef = 35A57BBB18BA250600339A66 /* FriendsVo.m */; };
-		35A57BC218BA25E300339A66 /* ResultModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 35A57BC118BA25E300339A66 /* ResultModel.m */; };
 		35A57BC518BA265100339A66 /* SeacheVo.m in Sources */ = {isa = PBXBuildFile; fileRef = 35A57BC418BA265100339A66 /* SeacheVo.m */; };
 		35A57BC818BA267500339A66 /* SourceVo.m in Sources */ = {isa = PBXBuildFile; fileRef = 35A57BC718BA267500339A66 /* SourceVo.m */; };
 		35A57BCB18BA26C900339A66 /* AddFriendVo.m in Sources */ = {isa = PBXBuildFile; fileRef = 35A57BCA18BA26C900339A66 /* AddFriendVo.m */; };
@@ -223,6 +222,7 @@
 		35B8256F18CF15860000A317 /* UploadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 35B8256D18CF15860000A317 /* UploadViewController.m */; };
 		35B8257018CF15860000A317 /* UploadViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 35B8256E18CF15860000A317 /* UploadViewController.xib */; };
 		35C9D48518BC64F60033F599 /* UserModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 35C9D48418BC64F60033F599 /* UserModel.m */; };
+		35CDE69F18E2E3380090B1C7 /* ResultsModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 35CDE69E18E2E3380090B1C7 /* ResultsModel.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -362,8 +362,6 @@
 		35A57BB818BA249800339A66 /* ConfigVo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConfigVo.m; sourceTree = "<group>"; };
 		35A57BBA18BA250600339A66 /* FriendsVo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FriendsVo.h; sourceTree = "<group>"; };
 		35A57BBB18BA250600339A66 /* FriendsVo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FriendsVo.m; sourceTree = "<group>"; };
-		35A57BC018BA25E300339A66 /* ResultModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ResultModel.h; sourceTree = "<group>"; };
-		35A57BC118BA25E300339A66 /* ResultModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ResultModel.m; sourceTree = "<group>"; };
 		35A57BC318BA265100339A66 /* SeacheVo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SeacheVo.h; sourceTree = "<group>"; };
 		35A57BC418BA265100339A66 /* SeacheVo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SeacheVo.m; sourceTree = "<group>"; };
 		35A57BC618BA267500339A66 /* SourceVo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SourceVo.h; sourceTree = "<group>"; };
@@ -580,6 +578,8 @@
 		35B8256E18CF15860000A317 /* UploadViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UploadViewController.xib; sourceTree = "<group>"; };
 		35C9D48318BC64F60033F599 /* UserModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserModel.h; sourceTree = "<group>"; };
 		35C9D48418BC64F60033F599 /* UserModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserModel.m; sourceTree = "<group>"; };
+		35CDE69D18E2E3380090B1C7 /* ResultsModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ResultsModel.h; sourceTree = "<group>"; };
+		35CDE69E18E2E3380090B1C7 /* ResultsModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ResultsModel.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -931,6 +931,8 @@
 				35A57BA818BA1FFE00339A66 /* XingBie.m */,
 				35C9D48318BC64F60033F599 /* UserModel.h */,
 				35C9D48418BC64F60033F599 /* UserModel.m */,
+				35CDE69D18E2E3380090B1C7 /* ResultsModel.h */,
+				35CDE69E18E2E3380090B1C7 /* ResultsModel.m */,
 			);
 			path = Entity;
 			sourceTree = "<group>";
@@ -952,8 +954,6 @@
 				35A57BD018BA27A500339A66 /* LoginVo.m */,
 				35A57BAE18BA238000339A66 /* ObjectVo.h */,
 				35A57BAF18BA238000339A66 /* ObjectVo.m */,
-				35A57BC018BA25E300339A66 /* ResultModel.h */,
-				35A57BC118BA25E300339A66 /* ResultModel.m */,
 				35A57BC618BA267500339A66 /* SourceVo.h */,
 				35A57BC718BA267500339A66 /* SourceVo.m */,
 				35A57BC318BA265100339A66 /* SeacheVo.h */,
@@ -1403,7 +1403,6 @@
 				35A878FD18BDAF5000EDC246 /* UIImage+Util.m in Sources */,
 				35A1F85118BB226800702B74 /* UINavigationBar+Custom.m in Sources */,
 				35A57B9718BA186D00339A66 /* LeiXing.m in Sources */,
-				35A57BC218BA25E300339A66 /* ResultModel.m in Sources */,
 				35A77FA318C621220028D391 /* CheckApplicationViewController.m in Sources */,
 				35A68B7E18C1AB8700E17F8C /* UIImage+WebP.m in Sources */,
 				35A1F94E18BB2ED600702B74 /* GoodSearchViewController.m in Sources */,
@@ -1413,6 +1412,7 @@
 				35A57BB918BA249800339A66 /* ConfigVo.m in Sources */,
 				35A99BB918D993F90028E484 /* UploadOperation.m in Sources */,
 				35A942E518C0E44500533758 /* DetailsViewController.m in Sources */,
+				35CDE69F18E2E3380090B1C7 /* ResultsModel.m in Sources */,
 				35A879B818BE31A900EDC246 /* HttpService.m in Sources */,
 				35A57B8518BA15B300339A66 /* Service.m in Sources */,
 				35AF07E918DC1FE70042923D /* DownloadImageOperation.m in Sources */,

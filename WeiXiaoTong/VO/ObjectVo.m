@@ -14,6 +14,7 @@
 @synthesize baseData = _baseData;
 @synthesize dataVersions = _dataVersions;
 @synthesize ue = _ue;
+@synthesize suser = _suser;
 
 + (ObjectVo *)shareCurrentObjectVo
 {
@@ -51,7 +52,7 @@
     }
 }
 
-- (id)initwithCode:(int)aCode msg:(NSString *)aMsg baseData:(NSDictionary *)aBaseData dataVersions:(NSString *)aDataVersions userEntity:(NSDictionary *)aUE
+- (id)initwithCode:(int)aCode msg:(NSString *)aMsg baseData:(NSDictionary *)aBaseData dataVersions:(NSString *)aDataVersions userEntity:(NSDictionary *)aUE suser:(NSDictionary *)aSuser
 {
     if (self == [super init])
     {
@@ -60,6 +61,7 @@
         self.baseData = aBaseData;
         self.dataVersions = aDataVersions;
         self.ue = aUE;
+        self.suser = aSuser;
     }
     return self;
 }
@@ -71,17 +73,18 @@
     [encoder encodeObject:self.baseData forKey:@"baseData"];
     [encoder encodeObject:self.dataVersions forKey:@"dataVersions"];
     [encoder encodeObject:self.ue forKey:@"ue"];
+    [encoder encodeObject:self.suser forKey:@"suser"];
 }
 
 - (id)initWithCoder:(NSCoder *)decoder
 {
-    
     if (self = [super init]) {
         self.msg = [decoder decodeObjectForKey:@"msg"];
         self.code = [decoder decodeIntForKey:@"code"];
         self.baseData = [decoder decodeObjectForKey:@"baseData"];
         self.dataVersions = [decoder decodeObjectForKey:@"dataVersions"];
         self.ue = [decoder decodeObjectForKey:@"ue"];
+        self.suser = [decoder decodeObjectForKey:@"suser"];
     }
     return self;
     

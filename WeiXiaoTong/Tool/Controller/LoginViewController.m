@@ -39,6 +39,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.loginWebView.scrollView.bounces = NO;
     //[self.navigationController.navigationBar setBackgroundImage:[self image]];
     self.psd.secureTextEntry = YES;
     

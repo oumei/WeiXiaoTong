@@ -19,11 +19,11 @@
 
 @implementation UploadViewController
 static int progressNum = 0;
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil address:(NSString *)address
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        // Custom initialization
+        self.addressText = address;
     }
     return self;
 }
@@ -31,6 +31,7 @@ static int progressNum = 0;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
     _images = [[NSMutableArray alloc]init];
     _bad = [[NSMutableArray alloc]init];
     _well = [[NSMutableArray alloc]init];
@@ -263,7 +264,12 @@ static int progressNum = 0;
                 }
             }
             UserEntity *ue = [UserEntity shareCurrentUe];
-            NSDictionary *params = @{@"interface": UPLOAD_CHANPIN,@"code": @"1",@"tempId": cpid,@"uname": ue.userName,@"uuid": ue.uuid,@"miaoshu": self.describeText.text,@"pinpai": @"0",@"leixing": _lx,@"xingbie": _xb,@"jiage": self.price.text,@"pics": [NSString stringWithFormat:@"%d",_images.count],@"price": self.agentPrice.text,@"categorys": text,@"dangkou": self.address.text,@"isSelf": @"1",@"dataVersions":ob.dataVersions};
+            NSDictionary *params;
+            if (self.addressText) {
+                params = @{@"interface": UPLOAD_CHANPIN,@"code": @"1",@"tempId": cpid,@"uname": ue.userName,@"uuid": ue.uuid,@"miaoshu": self.describeText.text,@"pinpai": @"0",@"leixing": _lx,@"xingbie": _xb,@"jiage": self.price.text,@"pics": [NSString stringWithFormat:@"%d",_images.count],@"price": self.agentPrice.text,@"categorys": text,@"dangkou": self.address.text,@"dataVersions":ob.dataVersions};
+            }else{
+                params = @{@"interface": UPLOAD_CHANPIN,@"code": @"1",@"tempId": cpid,@"uname": ue.userName,@"uuid": ue.uuid,@"miaoshu": self.describeText.text,@"pinpai": @"0",@"leixing": _lx,@"xingbie": _xb,@"jiage": self.price.text,@"pics": [NSString stringWithFormat:@"%d",_images.count],@"price": self.agentPrice.text,@"categorys": text,@"dangkou": self.address.text,@"isSelf": @"1",@"dataVersions":ob.dataVersions};
+            }
             [[HttpService sharedInstance]postRequestWithUrl:DEFAULT_URL params:params completionBlock:^(id object) {
                 NSString *ovo = [object valueForKey:@"ovo"];
                 NSDictionary *objectVoDic = [ovo JSONValue];
@@ -276,7 +282,7 @@ static int progressNum = 0;
                     self.address.text = nil;
                     self.price.text = nil;
                     self.agentPrice.text = nil;
-                    _images = nil;
+                    [_images removeAllObjects];
                     [_bad removeAllObjects];
                     [_well removeAllObjects];
                     _bad = nil;
@@ -801,6 +807,16 @@ static int progressNum = 0;
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:YES];
+    if (self.addressText) {
+        self.address.text = self.addressText;
+        self.address.enabled = NO;
+    }
+    
 }
 
 @end

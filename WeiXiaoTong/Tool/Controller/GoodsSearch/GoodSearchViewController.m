@@ -16,6 +16,7 @@
 #import "JSON.h"
 #import "ChanPin.h"
 #include<objc/runtime.h>
+#import "UploadViewController.h"
 
 @interface GoodSearchViewController ()
 
@@ -414,6 +415,13 @@
         sender.enabled = YES;
     }];
     
+}
+
+- (void)upLoadImage:(id)sener suser:(NSDictionary *)suser
+{
+    UploadViewController *uploadViewController = [[UploadViewController alloc]initWithNibName:@"UploadViewController" bundle:nil address:@"123"];
+    [self.navigationController pushViewController:uploadViewController animated:YES];
+    uploadViewController = nil;
 }
 
 - (void)removeSelectedAttributes:(id)sender

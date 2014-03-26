@@ -31,8 +31,13 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    NSArray *array = @[@" 关闭图片水印",@" 开启图片水印",@" 清理缓存垃圾",@" 上传产品到私有资源",@" 返回登录"];
+    UserEntity *ue = [UserEntity shareCurrentUe];
+    NSArray *array;
+    if (ue.qx == 2) {
+        array = @[@" 关闭图片水印",@" 开启图片水印",@" 清理缓存垃圾",@" 上传产品到私有资源",@" 返回登录"];
+    }else{
+        array = @[@" 关闭图片水印",@" 开启图片水印",@" 清理缓存垃圾",@" 返回登录"];
+    }
     self.data = array;
     [self.table reloadData];
     
@@ -48,7 +53,7 @@
     
     self.title = @"个人信息";
     
-    UserEntity *ue = [UserEntity shareCurrentUe];
+    
     self.userName.text = ue.userName;
     if (ue.daoqi) {
         NSDate *date = [NSDate dateWithTimeIntervalSince1970:[[NSString stringWithFormat:@"%d",ue.daoqi] floatValue]/1000];
@@ -76,7 +81,16 @@
 
 - (void)clearCache:(id)sender
 {
-    
+    NSString *path = [NSHomeDirectory() stringByAppendingPathComponent:@"Library/Caches/com.hackemist.SDWebImageCache.default"];
+    NSFileManager *fm = [NSFileManager defaultManager];
+    if ([fm fileExistsAtPath:path]) {
+        NSError *error = nil;
+        [fm removeItemAtPath:path error:&error];
+        [self.view LabelTitle:@"清理完成"];
+    } else {
+        [self.view LabelTitle:@"没有缓存垃圾"];
+    }
+
 }
 
 - (void)uploadAction:(id)sender

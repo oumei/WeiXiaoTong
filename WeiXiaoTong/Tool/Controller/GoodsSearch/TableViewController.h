@@ -12,6 +12,7 @@
 - (void)seletedCell:(UIButton *)sender IndexPath:(NSIndexPath *)indexPath;
 - (void)queryGoods:(id)sender;
 - (void)removeSelectedAttributes:(id)sender;
+- (void)upLoadImage:(id)sener suser:(NSDictionary *)suser;
 @end
 
 @interface TableViewController : CommonViewController<UITableViewDataSource,UITableViewDelegate,TableCellDelegate>

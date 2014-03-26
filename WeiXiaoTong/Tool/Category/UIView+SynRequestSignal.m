@@ -98,10 +98,10 @@ static UIView *spinner = nil;
     CGFloat tipY;
     switch (aType) {
         case 0:
-            tipY = (SCREEN_HEIGHT - 44 - 216 - TIP_HEIGHT)/2;
+            tipY = (SCREEN_HEIGHT - 44 - 216 - TIP_HEIGHT + 100)/2;
             break;
         case 1:
-            tipY = (SCREEN_HEIGHT - 44 - 20 - TIP_HEIGHT)/2;
+            tipY = (SCREEN_HEIGHT - 44 - 20 - TIP_HEIGHT + 100)/2;
             break;
         default:
             break;

@@ -16,6 +16,7 @@
 #import "DownloadImageOperation.h"
 #include<objc/runtime.h>
 #import "Reachability.h"
+#import "ResultsModel.h"
 
 
 @interface ProductViewController ()
@@ -25,6 +26,7 @@
 @implementation ProductViewController
 static int page = 1;
 static int progressNum = 0;
+static int pn = 0;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil cpsArr:(NSMutableArray *)cps
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -38,7 +40,6 @@ static int progressNum = 0;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.imageArr = [NSMutableArray array];
 
     if (self.cpsArr.count >= 50) {
         UIView *footview = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 50)];
@@ -247,27 +248,66 @@ static int progressNum = 0;
         [self.view LabelTitle:@"无网络连接！"];
         return;
     }
-    
+    UserEntity *ue = [UserEntity shareCurrentUe];
     ChanPin *chanPin = [self.cpsArr objectAtIndex:indexPath.row];
+    ObjectVo *ob = [ObjectVo shareCurrentObjectVo];
     self.imageCount = chanPin.pics;
-    if (self.imageCount > 0) {
+    NSLog(@"pics = %d",chanPin.pics);
+    if (chanPin.pics > 0) {
         _spinner = [self.view showSpinner:0 Title:[NSString stringWithFormat:@"正在下载 0/%d",self.imageCount]];
-        UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
-        pasteboard.string = chanPin.miaoshu;
-        for (int i = 0; i < chanPin.pics; i++) {
-            NSString *url;
-            if (chanPin.address) {
-                url = IMAGE_URL_ID(chanPin.address, i);
-            }else{
-                NSString *str = [NSString stringWithFormat:@"%d",chanPin.Id];
-                url = IMAGE_URL_ID(str, i);
+        [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": DOWNLOAD,@"cpid": [NSString stringWithFormat:@"%d",chanPin.Id],@"uname":ue.userName,@"uuid":ue.uuid,@"dataVersions":ob.dataVersions} completionBlock:^(id object) {
+            ResultsModel *results = [[ResultsModel alloc]init];
+            for (NSString *obkey in [object allKeys]) {
+                NSArray *res = [self properties_aps:[ResultsModel class] objc:results];
+                for (NSString *rekey in res) {
+                    if ([obkey isEqualToString:rekey]) {
+                        [results setValue:[object valueForKey:obkey] forKey:obkey];
+                    }
+                }
             }
-            DownloadImageOperation *operation = [[DownloadImageOperation alloc]initWithTarget:self selector:@selector(shareAction:) url:url];
-            NSOperationQueue *queue = [[NSOperationQueue alloc]init];
-            [queue addOperation:operation];
-            operation = nil;
-            queue = nil;
-        }
+            if (results.msg) {
+                [self.view endSynRequestSignal];
+                [self.view LabelTitle:results.msg];
+            }else{
+                
+                NSDictionary *ovoDic = [[object valueForKey:@"ovo"] JSONValue];
+                if ([[ovoDic valueForKey:@"code"] intValue] == 0){
+                    UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+                    pasteboard.string = chanPin.miaoshu;
+                    NSOperationQueue *queue = [[NSOperationQueue alloc]init];
+                    for (int i = 0; i < chanPin.pics; i++) {
+                        NSString *url;
+                        if (chanPin.address) {
+                            url = IMAGE_URL_ID(chanPin.address, i);
+                        }else{
+                            NSString *str = [NSString stringWithFormat:@"%d",chanPin.Id];
+                            url = IMAGE_URL_ID(str, i);
+                        }
+                        DownloadImageOperation *operation = [[DownloadImageOperation alloc]initWithTarget:self selector:@selector(shareAction:) url:url];
+                        [queue addOperation:operation];
+                        operation = nil;
+                        
+                    }
+                    queue = nil;
+                }
+                if (results.baseData) {
+                    ObjectVo *ob = [ObjectVo shareCurrentObjectVo];
+                    ob.baseData = results.baseData;
+                    [ObjectVo clearCurrentObjectVo];
+                    // 将个人信息全部持久化到documents中，可通过objectVo的单例获取登录了的用户的个人信息
+                    NSMutableData *mData = [[NSMutableData alloc]init];
+                    NSKeyedArchiver *archiver=[[NSKeyedArchiver alloc] initForWritingWithMutableData:mData];
+                    [archiver encodeObject:ob forKey:@"objectVoInfo"];
+                    [archiver finishEncoding];
+                    NSString *objectVoInfoPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/objectVoInfo.txt"];
+                    [mData writeToFile:objectVoInfoPath atomically:YES];
+                    mData = nil;
+                }
+            }
+        } failureBlock:^(NSError *error, NSString *responseString) {
+            [self.view endSynRequestSignal];
+        }];
+        
     }else{
         [self.view endSynRequestSignal];
         [self.view LabelTitle:@"无图片分享！"];
@@ -279,35 +319,47 @@ static int progressNum = 0;
     if (data) {
         progressNum = progressNum + 1;
         _spinner.text = [NSString stringWithFormat:@"正在下载 %d/%d",progressNum,self.imageCount];
-        [self.imageArr addObject:data];
-        if (self.imageArr.count == self.imageCount) {
-            //发送内容给微信
-            WXMediaMessage *message = [WXMediaMessage message];
-            [message setThumbImage:nil];
-            
-            WXImageObject *ext = [WXImageObject object];
-            ext.imageData = data;
-            
-            message.mediaObject = ext;
-            
-            SendMessageToWXReq* req = [[SendMessageToWXReq alloc] init];
-            req.bText = NO;
-            req.message = message;
-            req.scene = 1;
-            
-            [WXApi sendReq:req];
-            req = nil;
-            progressNum = 0;
-            [self.imageArr removeAllObjects];
-            [self.view endSynRequestSignal];
-        }
+        [self performSelectorOnMainThread:@selector(saveTheImage:) withObject:[UIImage imageWithData:data] waitUntilDone:NO];
     }else{
         progressNum = 0;
-        [self.imageArr removeAllObjects];
         [self.view endSynRequestSignal];
         [self.view LabelTitle:@"图片下载失败"];
     }
+    if (progressNum == self.imageCount) {
+        progressNum = 0;
+        [self.view endSynRequestSignal];
+    }
 }
+
+#pragma mark - 保存拍摄的图片
+- (void)saveTheImage:(UIImage *)image {
+    //将图片存储到系统相册
+    UIImageWriteToSavedPhotosAlbum(image, self, @selector(image:didFinishSavingWithError:contextInfo:), NULL);
+}
+
+// 指定回调方法
+- (void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo
+{
+    NSString *msg = nil ;
+    if(error != NULL){
+        msg = @"保存图片失败" ;
+        NSLog(@"msg= %@",error.description);
+        [self performSelectorOnMainThread:@selector(saveTheImage:) withObject:image waitUntilDone:NO];
+    }
+    else {
+        pn = pn + 1;
+        msg = @"保存图片成功" ;
+        NSLog(@"msg= %@",msg);
+        [self.view endSynRequestSignal];
+        if (pn == self.imageCount) {
+            [WXApi openWXApp];
+            progressNum = 0;
+            pn = 0;
+        }
+    }
+    
+}
+
 
 -(NSString *)docPath
 {
@@ -350,15 +402,7 @@ static int progressNum = 0;
     targetIndexPath = indexPath;
     
     if ([cell.collection.titleLabel.text isEqualToString:@"已收藏"]) {
-        UILabel *lable = [[UILabel alloc]initWithFrame:CGRectMake(100, 350, 120, 20)];
-        lable.backgroundColor = [UIColor blackColor];
-        lable.text = @"已收藏";
-        lable.textAlignment = NSTextAlignmentCenter;
-        lable.textColor = [UIColor whiteColor];
-        
-        [self.view addSubview:lable];
-        [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(hideCollectionLable:) userInfo:lable repeats:NO];
-        lable = nil;
+        [self.view LabelTitle:@"已收藏"];
     }else{
         [self label:@"输入代理价格"];
     }
