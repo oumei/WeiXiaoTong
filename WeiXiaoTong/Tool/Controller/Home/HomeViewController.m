@@ -191,6 +191,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    UserEntity *ue = [UserEntity shareCurrentUe];
     static NSString *identifier = @"merchantsCell";
     MerchantsCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
     if (cell == nil) {
@@ -201,9 +202,15 @@
     cell.indexPath = indexPath;
     Friend *friend = [_friendsMutArr objectAtIndex:indexPath.row];
     cell.signature.text = [NSString stringWithFormat:@"签名：%@",friend.description];
-    cell.name.text = friend.fname;
+    cell.name.text = [NSString stringWithFormat:@"ID:%d    %@",friend.fid,friend.fname];
+    if (ue.tableName == friend.fid) {
+        cell.name.textColor = [UIColor redColor];
+        if (_lastIndexPath == nil) {
+            _lastIndexPath = indexPath;
+        }
+    }
     if (![friend.remark isEqualToString:@""]) {
-        cell.name.text = [NSString stringWithFormat:@"%@(%@)",friend.fname,friend.remark];
+        cell.name.text = [NSString stringWithFormat:@"ID:%d    %@(%@)",friend.fid,friend.fname,friend.remark];
     }
     if ([friend.fname isEqualToString:@"阿里九九"]) {
         cell.deleteBtn.hidden = YES;
@@ -218,37 +225,18 @@
 
 - (void)deleted:(UIButton *)sender IndexPath:(NSIndexPath *)indexPath
 {
+    _friendIndexPath = indexPath;
     Friend *friend = [_friendsMutArr objectAtIndex:indexPath.row];
     if ([friend.fname isEqualToString:friend.uname]) {
         UploadViewController *uploadViewController = [[UploadViewController alloc]initWithNibName:@"UploadViewController" bundle:nil];
         [self.navigationController pushViewController:uploadViewController animated:YES];
         uploadViewController = nil;
     }else{
-        [self.view showWithType:0 Title:@"正在删除商家信息中..."];
-        UserEntity *user = [UserEntity shareCurrentUe];
-        ObjectVo *ob= [ObjectVo shareCurrentObjectVo];
-        [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": DELETE_FRIENDS,@"fname":friend.fname,@"uname": user.userName,@"uuid":user.uuid, @"dataVersions":ob.dataVersions} completionBlock:^(id object) {
-            NSString *ovo = [object valueForKey:@"ovo"];
-            NSDictionary *ovoDic = [ovo JSONValue];
-//            NSLog(@"%@",ovoDic);
-            if ([[ovoDic valueForKey:@"code"] intValue] == 0) {
-                NSMutableArray *arr = [[NSMutableArray alloc]initWithArray:_friendsMutArr];
-                [arr removeObjectAtIndex:indexPath.row];
-                _friendsMutArr = arr;
-                [self.table reloadData];
-                [self.view endSynRequestSignal];
-                [self.view LabelTitle:@"删除成功"];
-                arr = nil;
-            }else{
-                [self.view endSynRequestSignal];
-                [self.view LabelTitle:[ovoDic valueForKey:@"msg"]];
-            }
-        } failureBlock:^(NSError *error, NSString *responseString) {
-            [self.view endSynRequestSignal];
-        }];
-
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:nil message:@"确定要删除该商家？" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
+        [alert show];
+        alert = nil;
     }
-    [self refreshAction:nil];
+    //[self refreshAction:nil];
 }
 
 - (void)note:(UIButton *)sender IndexPath:(NSIndexPath *)indexPath
@@ -267,7 +255,7 @@
     UserEntity *ue = [UserEntity shareCurrentUe];
     Friend *friend = [_friendsMutArr objectAtIndex:indexPath.row];
     [self.view showWithType:0 Title:@"切换商家中..."];
-    ObjectVo *ob= [ObjectVo shareCurrentObjectVo];
+    ObjectVo *ob = [ObjectVo shareCurrentObjectVo];
     [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": CHANGE_TABLE,@"fname": friend.fname,@"uname": ue.userName,@"uuid": ue.uuid,@"dataVersions":ob.dataVersions} completionBlock:^(id object) {
         NSLog(@"ob=%@",object);
         NSString *ovo = [object valueForKey:@"ovo"];
@@ -285,7 +273,17 @@
             MerchantsCell *cell = (MerchantsCell *)[self.table cellForRowAtIndexPath:indexPath];
             cell.name.textColor = [UIColor redColor];
             
-            [self.view LabelTitle:@"切换商家成功！"];
+            [self.view LabelTitle:@"切换成功，现在可以查询Ta的商品！"];
+            ue.tableName = friend.fid;
+            [UserEntity clearCurrrentUe];
+            // 将个人信息全部持久化到documents中，可通过ue的单例获取登录了的用户的个人信息
+            NSMutableData *mData = [[NSMutableData alloc]init];
+            NSKeyedArchiver *archiver=[[NSKeyedArchiver alloc] initForWritingWithMutableData:mData];
+            [archiver encodeObject:ue forKey:@"ueInfo"];
+            [archiver finishEncoding];
+            NSString *ueInfoPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/ueInfo.txt"];
+            [mData writeToFile:ueInfoPath atomically:YES];
+            mData = nil;
             self.tabBarController.selectedIndex = 1;
         }else{
             [self.view endSynRequestSignal];
@@ -432,6 +430,35 @@
 {
     [textField endEditing:YES];
     return YES;
+}
+
+#pragma mark - alert delegate -
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    Friend *friend = [_friendsMutArr objectAtIndex:_friendIndexPath.row];
+    if (buttonIndex == 1) {
+        [self.view showWithType:0 Title:@"正在删除商家信息中..."];
+        UserEntity *user = [UserEntity shareCurrentUe];
+        ObjectVo *ob= [ObjectVo shareCurrentObjectVo];
+        [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": DELETE_FRIENDS,@"fname":friend.fname,@"uname": user.userName,@"uuid":user.uuid, @"dataVersions":ob.dataVersions} completionBlock:^(id object) {
+            NSString *ovo = [object valueForKey:@"ovo"];
+            NSDictionary *ovoDic = [ovo JSONValue];
+            if ([[ovoDic valueForKey:@"code"] intValue] == 0) {
+                NSMutableArray *arr = [[NSMutableArray alloc]initWithArray:_friendsMutArr];
+                [arr removeObjectAtIndex:_friendIndexPath.row];
+                _friendsMutArr = arr;
+                [self.table reloadData];
+                [self.view endSynRequestSignal];
+                [self.view LabelTitle:@"删除成功"];
+                arr = nil;
+            }else{
+                [self.view endSynRequestSignal];
+                [self.view LabelTitle:[ovoDic valueForKey:@"msg"]];
+            }
+        } failureBlock:^(NSError *error, NSString *responseString) {
+            [self.view endSynRequestSignal];
+        }];
+    }
 }
 
 #pragma mark - Private Methods

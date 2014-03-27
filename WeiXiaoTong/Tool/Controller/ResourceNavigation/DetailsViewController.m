@@ -273,7 +273,7 @@
     UIButton *copy = [UIButton buttonWithType:UIButtonTypeCustom];
     copy.frame = CGRectMake(0, hight + 40, 320, 40);
     if (weixin) {
-        [copy setTitle:[NSString stringWithFormat:@" 点击复制供货商微信%@",weixin] forState:0];
+        [copy setTitle:[NSString stringWithFormat:@" 点击复制供货商%@",weixin] forState:0];
     }else{
         [copy setTitle:@" 供货商未知" forState:0];
     }
@@ -323,6 +323,9 @@
         if (sender.titleLabel.text.length > 7) {
             UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
             pasteboard.string = [sender.titleLabel.text substringWithRange:NSMakeRange(8, sender.titleLabel.text.length - 8)];
+            [self.view LabelTitle:@"已复制"];
+        }else{
+            [self.view LabelTitle:@"供货商未知"];
         }
     }
     

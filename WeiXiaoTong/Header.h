@@ -41,10 +41,15 @@
 
 //url
 #define DEFAULT_URL                   @"http://115.28.17.18:8080/service/interface.do"
-#define DEFAULT_L                   @"http://192.168.1.103:8080/service/interface.do"
+
 #define IMAGE_URL(ADDRESS) [NSString stringWithFormat:@"http://115.28.17.18:8080/data/%@/small.jpg",ADDRESS]
 #define IMAGE_URL_ID(ADDRESS,NUM) [NSString stringWithFormat:@"http://115.28.17.18:8080/data/%@/%d.jpg",ADDRESS,NUM]
+#define IMAGE_URL_ADDRESS_SY(ADDRESS,NUM,TB_ID) [NSString stringWithFormat:@"http://115.28.17.18:8080/service/showPic.do?cpid=%@&index=%d&shuiyin=1%@",ADDRESS,NUM,TB_ID]
+#define IMAGE_URL_ADDRESS(ADDRESS,NUM,TB_ID) [NSString stringWithFormat:@"http://115.28.17.18:8080/service/showPic.do?cpid=%@&index=%d%@",ADDRESS,NUM,TB_ID]
 #define IMAGE_URL_BY_CPID(ADDRESS,W,H,PICS) [NSString stringWithFormat:@"http://115.28.17.18:8080/service/showPic.do?cpid=%@&lunbo=1&setW=%.0f&setH=%.0f&index=%d",ADDRESS,W,H,PICS]
+
+
+#define DEFAULT_Test                     @"http://192.168.1.108:8080/service/interface.do"
 #define UPLOAD_IMAGES(CPID,NUM) [NSString stringWithFormat:@"http://192.168.1.107:8080/service/upload.do?cpid=%@&name=%d.jpg",CPID,NUM]
 
 

@@ -31,7 +31,8 @@ static int pn = 0;
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        self.cpsArr = cps;
+        //self.cpsArr = cps;
+        self.cpsArr = [NSMutableArray arrayWithArray:cps];
     }
     return self;
 }
@@ -60,7 +61,6 @@ static int pn = 0;
 
 - (void)downMoreData:(id)sender
 {
-//    params = @{@"interface": GET_CHANPIN,@"page": @"0",@"lx":_lx,@"xb": _xb,@"pp": @"-1",@"text": text,@"uname": ue.userName,@"uuid": ue.uuid};
     UserEntity *user = [UserEntity shareCurrentUe];
     [self.view showWithType:0 Title:@"正在加载..."];
     ObjectVo *ob = [ObjectVo shareCurrentObjectVo];
@@ -96,13 +96,18 @@ static int pn = 0;
                 page++;
                 self.cpsArr = nil;
                 self.cpsArr = cpsArr;
+                [self.view endSynRequestSignal];
+                if (arr.count == 0) {
+                    [self.view LabelTitle:@"没有更多数据"];
+                }
+                [self.table reloadData];
+            }else{
+                [self.view endSynRequestSignal];
+                [self.view LabelTitle:[objectVoDic valueForKey:@"msg"]];
             }
-            [self.table reloadData];
-            [self.view endSynRequestSignal];
         } failureBlock:^(NSError *error, NSString *responseString) {
             [self.view endSynRequestSignal];
         }];
-        [self.view endSynRequestSignal];
     }else if (self.isSelf != nil && self.title == nil){
         [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": GET_CHANPIN,@"page": [NSString stringWithFormat:@"%d",page],@"lx":self.lx,@"xb": self.xb,@"pp": @"-1",@"text": self.text,@"isSelf": @"1",@"uname": user.userName,@"uuid": user.uuid,@"dataVersions":ob.dataVersions} completionBlock:^(id object) {
 //            NSLog(@"ob = %@",object);
@@ -136,13 +141,19 @@ static int pn = 0;
                 page++;
                 self.cpsArr = nil;
                 self.cpsArr = cpsArr;
+                [self.view endSynRequestSignal];
+                if (arr.count == 0) {
+                    [self.view LabelTitle:@"没有更多数据"];
+                }
+                [self.table reloadData];
+            }else{
+                [self.view endSynRequestSignal];
+                [self.view LabelTitle:[objectVoDic valueForKey:@"msg"]];
             }
-            [self.table reloadData];
-            [self.view endSynRequestSignal];
+            
         } failureBlock:^(NSError *error, NSString *responseString) {
             [self.view endSynRequestSignal];
         }];
-        [self.view endSynRequestSignal];
     }else{
         [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": GET_CHANPIN_BY_DANGKOU,@"page":[NSString stringWithFormat:@"%d",page],@"dangkou":self.title,@"uname": user.userName,@"uuid": user.uuid,@"dataVersions":ob.dataVersions} completionBlock:^(id object) {
             
@@ -177,9 +188,15 @@ static int pn = 0;
                 self.cpsArr = cpsArr;
                 cpsArr = nil;
                 arr = nil;
+                if (arr.count == 0) {
+                    [self.view LabelTitle:@"没有更多数据"];
+                }
+                [self.view endSynRequestSignal];
+                [self.table reloadData];
+            }else{
+                [self.view endSynRequestSignal];
+                [self.view LabelTitle:[ovoDic valueForKey:@"msg"]];
             }
-            [self.table reloadData];
-            [self.view endSynRequestSignal];
         } failureBlock:^(NSError *error, NSString *responseString) {
             [self.view endSynRequestSignal];
         }];
@@ -208,34 +225,48 @@ static int pn = 0;
     cell.image.clipsToBounds = YES;
     cell.image.contentMode = UIViewContentModeScaleAspectFill;
     if (chanPin.address) {
+        cell.name.hidden = YES;
         [cell.image setImageWithURL:[NSURL URLWithString:IMAGE_URL(chanPin.address)]];
     }else{
         NSString *str = [NSString stringWithFormat:@"%d",chanPin.Id];
         [cell.image setImageWithURL:[NSURL URLWithString:IMAGE_URL(str)]];
     }
-    
     cell.nameWeb.opaque = NO;
     cell.serviceWeb.opaque = NO;
     cell.nameWeb.scrollView.bounces = NO;
     cell.serviceWeb.scrollView.bounces = NO;
+    
     [cell.nameWeb loadHTMLString:chanPin.title baseURL:[[NSBundle mainBundle] bundleURL]];
     [cell.serviceWeb loadHTMLString:chanPin.attrebute baseURL:[[NSBundle mainBundle] bundleURL]];
     cell.describe.text = chanPin.miaoshu;
     cell.serialNum.text = [NSString stringWithFormat:@"编号：%d",chanPin.Id];
     cell.time.text = [NSString stringWithFormat:@"日期：%@",[chanPin.shijian substringToIndex:10]];
+    [cell.collection setTitle:@"收藏" forState:0];
 
     NSFileManager *fm = [NSFileManager defaultManager];
+    NSString *upload_id = [NSString stringWithFormat:@"%d_%d",chanPin.upload,chanPin.Id];
     if ([fm fileExistsAtPath:[self docPath]]) {
         NSMutableArray *arr = [NSMutableArray arrayWithContentsOfFile:[self docPath]];
         for (int i = 0; i < arr.count; i++) {
-            int _Id = [[arr objectAtIndex:i] intValue];
-            if (_Id == chanPin.Id) {
+            NSString *str = [arr objectAtIndex:i];
+            if ([str isEqualToString:upload_id]) {
                 [cell.collection setTitle:@"已收藏" forState:0];
+                break;
             }
         }
     }
     if (user.Id == chanPin.upload) {
         [cell.collection setTitle:@"改价" forState:0];
+    }
+    if ([fm fileExistsAtPath:[self sharePath]]) {
+        NSMutableArray *arr = [NSMutableArray arrayWithContentsOfFile:[self sharePath]];
+        for (int i = 0; i < arr.count; i++) {
+            NSString *str = [arr objectAtIndex:i];
+            if ([str isEqualToString:upload_id]) {
+                [cell.nameWeb loadHTMLString:[NSString stringWithFormat:@"<font color=#ff0000>%@</font>",chanPin.title] baseURL:[[NSBundle mainBundle] bundleURL]];
+                break;
+            }
+        }
     }
     
     return cell;
@@ -251,10 +282,30 @@ static int pn = 0;
     UserEntity *ue = [UserEntity shareCurrentUe];
     ChanPin *chanPin = [self.cpsArr objectAtIndex:indexPath.row];
     ObjectVo *ob = [ObjectVo shareCurrentObjectVo];
+    _spinner = [self.view showSpinner:0 Title:[NSString stringWithFormat:@"正在下载 0/%d",chanPin.pics]];
+//    NSFileManager *fm = [NSFileManager defaultManager];
+//    NSString *upload_id = [NSString stringWithFormat:@"%d_%d",chanPin.upload,chanPin.Id];
+//    if ([fm fileExistsAtPath:[self sharePath]]) {
+//        NSMutableArray *arr = [NSMutableArray arrayWithContentsOfFile:[self sharePath]];
+//        for (int i = 0; i < arr.count; i++) {
+//            NSString *str = [arr objectAtIndex:i];
+//            if ([str isEqualToString:upload_id]) {
+//                _spinner.text = [NSString stringWithFormat:@"正在下载 %d/%d",self.imageCount,self.imageCount];
+//                [self.view endSynRequestSignal];
+//                [WXApi openWXApp];
+//                ProductCell *cell = (ProductCell *)[self.table cellForRowAtIndexPath:indexPath];
+//                [cell.nameWeb loadHTMLString:[NSString stringWithFormat:@"<font color=#ff0000>%@</font>",chanPin.title] baseURL:[[NSBundle mainBundle] bundleURL]];
+//                return;
+//            }
+//        }
+//    }
+    
+    shareIndexPath = indexPath;
+    
     self.imageCount = chanPin.pics;
     NSLog(@"pics = %d",chanPin.pics);
     if (chanPin.pics > 0) {
-        _spinner = [self.view showSpinner:0 Title:[NSString stringWithFormat:@"正在下载 0/%d",self.imageCount]];
+        
         [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": DOWNLOAD,@"cpid": [NSString stringWithFormat:@"%d",chanPin.Id],@"uname":ue.userName,@"uuid":ue.uuid,@"dataVersions":ob.dataVersions} completionBlock:^(id object) {
             ResultsModel *results = [[ResultsModel alloc]init];
             for (NSString *obkey in [object allKeys]) {
@@ -278,10 +329,31 @@ static int pn = 0;
                     for (int i = 0; i < chanPin.pics; i++) {
                         NSString *url;
                         if (chanPin.address) {
-                            url = IMAGE_URL_ID(chanPin.address, i);
+                            NSFileManager *fm = [NSFileManager defaultManager];
+                            NSString *syStr = [NSString stringWithFormat:@"&syStr=%d-%d",ue.tableName,chanPin.Id];
+                            if ([fm fileExistsAtPath:[self syPath]]){
+                                NSString *sy = [NSString stringWithContentsOfFile:[self syPath] encoding:4 error:nil];
+                                if ([sy isEqualToString:@"sy=1"]){
+                                    url = IMAGE_URL_ADDRESS_SY(chanPin.address, i,syStr);
+                                }else{
+                                    url = IMAGE_URL_ADDRESS(chanPin.address, i,syStr);
+                                }
+                            }else{
+                                url = IMAGE_URL_ADDRESS(chanPin.address, i,syStr);
+                            }
                         }else{
                             NSString *str = [NSString stringWithFormat:@"%d",chanPin.Id];
-                            url = IMAGE_URL_ID(str, i);
+                            NSFileManager *fm = [NSFileManager defaultManager];
+                            if ([fm fileExistsAtPath:[self syPath]]){
+                                NSString *sy = [NSString stringWithContentsOfFile:[self syPath] encoding:4 error:nil];
+                                if ([sy isEqualToString:@"sy=1"]){
+                                    url = IMAGE_URL_ADDRESS_SY(str, i,@"");
+                                }else{
+                                    url = IMAGE_URL_ADDRESS(str, i,@"");
+                                }
+                            }else{
+                                url = IMAGE_URL_ADDRESS(str, i,@"");
+                            }
                         }
                         DownloadImageOperation *operation = [[DownloadImageOperation alloc]initWithTarget:self selector:@selector(shareAction:) url:url];
                         [queue addOperation:operation];
@@ -327,7 +399,7 @@ static int pn = 0;
     }
     if (progressNum == self.imageCount) {
         progressNum = 0;
-        [self.view endSynRequestSignal];
+        //[self.view endSynRequestSignal];
     }
 }
 
@@ -350,9 +422,22 @@ static int pn = 0;
         pn = pn + 1;
         msg = @"保存图片成功" ;
         NSLog(@"msg= %@",msg);
-        [self.view endSynRequestSignal];
         if (pn == self.imageCount) {
+            ChanPin *chanPin = [self.cpsArr objectAtIndex:shareIndexPath.row];
+            NSFileManager *fm = [NSFileManager defaultManager];
+            if ([fm fileExistsAtPath:[self sharePath]]) {
+                NSMutableArray *arr = [NSMutableArray arrayWithContentsOfFile:[self sharePath]];
+                [arr addObject:[NSString stringWithFormat:@"%d_%d",chanPin.upload,chanPin.Id]];
+                [arr writeToFile:[self sharePath] atomically:YES];
+            }else{
+                NSMutableArray *arr = [[NSMutableArray alloc]init];
+                [arr addObject:[NSString stringWithFormat:@"%d_%d",chanPin.upload,chanPin.Id]];
+                [arr writeToFile:[self sharePath] atomically:YES];
+            }
+            ProductCell *cell = (ProductCell *)[self.table cellForRowAtIndexPath:shareIndexPath];
+            [cell.nameWeb loadHTMLString:[NSString stringWithFormat:@"<font color=#ff0000>%@</font>",chanPin.title] baseURL:[[NSBundle mainBundle] bundleURL]];
             [WXApi openWXApp];
+            [self.view endSynRequestSignal];
             progressNum = 0;
             pn = 0;
         }
@@ -360,11 +445,24 @@ static int pn = 0;
     
 }
 
-
 -(NSString *)docPath
 {
     NSString *homePath=NSHomeDirectory();
     homePath=[homePath stringByAppendingPathComponent:@"Documents/chanpinID.txt"];
+    return homePath;
+}
+
+-(NSString *)syPath
+{
+    NSString *homePath=NSHomeDirectory();
+    homePath=[homePath stringByAppendingPathComponent:@"Documents/sy.txt"];
+    return homePath;
+}
+
+-(NSString *)sharePath
+{
+    NSString *homePath=NSHomeDirectory();
+    homePath=[homePath stringByAppendingPathComponent:@"Documents/shareChanpin.txt"];
     return homePath;
 }
 
@@ -536,7 +634,7 @@ static int pn = 0;
 {
     [self textFieldShouldReturn:textMsg];
     alertView.hidden = YES;
-    textMsg = nil;
+    textMsg.text = nil;
     alertView = nil;
 }
 
@@ -544,6 +642,12 @@ static int pn = 0;
 {
     alertView.hidden = YES;
     [self textFieldShouldReturn:textMsg];
+    if ([textMsg.text stringByTrimmingCharactersInSet:[NSCharacterSet decimalDigitCharacterSet]].length >0) {
+        [self.view LabelTitle:@"请输入纯数字"];
+        textMsg = nil;
+        alertView = nil;
+        return;
+    }
     ChanPin *chanPin = [self.cpsArr objectAtIndex:targetIndexPath.row];
     UserEntity *user = [UserEntity shareCurrentUe];
     ObjectVo *ob = [ObjectVo shareCurrentObjectVo];
@@ -556,8 +660,14 @@ static int pn = 0;
                 [obje setValue:[ovoDic valueForKey:key] forKey:key];
             }
             if ([[ovoDic valueForKey:@"code"] intValue] == 0) {
+                NSMutableArray *cpArray = [NSMutableArray arrayWithArray:self.cpsArr];
                 [self.view endSynRequestSignal];
                 [self.view LabelTitle:@"修改成功"];
+                [chanPin setValue:textMsg.text forKey:@"price"];
+                [cpArray replaceObjectAtIndex:targetIndexPath.row withObject:chanPin];
+                self.cpsArr = nil;
+                self.cpsArr = [NSMutableArray arrayWithArray:cpArray];
+                textMsg = nil;
             }else if ([[ovoDic valueForKey:@"code"] intValue] == -1){
                 [self.view endSynRequestSignal];
                 [self.view LabelTitle:obje.msg];
@@ -580,14 +690,15 @@ static int pn = 0;
                 NSFileManager *fm = [NSFileManager defaultManager];
                 if ([fm fileExistsAtPath:[self docPath]]) {
                     NSMutableArray *arr = [NSMutableArray arrayWithContentsOfFile:[self docPath]];
-                    [arr addObject:[NSString stringWithFormat:@"%d",chanPin.Id]];
+                    [arr addObject:[NSString stringWithFormat:@"%d_%d",chanPin.upload,chanPin.Id]];
                     [arr writeToFile:[self docPath] atomically:YES];
                 }else{
                     NSMutableArray *arr = [[NSMutableArray alloc]init];
-                    [arr addObject:[NSString stringWithFormat:@"%d",chanPin.Id]];
+                    [arr addObject:[NSString stringWithFormat:@"%d_%d",chanPin.upload,chanPin.Id]];
                     [arr writeToFile:[self docPath] atomically:YES];
                 }
-                [self.table reloadData];
+                NSArray *array = [NSArray arrayWithObject:targetIndexPath];
+                [self.table reloadRowsAtIndexPaths:array withRowAnimation:UITableViewRowAnimationAutomatic];
                 [self.view endSynRequestSignal];
                 [self.view LabelTitle:@"收藏成功"];
             }else if ([[ovoDic valueForKey:@"code"] intValue] == -1){
@@ -601,7 +712,6 @@ static int pn = 0;
             [self.view endSynRequestSignal];
         }];
     }
-    textMsg = nil;
     alertView = nil;
 }
 

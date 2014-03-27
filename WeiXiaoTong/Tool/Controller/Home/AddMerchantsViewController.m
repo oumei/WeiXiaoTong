@@ -31,7 +31,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+    self.addWebView.scrollView.bounces = NO;
     Config *config = [Config shareCurrentConfig];
     [self.addWebView loadHTMLString:config.addFriendText baseURL:[NSBundle mainBundle].bundleURL];
     

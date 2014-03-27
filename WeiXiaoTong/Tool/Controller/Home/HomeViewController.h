@@ -9,11 +9,12 @@
 #import "CommonViewController.h"
 #import "MerchantsCell.h"
 
-@interface HomeViewController : CommonViewController<UITableViewDataSource,UITableViewDelegate,MerchantsCellDelegate,UITextFieldDelegate>
+@interface HomeViewController : CommonViewController<UITableViewDataSource,UITableViewDelegate,MerchantsCellDelegate,UITextFieldDelegate,UIAlertViewDelegate>
 {
     NSMutableArray *_friendsMutArr;
     NSIndexPath *_lastIndexPath;
     NSIndexPath *_targetIndexPath;
+    NSIndexPath *_friendIndexPath;
     UIView *alertView;
     UITextField *textMsg;
 }

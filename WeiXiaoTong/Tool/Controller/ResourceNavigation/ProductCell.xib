@@ -34,12 +34,12 @@
                         </connections>
                     </button>
                     <webView contentMode="scaleToFill" id="pa9-dG-gj8">
-                        <rect key="frame" x="88" y="11" width="220" height="40"/>
+                        <rect key="frame" x="85" y="11" width="220" height="40"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </webView>
                     <webView contentMode="scaleToFill" id="Uig-ar-WB2">
-                        <rect key="frame" x="88" y="-7" width="220" height="40"/>
+                        <rect key="frame" x="85" y="-7" width="220" height="40"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </webView>

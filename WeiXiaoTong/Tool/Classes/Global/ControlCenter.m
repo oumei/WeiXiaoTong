@@ -42,7 +42,6 @@
     UINavigationController * nav_3 = [[self class] navWithRootVC:[[self class] viewControllerWithName:@"ResourceNavigationViewController"]];
     UINavigationController * nav_4 = [[self class] navWithRootVC:[[self class] viewControllerWithName:@"PersonalInformationViewController"]];
 
-
     [tabBarController setIconColors:@[[UIColor colorWithRed:73.0/255.0 green:29.0/255.0f blue:18.0/255.0f alpha:1.0],[UIColor colorWithRed:73.0/255.0 green:29.0/255.0f blue:18.0/255.0f alpha:1.0],[UIColor colorWithRed:73.0/255.0 green:29.0/255.0f blue:18.0/255.0f alpha:1.0],[UIColor colorWithRed:73.0/255.0 green:29.0/255.0f blue:18.0/255.0f alpha:1.0],[UIColor colorWithRed:73.0/255.0 green:29.0/255.0f blue:18.0/255.0f alpha:1.0]]];
     [tabBarController setSelectedIconColors:@[[UIColor colorWithRed:206.0/255.0f green:48.0/255.0f blue:17.0/255.0f alpha:1.0f],[UIColor colorWithRed:206.0/255.0f green:48.0/255.0f blue:17.0/255.0f alpha:1.0f],[UIColor colorWithRed:206.0/255.0f green:48.0/255.0f blue:17.0/255.0f alpha:1.0f],[UIColor colorWithRed:206.0/255.0f green:48.0/255.0f blue:17.0/255.0f alpha:1.0f],[UIColor colorWithRed:206.0/255.0f green:48.0/255.0f blue:17.0/255.0f alpha:1.0f]]];
     [tabBarController setSelectedTabColors:@[[UIColor clearColor],[UIColor clearColor],[UIColor clearColor],[UIColor clearColor],[UIColor clearColor]]];

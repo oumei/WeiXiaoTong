@@ -16,7 +16,9 @@
     UIView *alertView;
     UITextField *textMsg;
     NSIndexPath *targetIndexPath;
+    NSIndexPath *shareIndexPath;
     UILabel *_spinner;
+    NSString *html;
 }
 @property (weak, nonatomic) IBOutlet UITableView *table;
 @property (copy, nonatomic) NSMutableArray *cpsArr;

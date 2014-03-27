@@ -71,11 +71,17 @@
 
 - (void)closeAction:(id)sender
 {
+    NSString *sy = @"sy=0";
+    NSError *error = nil;
+    [sy writeToFile:[self syPath] atomically:YES encoding:4 error:&error];
     [self.view LabelTitle:@"关闭成功！"];
 }
 
 - (void)openAction:(id)sender
 {
+    NSString *sy = @"sy=1";
+    NSError *error = nil;
+    [sy writeToFile:[self syPath] atomically:YES encoding:4 error:&error];
     [self.view LabelTitle:@"开启成功！"];
 }
 
@@ -151,6 +157,13 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+-(NSString *)syPath
+{
+    NSString *homePath=NSHomeDirectory();
+    homePath=[homePath stringByAppendingPathComponent:@"Documents/sy.txt"];
+    return homePath;
 }
 
 - (NSString *)tabImageName

@@ -30,6 +30,7 @@
     NSString *_bqs;        //产品品质
     NSString *_cts;        //服装类型
     NSString *_mts;        //彩妆类型
+    NSString *_shh;        //鞋跟高度
     NSArray *_contentsArr;
     
     NSArray *_all;             //全部
@@ -45,6 +46,8 @@
     NSArray *_glasses;         //眼镜
     NSArray *_jewelry;         //首饰
     NSArray *_cosmetics;       //护肤彩妆
+    NSArray *_gShoes;          //女鞋
+    
 }
 @property (weak, nonatomic) IBOutlet UITableView *table;
 @property (weak, nonatomic) IBOutlet UITextField *searchText;

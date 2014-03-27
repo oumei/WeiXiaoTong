@@ -22,6 +22,8 @@
 
 #import "AKTabBarController.h"
 #import "UIViewController+AKTabBarController.h"
+#import "ResourceNavigationViewController.h"
+#import "UserEntity.h"
 
 // Default height of the tab bar
 static const int kDefaultTabBarHeight = 50;
@@ -287,6 +289,15 @@ static const float kPushAnimationDuration = 0.35;
 			[selectedViewController viewDidAppear:NO];
 		}
         
+        UserEntity *ue = [UserEntity shareCurrentUe];
+        if (ue.qx != 2) {
+            UINavigationController *nav = (UINavigationController *)selectedViewController;
+            if ([[nav.viewControllers lastObject] isKindOfClass:[ResourceNavigationViewController class]]) {
+                [self.view LabelTitle:@"你所在的权限无法使用此功能！"];
+                return;
+            }
+        }
+        
         [tabBar setSelectedTab:[tabBar.tabs objectAtIndex:[self.viewControllers indexOfObject:selectedViewController]]];
     }
 }
@@ -297,6 +308,14 @@ static const float kPushAnimationDuration = 0.35;
 - (void)tabBar:(AKTabBar *)AKTabBarDelegate didSelectTabAtIndex:(NSInteger)index
 {
     UIViewController *vc = [self.viewControllers objectAtIndex:index];
+    UserEntity *ue = [UserEntity shareCurrentUe];
+    if (ue.qx != 2) {
+        UINavigationController *nav = (UINavigationController *)vc;
+        if ([[nav.viewControllers lastObject] isKindOfClass:[ResourceNavigationViewController class]]) {
+            [self.view LabelTitle:@"你所在的权限无法使用此功能！"];
+            return;
+        }
+    }
     
     if (self.selectedViewController == vc)
     {
