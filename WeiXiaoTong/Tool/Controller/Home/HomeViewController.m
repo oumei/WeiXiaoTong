@@ -20,6 +20,8 @@
 #import "UploadViewController.h"
 #import "CustomAlertView.h"
 #import "ObjectVo.h"
+#import "ResultsModel.h"
+#import <objc/runtime.h>
 
 @interface HomeViewController ()
 
@@ -67,7 +69,32 @@
     UserEntity *user = [UserEntity shareCurrentUe];
     ObjectVo *ob= [ObjectVo shareCurrentObjectVo];
     [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": GET_FRIENDS,@"uname": user.userName,@"uuid": user.uuid,@"dataVersions":ob.dataVersions} completionBlock:^(id object) {
-        
+        ResultsModel *result = [[ResultsModel alloc]init];
+        NSArray *properties = [self properties_aps:[ResultsModel class] objc:result];
+        for (NSString *resultKey in [object allKeys]) {
+            for (NSString *proKey in properties) {
+                if ([resultKey isEqualToString:proKey]) {
+                    [result setValue:[object valueForKey:resultKey] forKey:resultKey];
+                }
+            }
+        }
+        if (result.msg) {
+            [self.view LabelTitle:[object valueForKey:@"msg"]];
+            return;
+        }
+        if (result.baseData) {
+            ob.baseData = [object valueForKey:@"baseData"];
+            [ObjectVo clearCurrentObjectVo];
+            // 将个人信息全部持久化到documents中，可通过objectVo的单例获取登录了的用户的个人信息
+            NSMutableData *mData = [[NSMutableData alloc]init];
+            NSKeyedArchiver *archiver=[[NSKeyedArchiver alloc] initForWritingWithMutableData:mData];
+            [archiver encodeObject:ob forKey:@"objectVoInfo"];
+            [archiver finishEncoding];
+            NSString *objectVoInfoPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/objectVoInfo.txt"];
+            [mData writeToFile:objectVoInfoPath atomically:YES];
+            mData = nil;
+
+        }
         NSString *ovo = [object valueForKey:@"ovo"];
         NSDictionary *ovoDic = [ovo JSONValue];
 //        NSLog(@"ovo = %@",ovo);
@@ -103,7 +130,34 @@
     [self.view showWithType:0 Title:@"请求商家申请列表中..."];
     ObjectVo *ob= [ObjectVo shareCurrentObjectVo];
     [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": GET_APPLY_FRIENDS,@"uname": ue.userName,@"uuid": ue.uuid, @"dataVersions":ob.dataVersions} completionBlock:^(id object) {
-        NSLog(@"object = %@",object);
+        ResultsModel *result = [[ResultsModel alloc]init];
+        NSArray *properties = [self properties_aps:[ResultsModel class] objc:result];
+        for (NSString *resultKey in [object allKeys]) {
+            for (NSString *proKey in properties) {
+                if ([resultKey isEqualToString:proKey]) {
+                    [result setValue:[object valueForKey:resultKey] forKey:resultKey];
+                }
+            }
+        }
+        if (result.msg) {
+            [self.view endSynRequestSignal];
+            [self.view LabelTitle:[object valueForKey:@"msg"]];
+            return;
+        }
+        if (result.baseData) {
+            ob.baseData = [object valueForKey:@"baseData"];
+            [ObjectVo clearCurrentObjectVo];
+            // 将个人信息全部持久化到documents中，可通过objectVo的单例获取登录了的用户的个人信息
+            NSMutableData *mData = [[NSMutableData alloc]init];
+            NSKeyedArchiver *archiver=[[NSKeyedArchiver alloc] initForWritingWithMutableData:mData];
+            [archiver encodeObject:ob forKey:@"objectVoInfo"];
+            [archiver finishEncoding];
+            NSString *objectVoInfoPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/objectVoInfo.txt"];
+            [mData writeToFile:objectVoInfoPath atomically:YES];
+            mData = nil;
+            
+        }
+
         NSString *ovo = [object valueForKey:@"ovo"];
         NSDictionary *ovoDic = [ovo JSONValue];
         if ([[ovoDic valueForKey:@"code"] intValue] == 0) {
@@ -147,7 +201,33 @@
     UserEntity *user = [UserEntity shareCurrentUe];
     ObjectVo *ob= [ObjectVo shareCurrentObjectVo];
     [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": GET_FRIENDS,@"uname": user.userName,@"uuid": user.uuid,@"dataVersions":ob.dataVersions} completionBlock:^(id object) {
-        
+        ResultsModel *result = [[ResultsModel alloc]init];
+        NSArray *properties = [self properties_aps:[ResultsModel class] objc:result];
+        for (NSString *resultKey in [object allKeys]) {
+            for (NSString *proKey in properties) {
+                if ([resultKey isEqualToString:proKey]) {
+                    [result setValue:[object valueForKey:resultKey] forKey:resultKey];
+                }
+            }
+        }
+        if (result.msg) {
+            [self.view endSynRequestSignal];
+            [self.view LabelTitle:[object valueForKey:@"msg"]];
+            return;
+        }
+        if (result.baseData) {
+            ob.baseData = [object valueForKey:@"baseData"];
+            [ObjectVo clearCurrentObjectVo];
+            // 将个人信息全部持久化到documents中，可通过objectVo的单例获取登录了的用户的个人信息
+            NSMutableData *mData = [[NSMutableData alloc]init];
+            NSKeyedArchiver *archiver=[[NSKeyedArchiver alloc] initForWritingWithMutableData:mData];
+            [archiver encodeObject:ob forKey:@"objectVoInfo"];
+            [archiver finishEncoding];
+            NSString *objectVoInfoPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/objectVoInfo.txt"];
+            [mData writeToFile:objectVoInfoPath atomically:YES];
+            mData = nil;
+            
+        }
         NSString *ovo = [object valueForKey:@"ovo"];
         NSDictionary *ovoDic = [ovo JSONValue];
         if ([[ovoDic valueForKey:@"code"] intValue] == 0) {
@@ -257,7 +337,33 @@
     [self.view showWithType:0 Title:@"切换商家中..."];
     ObjectVo *ob = [ObjectVo shareCurrentObjectVo];
     [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": CHANGE_TABLE,@"fname": friend.fname,@"uname": ue.userName,@"uuid": ue.uuid,@"dataVersions":ob.dataVersions} completionBlock:^(id object) {
-        NSLog(@"ob=%@",object);
+        ResultsModel *result = [[ResultsModel alloc]init];
+        NSArray *properties = [self properties_aps:[ResultsModel class] objc:result];
+        for (NSString *resultKey in [object allKeys]) {
+            for (NSString *proKey in properties) {
+                if ([resultKey isEqualToString:proKey]) {
+                    [result setValue:[object valueForKey:resultKey] forKey:resultKey];
+                }
+            }
+        }
+        if (result.msg) {
+            [self.view endSynRequestSignal];
+            [self.view LabelTitle:[object valueForKey:@"msg"]];
+            return;
+        }
+        if (result.baseData) {
+            ob.baseData = [object valueForKey:@"baseData"];
+            [ObjectVo clearCurrentObjectVo];
+            // 将个人信息全部持久化到documents中，可通过objectVo的单例获取登录了的用户的个人信息
+            NSMutableData *mData = [[NSMutableData alloc]init];
+            NSKeyedArchiver *archiver=[[NSKeyedArchiver alloc] initForWritingWithMutableData:mData];
+            [archiver encodeObject:ob forKey:@"objectVoInfo"];
+            [archiver finishEncoding];
+            NSString *objectVoInfoPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/objectVoInfo.txt"];
+            [mData writeToFile:objectVoInfoPath atomically:YES];
+            mData = nil;
+            
+        }
         NSString *ovo = [object valueForKey:@"ovo"];
         NSDictionary *ovoDic = [ovo JSONValue];
         if ([[ovoDic valueForKey:@"code"] intValue] == 0) {
@@ -390,7 +496,34 @@
         [self.view showWithType:0 Title:@"修改签名中..."];
         
         [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": UPDATE_DESCRIPTION,@"description": textMsg.text,@"uname": ue.userName,@"uuid": ue.uuid,@"dataVersions":ob.dataVersions} completionBlock:^(id object) {
-            NSLog(@"ob=%@",object);
+            ResultsModel *result = [[ResultsModel alloc]init];
+            NSArray *properties = [self properties_aps:[ResultsModel class] objc:result];
+            for (NSString *resultKey in [object allKeys]) {
+                for (NSString *proKey in properties) {
+                    if ([resultKey isEqualToString:proKey]) {
+                        [result setValue:[object valueForKey:resultKey] forKey:resultKey];
+                    }
+                }
+            }
+            if (result.msg) {
+                [self.view endSynRequestSignal];
+                [self.view LabelTitle:[object valueForKey:@"msg"]];
+                return;
+            }
+            if (result.baseData) {
+                ob.baseData = [object valueForKey:@"baseData"];
+                [ObjectVo clearCurrentObjectVo];
+                // 将个人信息全部持久化到documents中，可通过objectVo的单例获取登录了的用户的个人信息
+                NSMutableData *mData = [[NSMutableData alloc]init];
+                NSKeyedArchiver *archiver=[[NSKeyedArchiver alloc] initForWritingWithMutableData:mData];
+                [archiver encodeObject:ob forKey:@"objectVoInfo"];
+                [archiver finishEncoding];
+                NSString *objectVoInfoPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/objectVoInfo.txt"];
+                [mData writeToFile:objectVoInfoPath atomically:YES];
+                mData = nil;
+                
+            }
+            
             NSString *ovo = [object valueForKey:@"ovo"];
             NSDictionary *ovoDic = [ovo JSONValue];
             if ([[ovoDic valueForKey:@"code"] intValue] == 0) {
@@ -408,21 +541,51 @@
         [self.view showWithType:0 Title:@"修改备注中..."];
         NSDictionary *params = @{@"interface": REMARK_FRIENDS,@"uname": ue.userName,@"uuid": ue.uuid,@"remark": textMsg.text,@"fid": [NSString stringWithFormat:@"%d",friend.Id],@"dataVersions":ob.dataVersions};
         [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:params completionBlock:^(id object) {
+            ResultsModel *result = [[ResultsModel alloc]init];
+            NSArray *properties = [self properties_aps:[ResultsModel class] objc:result];
+            for (NSString *resultKey in [object allKeys]) {
+                for (NSString *proKey in properties) {
+                    if ([resultKey isEqualToString:proKey]) {
+                        [result setValue:[object valueForKey:resultKey] forKey:resultKey];
+                    }
+                }
+            }
+            if (result.msg) {
+                [self.view endSynRequestSignal];
+                [self.view LabelTitle:[object valueForKey:@"msg"]];
+                return;
+            }
+            if (result.baseData) {
+                ob.baseData = [object valueForKey:@"baseData"];
+                [ObjectVo clearCurrentObjectVo];
+                // 将个人信息全部持久化到documents中，可通过objectVo的单例获取登录了的用户的个人信息
+                NSMutableData *mData = [[NSMutableData alloc]init];
+                NSKeyedArchiver *archiver=[[NSKeyedArchiver alloc] initForWritingWithMutableData:mData];
+                [archiver encodeObject:ob forKey:@"objectVoInfo"];
+                [archiver finishEncoding];
+                NSString *objectVoInfoPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/objectVoInfo.txt"];
+                [mData writeToFile:objectVoInfoPath atomically:YES];
+                mData = nil;
+                
+            }
+
             NSString *ovo = [object valueForKey:@"ovo"];
             NSDictionary *ovoDic = [ovo JSONValue];
             if ([[ovoDic valueForKey:@"code"] intValue] == 0) {
                 [self.view endSynRequestSignal];
                 [self.view LabelTitle:@"修改成功！"];
+                textMsg = nil;
             }else{
                 [self.view endSynRequestSignal];
                 [self.view LabelTitle:[ovoDic valueForKey:@"msg"]];
+                textMsg = nil;
             }
         } failureBlock:^(NSError *error, NSString *responseString) {
             [self.view endSynRequestSignal];
+            textMsg = nil;
         }];
     }
     [self refreshAction:nil];
-    textMsg = nil;
     alertView = nil;
 }
 
@@ -441,6 +604,34 @@
         UserEntity *user = [UserEntity shareCurrentUe];
         ObjectVo *ob= [ObjectVo shareCurrentObjectVo];
         [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": DELETE_FRIENDS,@"fname":friend.fname,@"uname": user.userName,@"uuid":user.uuid, @"dataVersions":ob.dataVersions} completionBlock:^(id object) {
+            ResultsModel *result = [[ResultsModel alloc]init];
+            NSArray *properties = [self properties_aps:[ResultsModel class] objc:result];
+            for (NSString *resultKey in [object allKeys]) {
+                for (NSString *proKey in properties) {
+                    if ([resultKey isEqualToString:proKey]) {
+                        [result setValue:[object valueForKey:resultKey] forKey:resultKey];
+                    }
+                }
+            }
+            if (result.msg) {
+                [self.view endSynRequestSignal];
+                [self.view LabelTitle:[object valueForKey:@"msg"]];
+                return;
+            }
+            if (result.baseData) {
+                ob.baseData = [object valueForKey:@"baseData"];
+                [ObjectVo clearCurrentObjectVo];
+                // 将个人信息全部持久化到documents中，可通过objectVo的单例获取登录了的用户的个人信息
+                NSMutableData *mData = [[NSMutableData alloc]init];
+                NSKeyedArchiver *archiver=[[NSKeyedArchiver alloc] initForWritingWithMutableData:mData];
+                [archiver encodeObject:ob forKey:@"objectVoInfo"];
+                [archiver finishEncoding];
+                NSString *objectVoInfoPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/objectVoInfo.txt"];
+                [mData writeToFile:objectVoInfoPath atomically:YES];
+                mData = nil;
+                
+            }
+
             NSString *ovo = [object valueForKey:@"ovo"];
             NSDictionary *ovoDic = [ovo JSONValue];
             if ([[ovoDic valueForKey:@"code"] intValue] == 0) {
@@ -477,6 +668,27 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
+//遍历类属性
+- (NSMutableArray *)properties_aps:(Class)aClass objc:(id)aObjc
+{
+    //NSMutableDictionary *props = [NSMutableDictionary dictionary];
+    NSMutableArray *props = [NSMutableArray array];
+    unsigned int outCount, i;
+    objc_property_t *properties = class_copyPropertyList(aClass, &outCount);
+    for (i = 0; i < outCount; i++)
+    {
+        objc_property_t property = properties[i];
+        const char* char_f =property_getName(property);
+        NSString *propertyName = [NSString stringWithUTF8String:char_f];
+        [props addObject:propertyName];
+        //        id propertyValue = [aObjc valueForKey:(NSString *)propertyName];
+        //        if (propertyValue) [props setObject:propertyValue forKey:propertyName];
+    }
+    free(properties);
+    return props;
+}
+
 
 - (void)dealloc
 {

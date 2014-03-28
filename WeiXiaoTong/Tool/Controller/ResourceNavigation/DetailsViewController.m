@@ -46,6 +46,7 @@
 #include<objc/runtime.h>
 #import "HttpService.h"
 #import "JSON.h"
+#import "ResultsModel.h"
 
 @interface DetailsViewController ()
 
@@ -66,7 +67,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-//    NSLog(@"%d,%@,%@",self.chanPin.pics,self.chanPin.address,self.chanPin.attrebute);
+
     _contents = [[NSMutableArray alloc]init];
     
     [self.sPageControl setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
@@ -138,8 +139,7 @@
     }
 
     NSArray *categorys = [_chanpin.categorys componentsSeparatedByString:@"|"];
-//    NSLog(@"c:%@",_chanpin.categorys);
-//    NSLog(@"ca = %@",categorys);
+
     for (int i = 0; i < categorys.count; i++) {
         NSArray *categoryArr = [[categorys objectAtIndex:i] componentsSeparatedByString:@"_"];
         if ([[categoryArr objectAtIndex:0] intValue] == 1) {
@@ -338,6 +338,33 @@
     if (buttonIndex == 1) {
         [self.view showWithType:0 Title:@"正在删除..."];
         [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": DELETE_CHANPIN,@"cpid": [NSString stringWithFormat:@"%d",self.chanPin.Id],@"uuid": ue.uuid,@"uname": ue.userName,@"dataVersions":ob.dataVersions} completionBlock:^(id object) {
+            ResultsModel *result = [[ResultsModel alloc]init];
+            NSArray *properties = [self properties_aps:[ResultsModel class] objc:result];
+            for (NSString *resultKey in [object allKeys]) {
+                for (NSString *proKey in properties) {
+                    if ([resultKey isEqualToString:proKey]) {
+                        [result setValue:[object valueForKey:resultKey] forKey:resultKey];
+                    }
+                }
+            }
+            if (result.msg) {
+                [self.view endSynRequestSignal];
+                [self.view LabelTitle:[object valueForKey:@"msg"]];
+                return;
+            }
+            if (result.baseData) {
+                ob.baseData = [object valueForKey:@"baseData"];
+                [ObjectVo clearCurrentObjectVo];
+                // 将个人信息全部持久化到documents中，可通过objectVo的单例获取登录了的用户的个人信息
+                NSMutableData *mData = [[NSMutableData alloc]init];
+                NSKeyedArchiver *archiver=[[NSKeyedArchiver alloc] initForWritingWithMutableData:mData];
+                [archiver encodeObject:ob forKey:@"objectVoInfo"];
+                [archiver finishEncoding];
+                NSString *objectVoInfoPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/objectVoInfo.txt"];
+                [mData writeToFile:objectVoInfoPath atomically:YES];
+                mData = nil;
+                
+            }
             NSString *ovo = [object valueForKey:@"ovo"];
             NSDictionary *objectVoDic = [ovo JSONValue];
             NSString *code = [objectVoDic valueForKey:@"code"];

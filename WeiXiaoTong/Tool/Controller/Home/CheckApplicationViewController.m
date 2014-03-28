@@ -12,6 +12,8 @@
 #import "UserEntity.h"
 #import "JSON.h"
 #import "ObjectVo.h"
+#import "ResultsModel.h"
+#include <objc/runtime.h>
 
 @interface CheckApplicationViewController ()
 
@@ -61,8 +63,6 @@
     cell.time.text = [NSString stringWithFormat:@"时间：%@",[formatter stringFromDate:date]];
     formatter = nil;
     date = nil;
-//    cell.userName.text = @"(136546)";
-//    cell.uLabel.frame = CGRectMake(5+cell.userName.frame.size.width, cell.uLabel.frame.origin.y, cell.uLabel.frame.size.width, cell.uLabel.frame.size.height);
     return cell;
 }
 
@@ -74,7 +74,34 @@
     UserEntity *ue = [UserEntity shareCurrentUe];
     ObjectVo *ob= [ObjectVo shareCurrentObjectVo];
     [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": DECLINE_FRIEND,@"afid":[NSString stringWithFormat:@"%d",af.Id],@"uname":ue.userName,@"uuid":ue.uuid,@"dataVersions":ob.dataVersions} completionBlock:^(id object) {
-        NSLog(@"ob = %@",object);
+        ResultsModel *result = [[ResultsModel alloc]init];
+        NSArray *properties = [self properties_aps:[ResultsModel class] objc:result];
+        for (NSString *resultKey in [object allKeys]) {
+            for (NSString *proKey in properties) {
+                if ([resultKey isEqualToString:proKey]) {
+                    [result setValue:[object valueForKey:resultKey] forKey:resultKey];
+                }
+            }
+        }
+        if (result.msg) {
+            [self.view endSynRequestSignal];
+            [self.view LabelTitle:[object valueForKey:@"msg"]];
+            return;
+        }
+        if (result.baseData) {
+            ob.baseData = [object valueForKey:@"baseData"];
+            [ObjectVo clearCurrentObjectVo];
+            // 将个人信息全部持久化到documents中，可通过objectVo的单例获取登录了的用户的个人信息
+            NSMutableData *mData = [[NSMutableData alloc]init];
+            NSKeyedArchiver *archiver=[[NSKeyedArchiver alloc] initForWritingWithMutableData:mData];
+            [archiver encodeObject:ob forKey:@"objectVoInfo"];
+            [archiver finishEncoding];
+            NSString *objectVoInfoPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/objectVoInfo.txt"];
+            [mData writeToFile:objectVoInfoPath atomically:YES];
+            mData = nil;
+            
+        }
+
         NSString *ovo = [object valueForKey:@"ovo"];
         NSDictionary *ovoDic = [ovo JSONValue];
         if ([[ovoDic valueForKey:@"code"] intValue] == 0) {
@@ -127,9 +154,30 @@
     }];
 
 }
-- (void)reloadTableData:(NSIndexPath *)indexPath
+
+//- (void)reloadTableData:(NSIndexPath *)indexPath
+//{
+//    
+//}
+
+//遍历类属性
+- (NSMutableArray *)properties_aps:(Class)aClass objc:(id)aObjc
 {
-    
+    //NSMutableDictionary *props = [NSMutableDictionary dictionary];
+    NSMutableArray *props = [NSMutableArray array];
+    unsigned int outCount, i;
+    objc_property_t *properties = class_copyPropertyList(aClass, &outCount);
+    for (i = 0; i < outCount; i++)
+    {
+        objc_property_t property = properties[i];
+        const char* char_f =property_getName(property);
+        NSString *propertyName = [NSString stringWithUTF8String:char_f];
+        [props addObject:propertyName];
+        //        id propertyValue = [aObjc valueForKey:(NSString *)propertyName];
+        //        if (propertyValue) [props setObject:propertyValue forKey:propertyName];
+    }
+    free(properties);
+    return props;
 }
 
 - (void)didReceiveMemoryWarning

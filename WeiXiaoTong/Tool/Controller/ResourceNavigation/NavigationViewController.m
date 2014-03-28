@@ -16,6 +16,7 @@
 #import "UserEntity.h"
 #include <objc/runtime.h>
 #import "ObjectVo.h"
+#import "ResultsModel.h"
 
 @interface NavigationViewController ()
 
@@ -74,7 +75,33 @@
     [self.view showWithType:0 Title:@"正在获取商品列表..."];
     ObjectVo *ob = [ObjectVo shareCurrentObjectVo];
     [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": GET_CHANPIN_BY_DANGKOU,@"page":@"0",@"dangkou":link.name,@"uname": user.userName,@"uuid": user.uuid,@"dataVersions":ob.dataVersions} completionBlock:^(id object) {
-        
+        ResultsModel *result = [[ResultsModel alloc]init];
+        NSArray *properties = [self properties_aps:[ResultsModel class] objc:result];
+        for (NSString *resultKey in [object allKeys]) {
+            for (NSString *proKey in properties) {
+                if ([resultKey isEqualToString:proKey]) {
+                    [result setValue:[object valueForKey:resultKey] forKey:resultKey];
+                }
+            }
+        }
+        if (result.msg) {
+            [self.view endSynRequestSignal];
+            [self.view LabelTitle:[object valueForKey:@"msg"]];
+            return;
+        }
+        if (result.baseData) {
+            ob.baseData = [object valueForKey:@"baseData"];
+            [ObjectVo clearCurrentObjectVo];
+            // 将个人信息全部持久化到documents中，可通过objectVo的单例获取登录了的用户的个人信息
+            NSMutableData *mData = [[NSMutableData alloc]init];
+            NSKeyedArchiver *archiver=[[NSKeyedArchiver alloc] initForWritingWithMutableData:mData];
+            [archiver encodeObject:ob forKey:@"objectVoInfo"];
+            [archiver finishEncoding];
+            NSString *objectVoInfoPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/objectVoInfo.txt"];
+            [mData writeToFile:objectVoInfoPath atomically:YES];
+            mData = nil;
+            
+        }
         NSDictionary *ovoDic = [[object valueForKey:@"ovo"] JSONValue];
 
         if ([[ovoDic valueForKey:@"code"] intValue] == 0) {

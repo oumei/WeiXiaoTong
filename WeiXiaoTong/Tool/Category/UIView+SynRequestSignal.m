@@ -117,7 +117,7 @@ static UIView *spinner = nil;
     if (!label) {
         
         label = [[UILabel alloc] init];
-        label.layer.cornerRadius = 4.0;
+        label.layer.cornerRadius = 6.0;
         label.backgroundColor = [UIColor grayColor];
         label.font = [UIFont systemFontOfSize:14];
         label.text = aTitle;

@@ -10,7 +10,6 @@
 #import "Config.h"
 #import "RegisterViewController.h"
 #import "ControlCenter.h"
-#import "UserModel.h"
 #import "HttpService.h"
 #import "JSON.h"
 #import "ObjectVo.h"
@@ -18,7 +17,7 @@
 #import "BaseData.h"
 #import "Reachability.h"
 #include<objc/runtime.h>
-
+#import "ResultsModel.h"
 
 @interface LoginViewController ()
 
@@ -58,6 +57,17 @@
     label = nil;
     leftBarButton = nil;
     
+    UserEntity *user = [UserEntity shareCurrentUe];
+    if (user.uuid == nil) {
+        [user setValue:[self uuid] forKey:@"uuid"];
+        NSMutableData *mData = [[NSMutableData alloc]init];
+        NSKeyedArchiver *archiver=[[NSKeyedArchiver alloc] initForWritingWithMutableData:mData];
+        [archiver encodeObject:user forKey:@"ueInfo"];
+        [archiver finishEncoding];
+        NSString *userInfoPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/ueInfo.txt"];
+        [mData writeToFile:userInfoPath atomically:YES];
+    }
+   
 //    [UserModel clearCurrrentUser];
 //    UserModel *userModel = [UserModel shareCurrentUser];
 //    
@@ -81,6 +91,20 @@
         {
             self.registerText = [object valueForKey:@"seachText"];
             [self.loginWebView loadHTMLString:[object valueForKey:@"loginText"] baseURL:[NSBundle mainBundle].bundleURL];
+            ResultsModel *result = [[ResultsModel alloc]init];
+            NSArray *properties = [self properties_aps:[ResultsModel class] objc:result];
+            for (NSString *resultKey in [object allKeys]) {
+                for (NSString *proKey in properties) {
+                    if ([resultKey isEqualToString:proKey]) {
+                        [result setValue:[object valueForKey:resultKey] forKey:resultKey];
+                    }
+                }
+            }
+            if (result.msg) {
+                [self.view endSynRequestSignal];
+                [self.view LabelTitle:[object valueForKey:@"msg"]];
+                return;
+            }
             for (NSString *key in [object allKeys]) {
                 NSArray *arr = [self properties_aps:[Config class] objc:config];
                 for (NSString *k in arr) {
@@ -121,29 +145,22 @@
 
 - (IBAction)registerAction:(id)sender
 {
-    UserModel *user = [UserModel shareCurrentUser];
-    if (user.uuid == nil) {
+    UserEntity *user = [UserEntity shareCurrentUe];
+    if (user.userName == nil) {
         RegisterViewController *registerViewController = [[RegisterViewController alloc]initWithNibName:@"RegisterViewController" bundle:nil registerText:self.registerText];
         [self.navigationController pushViewController:registerViewController animated:YES];
-//        [self presentViewController:registerViewController animated:YES completion:^{
-//            //
-//        }];
     }else{
-        NSLog(@"该uuid已注册！！！");
+        [self.view LabelTitle:@"该手机已注册！"];
     }
-    
     
 }
 
 - (IBAction)loginAction:(id)sender
 {
-    UserModel *user = [UserModel shareCurrentUser];
+    UserEntity *user = [UserEntity shareCurrentUe];
     //回收键盘
     [self.uname endEditing:YES];
     [self.psd endEditing:YES];
-    if (user.uuid == nil) {
-        return;
-    }
     
     if (![[self.uname.text stringByReplacingOccurrencesOfString:@" " withString:@""]isEqualToString:@""] && ![[self.psd.text stringByReplacingOccurrencesOfString:@" " withString:@""] isEqualToString:@""] && self.uname.text.length >= 6 && self.psd.text.length >= 6){
         
@@ -161,7 +178,20 @@
             //02508B0C-9059-498F-A8C0-BD9B5B8C7AF2
             
             [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": USER_LOGIN,@"psd": self.psd.text,@"uname": self.uname.text,@"uuid": user.uuid} completionBlock:^(id object) {
-                
+                ResultsModel *result = [[ResultsModel alloc]init];
+                NSArray *properties = [self properties_aps:[ResultsModel class] objc:result];
+                for (NSString *resultKey in [object allKeys]) {
+                    for (NSString *proKey in properties) {
+                        if ([resultKey isEqualToString:proKey]) {
+                            [result setValue:[object valueForKey:resultKey] forKey:resultKey];
+                        }
+                    }
+                }
+                if (result.msg) {
+                    [self.view endSynRequestSignal];
+                    [self.view LabelTitle:[object valueForKey:@"msg"]];
+                    return;
+                }
                 NSString *ovo = [object valueForKey:@"ovo"];
                 NSDictionary *objectVoDic = [ovo JSONValue];
                 NSString *code = [objectVoDic valueForKey:@"code"];
@@ -244,14 +274,13 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:YES];
-    UserModel *user = [UserModel shareCurrentUser];
-    self.uname.text = user.uname;
+    UserEntity *user = [UserEntity shareCurrentUe];
+    self.uname.text = user.userName;
     self.psd.text = user.psd;
     
     if ([Reachability reachabilityForInternetConnection].currentReachabilityStatus == NotReachable && [Reachability reachabilityForLocalWiFi].currentReachabilityStatus == NotReachable)
     {
         [self.view LabelTitle:@"无网络连接！"];
-        //NSLog(@"无网络连接");
     }
     
 }
@@ -276,6 +305,14 @@
     return props;
 }
 
+- (NSString*) uuid {
+    CFUUIDRef puuid = CFUUIDCreate( nil );
+    CFStringRef uuidString = CFUUIDCreateString( nil, puuid );
+    NSString * result = (__bridge_transfer NSString *)CFStringCreateCopy( NULL, uuidString);
+    CFRelease(puuid);
+    CFRelease(uuidString);
+    return result;
+}
 
 - (void)didReceiveMemoryWarning
 {

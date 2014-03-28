@@ -17,6 +17,7 @@
 #import "ChanPin.h"
 #include<objc/runtime.h>
 #import "UploadViewController.h"
+#import "ResultsModel.h"
 
 @interface GoodSearchViewController ()
 
@@ -68,8 +69,6 @@
     _jewelry = @[@"选择适用人群",@"选择售后服务"];
     _cosmetics = @[@"选择适用人群",@"选择售后服务",@"选择彩妆类型"];
     _gShoes = @[@"选择适用人群",@"选择售后服务",@"选择鞋子类型",@"选择鞋跟高度"];
-    
-    _categoryArr = [[NSArray alloc]initWithObjects:_all,_bag,_cosmetics,_hat,_belt,_wallet,_other,_watch,_jewelry,_silk,_shoes,_glasses,_clothes, nil];
     
     _tableViewController = [[TableViewController alloc]initWithNibName:@"TableViewController" bundle:nil data:_all];
     _tableViewController.delegate = self;
@@ -129,8 +128,43 @@
         _lastIndexPath = indexPath;
     }
     [sender setSelected:YES];
-    _tableViewController.dataArr = [_categoryArr objectAtIndex:indexPath.row];
-    if ([_xb intValue] == 3 && indexPath.row == 10) {
+//    _tableViewController.dataArr = [_categoryArr objectAtIndex:indexPath.row];
+    
+    if (indexPath.row == 0) {
+        _tableViewController.dataArr = _all;
+        [_tableViewController.table reloadData];
+        [NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(tableViewControllerReloadData) userInfo:nil repeats:NO];
+        _indexPath = indexPath;
+        return;
+    }
+    if ([[[_categorys objectAtIndex:indexPath.row - 1] valueForKey:@"id"] intValue] == 3) {
+        _tableViewController.dataArr = _bag;
+    }else if ([[[_categorys objectAtIndex:indexPath.row - 1] valueForKey:@"id"] intValue] == 12){
+        _tableViewController.dataArr = _cosmetics;
+    }else if ([[[_categorys objectAtIndex:indexPath.row - 1] valueForKey:@"id"] intValue] == 8){
+        _tableViewController.dataArr = _hat;
+    }else if ([[[_categorys objectAtIndex:indexPath.row - 1] valueForKey:@"id"] intValue] == 6){
+        _tableViewController.dataArr = _belt;
+    }else if ([[[_categorys objectAtIndex:indexPath.row - 1] valueForKey:@"id"] intValue] == 13){
+        _tableViewController.dataArr = _wallet;
+    }else if ([[[_categorys objectAtIndex:indexPath.row - 1] valueForKey:@"id"] intValue] == 0){
+        _tableViewController.dataArr = _other;
+    }else if ([[[_categorys objectAtIndex:indexPath.row - 1] valueForKey:@"id"] intValue] == 2){
+        _tableViewController.dataArr = _watch;
+    }else if ([[[_categorys objectAtIndex:indexPath.row - 1] valueForKey:@"id"] intValue] == 10){
+        _tableViewController.dataArr = _jewelry;
+    }else if ([[[_categorys objectAtIndex:indexPath.row - 1] valueForKey:@"id"] intValue] == 5){
+        _tableViewController.dataArr = _silk;
+    }else if ([[[_categorys objectAtIndex:indexPath.row - 1] valueForKey:@"id"] intValue] == 1){
+        _tableViewController.dataArr = _shoes;
+    }else if ([[[_categorys objectAtIndex:indexPath.row - 1] valueForKey:@"id"] intValue] == 9){
+        _tableViewController.dataArr = _glasses;
+    }else if ([[[_categorys objectAtIndex:indexPath.row - 1] valueForKey:@"id"] intValue] == 7){
+        _tableViewController.dataArr = _clothes;
+    }else{
+        _tableViewController.dataArr = _all;
+    }
+    if ([_xb intValue] == 3 && [[[_categorys objectAtIndex:indexPath.row] valueForKey:@"id"] intValue] == 1) {
         _tableViewController.dataArr = _gShoes;
     }
     [_tableViewController.table reloadData];
@@ -399,12 +433,37 @@
     }
     [self.view showWithType:0 Title:@"正在获取商品列表..."];
     [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:params completionBlock:^(id object) {
+        ResultsModel *result = [[ResultsModel alloc]init];
+        NSArray *properties = [self properties_aps:[ResultsModel class] objc:result];
+        for (NSString *resultKey in [object allKeys]) {
+            for (NSString *proKey in properties) {
+                if ([resultKey isEqualToString:proKey]) {
+                    [result setValue:[object valueForKey:resultKey] forKey:resultKey];
+                }
+            }
+        }
+        if (result.msg) {
+            [self.view endSynRequestSignal];
+            [self.view LabelTitle:[object valueForKey:@"msg"]];
+            return;
+        }
+        if (result.baseData) {
+            ob.baseData = [object valueForKey:@"baseData"];
+            [ObjectVo clearCurrentObjectVo];
+            // 将个人信息全部持久化到documents中，可通过objectVo的单例获取登录了的用户的个人信息
+            NSMutableData *mData = [[NSMutableData alloc]init];
+            NSKeyedArchiver *archiver=[[NSKeyedArchiver alloc] initForWritingWithMutableData:mData];
+            [archiver encodeObject:ob forKey:@"objectVoInfo"];
+            [archiver finishEncoding];
+            NSString *objectVoInfoPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/objectVoInfo.txt"];
+            [mData writeToFile:objectVoInfoPath atomically:YES];
+            mData = nil;
+            
+        }
         NSString *ovo = [object valueForKey:@"ovo"];
         NSDictionary *objectVoDic = [ovo JSONValue];
         NSMutableArray *cps = [[NSMutableArray alloc]init];
         NSString *code = [objectVoDic valueForKey:@"code"];
-//        NSLog(@"%@",[objectVoDic valueForKey:@"msg"]);
-//        NSLog(@"%@",objectVoDic);
         if ([code intValue] == 0) {
             NSArray *arr = [objectVoDic valueForKey:@"cps"];
             for (int i = 0; i < arr.count; i++) {
@@ -446,11 +505,6 @@
     }];
     
 }
-
-//- (NSString *)trimming:(NSString *)
-//{
-//    return [st stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-//}
 
 - (void)upLoadImage:(id)sener suser:(NSDictionary *)suser
 {
@@ -498,11 +552,18 @@
         [_ids addObject:str];
     }
     NSString *lxStr = [[_categorys objectAtIndex:_indexPath.row - 1] valueForKey:@"id"];
-    if ([lxStr intValue] == 1 && [aStr rangeOfString:@"女士"].location != NSNotFound) {
-        _tableViewController.dataArr = _gShoes;
-        [_tableViewController.table reloadData];
-        [NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(tableViewControllerReloadData) userInfo:nil repeats:NO];
+    if ([lxStr intValue] == 1) {
+        if ([lxStr intValue] == 1 && [aStr rangeOfString:@"女士"].location != NSNotFound) {
+            _tableViewController.dataArr = _gShoes;
+            [_tableViewController.table reloadData];
+            [NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(tableViewControllerReloadData) userInfo:nil repeats:NO];
+        }else{
+            _tableViewController.dataArr = _shoes;
+            [_tableViewController.table reloadData];
+            [NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(tableViewControllerReloadData) userInfo:nil repeats:NO];
+        }
     }
+    
     TableCell *cell = (TableCell *)[_tableViewController.table cellForRowAtIndexPath:indexPath];
     if ([[_ids objectAtIndex:apIndexPath.row] intValue] == -1) {
         NSString *title;

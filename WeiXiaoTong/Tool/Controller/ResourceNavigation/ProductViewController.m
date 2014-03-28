@@ -66,6 +66,33 @@ static int pn = 0;
     ObjectVo *ob = [ObjectVo shareCurrentObjectVo];
     if (self.title == nil) {
         [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": GET_CHANPIN,@"page": [NSString stringWithFormat:@"%d",page],@"lx":self.lx,@"xb": self.xb,@"pp": @"-1",@"text": self.text,@"uname": user.userName,@"uuid": user.uuid,@"dataVersions":ob.dataVersions} completionBlock:^(id object) {
+            ResultsModel *result = [[ResultsModel alloc]init];
+            NSArray *properties = [self properties_aps:[ResultsModel class] objc:result];
+            for (NSString *resultKey in [object allKeys]) {
+                for (NSString *proKey in properties) {
+                    if ([resultKey isEqualToString:proKey]) {
+                        [result setValue:[object valueForKey:resultKey] forKey:resultKey];
+                    }
+                }
+            }
+            if (result.msg) {
+                [self.view endSynRequestSignal];
+                [self.view LabelTitle:[object valueForKey:@"msg"]];
+                return;
+            }
+            if (result.baseData) {
+                ob.baseData = [object valueForKey:@"baseData"];
+                [ObjectVo clearCurrentObjectVo];
+                // 将个人信息全部持久化到documents中，可通过objectVo的单例获取登录了的用户的个人信息
+                NSMutableData *mData = [[NSMutableData alloc]init];
+                NSKeyedArchiver *archiver=[[NSKeyedArchiver alloc] initForWritingWithMutableData:mData];
+                [archiver encodeObject:ob forKey:@"objectVoInfo"];
+                [archiver finishEncoding];
+                NSString *objectVoInfoPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/objectVoInfo.txt"];
+                [mData writeToFile:objectVoInfoPath atomically:YES];
+                mData = nil;
+                
+            }
             NSString *ovo = [object valueForKey:@"ovo"];
             NSDictionary *objectVoDic = [ovo JSONValue];
             NSMutableArray *cpsArr = [[NSMutableArray alloc]initWithArray:self.cpsArr];
@@ -110,7 +137,33 @@ static int pn = 0;
         }];
     }else if (self.isSelf != nil && self.title == nil){
         [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": GET_CHANPIN,@"page": [NSString stringWithFormat:@"%d",page],@"lx":self.lx,@"xb": self.xb,@"pp": @"-1",@"text": self.text,@"isSelf": @"1",@"uname": user.userName,@"uuid": user.uuid,@"dataVersions":ob.dataVersions} completionBlock:^(id object) {
-//            NSLog(@"ob = %@",object);
+            ResultsModel *result = [[ResultsModel alloc]init];
+            NSArray *properties = [self properties_aps:[ResultsModel class] objc:result];
+            for (NSString *resultKey in [object allKeys]) {
+                for (NSString *proKey in properties) {
+                    if ([resultKey isEqualToString:proKey]) {
+                        [result setValue:[object valueForKey:resultKey] forKey:resultKey];
+                    }
+                }
+            }
+            if (result.msg) {
+                [self.view endSynRequestSignal];
+                [self.view LabelTitle:[object valueForKey:@"msg"]];
+                return;
+            }
+            if (result.baseData) {
+                ob.baseData = [object valueForKey:@"baseData"];
+                [ObjectVo clearCurrentObjectVo];
+                // 将个人信息全部持久化到documents中，可通过objectVo的单例获取登录了的用户的个人信息
+                NSMutableData *mData = [[NSMutableData alloc]init];
+                NSKeyedArchiver *archiver=[[NSKeyedArchiver alloc] initForWritingWithMutableData:mData];
+                [archiver encodeObject:ob forKey:@"objectVoInfo"];
+                [archiver finishEncoding];
+                NSString *objectVoInfoPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/objectVoInfo.txt"];
+                [mData writeToFile:objectVoInfoPath atomically:YES];
+                mData = nil;
+                
+            }
             NSString *ovo = [object valueForKey:@"ovo"];
             NSDictionary *objectVoDic = [ovo JSONValue];
             NSMutableArray *cpsArr = [[NSMutableArray alloc]initWithArray:self.cpsArr];
@@ -156,7 +209,33 @@ static int pn = 0;
         }];
     }else{
         [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": GET_CHANPIN_BY_DANGKOU,@"page":[NSString stringWithFormat:@"%d",page],@"dangkou":self.title,@"uname": user.userName,@"uuid": user.uuid,@"dataVersions":ob.dataVersions} completionBlock:^(id object) {
-            
+            ResultsModel *result = [[ResultsModel alloc]init];
+            NSArray *properties = [self properties_aps:[ResultsModel class] objc:result];
+            for (NSString *resultKey in [object allKeys]) {
+                for (NSString *proKey in properties) {
+                    if ([resultKey isEqualToString:proKey]) {
+                        [result setValue:[object valueForKey:resultKey] forKey:resultKey];
+                    }
+                }
+            }
+            if (result.msg) {
+                [self.view endSynRequestSignal];
+                [self.view LabelTitle:[object valueForKey:@"msg"]];
+                return;
+            }
+            if (result.baseData) {
+                ob.baseData = [object valueForKey:@"baseData"];
+                [ObjectVo clearCurrentObjectVo];
+                // 将个人信息全部持久化到documents中，可通过objectVo的单例获取登录了的用户的个人信息
+                NSMutableData *mData = [[NSMutableData alloc]init];
+                NSKeyedArchiver *archiver=[[NSKeyedArchiver alloc] initForWritingWithMutableData:mData];
+                [archiver encodeObject:ob forKey:@"objectVoInfo"];
+                [archiver finishEncoding];
+                NSString *objectVoInfoPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/objectVoInfo.txt"];
+                [mData writeToFile:objectVoInfoPath atomically:YES];
+                mData = nil;
+                
+            }
             NSDictionary *ovoDic = [[object valueForKey:@"ovo"] JSONValue];
             if ([[ovoDic valueForKey:@"code"] intValue] == 0) {
                 NSMutableArray *cpsArr = [[NSMutableArray alloc]initWithArray:self.cpsArr];
@@ -235,7 +314,6 @@ static int pn = 0;
     cell.serviceWeb.opaque = NO;
     cell.nameWeb.scrollView.bounces = NO;
     cell.serviceWeb.scrollView.bounces = NO;
-    
     [cell.nameWeb loadHTMLString:chanPin.title baseURL:[[NSBundle mainBundle] bundleURL]];
     [cell.serviceWeb loadHTMLString:chanPin.attrebute baseURL:[[NSBundle mainBundle] bundleURL]];
     cell.describe.text = chanPin.miaoshu;
@@ -513,7 +591,33 @@ static int pn = 0;
     [self.view showWithType:0 Title:@"正在获取商品列表..."];
     ObjectVo *ob = [ObjectVo shareCurrentObjectVo];
     [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": GET_CHANPIN_BY_DANGKOU,@"page":@"0",@"dangkou":chanPin.dangkou,@"uname": user.userName,@"uuid": user.uuid,@"dataVersions":ob.dataVersions} completionBlock:^(id object) {
-        
+        ResultsModel *result = [[ResultsModel alloc]init];
+        NSArray *properties = [self properties_aps:[ResultsModel class] objc:result];
+        for (NSString *resultKey in [object allKeys]) {
+            for (NSString *proKey in properties) {
+                if ([resultKey isEqualToString:proKey]) {
+                    [result setValue:[object valueForKey:resultKey] forKey:resultKey];
+                }
+            }
+        }
+        if (result.msg) {
+            [self.view endSynRequestSignal];
+            [self.view LabelTitle:[object valueForKey:@"msg"]];
+            return;
+        }
+        if (result.baseData) {
+            ob.baseData = [object valueForKey:@"baseData"];
+            [ObjectVo clearCurrentObjectVo];
+            // 将个人信息全部持久化到documents中，可通过objectVo的单例获取登录了的用户的个人信息
+            NSMutableData *mData = [[NSMutableData alloc]init];
+            NSKeyedArchiver *archiver=[[NSKeyedArchiver alloc] initForWritingWithMutableData:mData];
+            [archiver encodeObject:ob forKey:@"objectVoInfo"];
+            [archiver finishEncoding];
+            NSString *objectVoInfoPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/objectVoInfo.txt"];
+            [mData writeToFile:objectVoInfoPath atomically:YES];
+            mData = nil;
+            
+        }
         NSDictionary *ovoDic = [[object valueForKey:@"ovo"] JSONValue];
         if ([[ovoDic valueForKey:@"code"] intValue] == 0) {
             [self.view endSynRequestSignal];
@@ -654,6 +758,33 @@ static int pn = 0;
     if (chanPin.upload == user.Id) {
         [self.view showWithType:0 Title:@"正在修改价格..."];
         [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": UPDATE_SELF_CHANPIN_PRICE,@"cpid": [NSString stringWithFormat:@"%d",chanPin.Id],@"price": [NSString stringWithFormat:@"%d",[textMsg.text intValue]],@"uname": user.userName,@"uuid": user.uuid,@"dataVersions":ob.dataVersions} completionBlock:^(id object) {
+            ResultsModel *result = [[ResultsModel alloc]init];
+            NSArray *properties = [self properties_aps:[ResultsModel class] objc:result];
+            for (NSString *resultKey in [object allKeys]) {
+                for (NSString *proKey in properties) {
+                    if ([resultKey isEqualToString:proKey]) {
+                        [result setValue:[object valueForKey:resultKey] forKey:resultKey];
+                    }
+                }
+            }
+            if (result.msg) {
+                [self.view endSynRequestSignal];
+                [self.view LabelTitle:[object valueForKey:@"msg"]];
+                return;
+            }
+            if (result.baseData) {
+                ob.baseData = [object valueForKey:@"baseData"];
+                [ObjectVo clearCurrentObjectVo];
+                // 将个人信息全部持久化到documents中，可通过objectVo的单例获取登录了的用户的个人信息
+                NSMutableData *mData = [[NSMutableData alloc]init];
+                NSKeyedArchiver *archiver=[[NSKeyedArchiver alloc] initForWritingWithMutableData:mData];
+                [archiver encodeObject:ob forKey:@"objectVoInfo"];
+                [archiver finishEncoding];
+                NSString *objectVoInfoPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/objectVoInfo.txt"];
+                [mData writeToFile:objectVoInfoPath atomically:YES];
+                mData = nil;
+                
+            }
             NSDictionary *ovoDic = [[object valueForKey:@"ovo"] JSONValue];
             ObjectVo *obje = [[ObjectVo alloc]init];
             for (NSString *key in [ovoDic allKeys]) {
@@ -681,6 +812,32 @@ static int pn = 0;
     }else{
         [self.view showWithType:0 Title:@"正在收藏产品..."];
         [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": COLLECT_CHANPIN,@"cpid": [NSString stringWithFormat:@"%d",chanPin.Id],@"price": [NSString stringWithFormat:@"%d",[textMsg.text intValue]],@"uname": user.userName,@"uuid": user.uuid,@"dataVersions":ob.dataVersions} completionBlock:^(id object) {
+            ResultsModel *result = [[ResultsModel alloc]init];
+            NSArray *properties = [self properties_aps:[ResultsModel class] objc:result];
+            for (NSString *resultKey in [object allKeys]) {
+                for (NSString *proKey in properties) {
+                    if ([resultKey isEqualToString:proKey]) {
+                        [result setValue:[object valueForKey:resultKey] forKey:resultKey];
+                    }
+                }
+            }
+            if (result.msg) {
+                [self.view endSynRequestSignal];
+                [self.view LabelTitle:[object valueForKey:@"msg"]];
+                return;
+            }
+            if (result.baseData) {
+                ob.baseData = [object valueForKey:@"baseData"];
+                [ObjectVo clearCurrentObjectVo];
+                // 将个人信息全部持久化到documents中，可通过objectVo的单例获取登录了的用户的个人信息
+                NSMutableData *mData = [[NSMutableData alloc]init];
+                NSKeyedArchiver *archiver=[[NSKeyedArchiver alloc] initForWritingWithMutableData:mData];
+                [archiver encodeObject:ob forKey:@"objectVoInfo"];
+                [archiver finishEncoding];
+                NSString *objectVoInfoPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/objectVoInfo.txt"];
+                [mData writeToFile:objectVoInfoPath atomically:YES];
+                mData = nil;
+            }
             NSDictionary *ovoDic = [[object valueForKey:@"ovo"] JSONValue];
             ObjectVo *obje = [[ObjectVo alloc]init];
             for (NSString *key in [ovoDic allKeys]) {

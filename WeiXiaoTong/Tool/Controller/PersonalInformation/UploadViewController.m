@@ -12,6 +12,8 @@
 #import "UploadOperation.h"
 #import "HttpService.h"
 #import "JSON.h"
+#import "ResultsModel.h"
+#include <objc/runtime.h>
 
 @interface UploadViewController ()
 
@@ -229,7 +231,7 @@ static int progressNum = 0;
             
             UserEntity *ue = [UserEntity shareCurrentUe];
             cpid = [NSString stringWithFormat:@"%@%d",timeSp,ue.Id];
-            //NSLog(@"ti:%@",cpid);
+            
             //数据要提交到此url
             _spinner = [self.view showSpinner:0 Title:[NSString stringWithFormat:@"正在上传 0/%d",_images.count]];
             for (int i = 0; i < _images.count; i++) {
@@ -252,8 +254,7 @@ static int progressNum = 0;
 {
     NSString *str = [[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
     progressNum = progressNum + 1;
-    //self.progress.progress = progressNum/_images.count;
-    //self.progress.hidden = YES;
+    
     if ([str isEqualToString:@"ok"]) {
         [_well addObject:str];
         _spinner.text = [NSString stringWithFormat:@"正在上传 %d/%d",progressNum,_images.count];
@@ -336,6 +337,33 @@ static int progressNum = 0;
                 params = @{@"interface": UPLOAD_CHANPIN,@"code": @"1",@"tempId": cpid,@"uname": ue.userName,@"uuid": ue.uuid,@"miaoshu": self.describeText.text,@"pinpai": @"0",@"leixing": _lx,@"xingbie": _xb,@"jiage": self.price.text,@"pics": [NSString stringWithFormat:@"%d",_images.count],@"price": self.agentPrice.text,@"categorys": text,@"dangkou": self.address.text,@"isSelf": @"1",@"dataVersions":ob.dataVersions};
             }
             [[HttpService sharedInstance]postRequestWithUrl:DEFAULT_URL params:params completionBlock:^(id object) {
+                ResultsModel *result = [[ResultsModel alloc]init];
+                NSArray *properties = [self properties_aps:[ResultsModel class] objc:result];
+                for (NSString *resultKey in [object allKeys]) {
+                    for (NSString *proKey in properties) {
+                        if ([resultKey isEqualToString:proKey]) {
+                            [result setValue:[object valueForKey:resultKey] forKey:resultKey];
+                        }
+                    }
+                }
+                if (result.msg) {
+                    [self.view endSynRequestSignal];
+                    [self.view LabelTitle:[object valueForKey:@"msg"]];
+                    return;
+                }
+                if (result.baseData) {
+                    ob.baseData = [object valueForKey:@"baseData"];
+                    [ObjectVo clearCurrentObjectVo];
+                    // 将个人信息全部持久化到documents中，可通过objectVo的单例获取登录了的用户的个人信息
+                    NSMutableData *mData = [[NSMutableData alloc]init];
+                    NSKeyedArchiver *archiver=[[NSKeyedArchiver alloc] initForWritingWithMutableData:mData];
+                    [archiver encodeObject:ob forKey:@"objectVoInfo"];
+                    [archiver finishEncoding];
+                    NSString *objectVoInfoPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/objectVoInfo.txt"];
+                    [mData writeToFile:objectVoInfoPath atomically:YES];
+                    mData = nil;
+                    
+                }
                 NSString *ovo = [object valueForKey:@"ovo"];
                 NSDictionary *objectVoDic = [ovo JSONValue];
                 NSString *code = [objectVoDic valueForKey:@"code"];
@@ -350,8 +378,6 @@ static int progressNum = 0;
                     [_images removeAllObjects];
                     [_bad removeAllObjects];
                     [_well removeAllObjects];
-//                    _bad = nil;
-//                    _well = nil;
                     progressNum = 0;
                     [self.imagesView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
                     self.chooseBtn.frame = CGRectMake(5, 5, 60, 60);
@@ -376,10 +402,37 @@ static int progressNum = 0;
             UserEntity *ue = [UserEntity shareCurrentUe];
             NSDictionary *params = @{@"interface": UPLOAD_CHANPIN,@"code": @"1",@"tempId": cpid,@"uname": ue.userName,@"uuid": ue.uuid,@"miaoshu": self.describeText.text,@"pinpai": @"0",@"leixing": _lx,@"xingbie": _xb,@"jiage": self.price.text,@"pics": [NSString stringWithFormat:@"%d",_images.count],@"price": self.agentPrice.text,@"categorys": @"",@"dangkou": self.address.text,@"dataVersions":ob.dataVersions};
             [[HttpService sharedInstance]postRequestWithUrl:DEFAULT_URL params:params completionBlock:^(id object) {
+                ResultsModel *result = [[ResultsModel alloc]init];
+                NSArray *properties = [self properties_aps:[ResultsModel class] objc:result];
+                for (NSString *resultKey in [object allKeys]) {
+                    for (NSString *proKey in properties) {
+                        if ([resultKey isEqualToString:proKey]) {
+                            [result setValue:[object valueForKey:resultKey] forKey:resultKey];
+                        }
+                    }
+                }
+                if (result.msg) {
+                    [self.view endSynRequestSignal];
+                    [self.view LabelTitle:[object valueForKey:@"msg"]];
+                    return;
+                }
+                if (result.baseData) {
+                    ob.baseData = [object valueForKey:@"baseData"];
+                    [ObjectVo clearCurrentObjectVo];
+                    // 将个人信息全部持久化到documents中，可通过objectVo的单例获取登录了的用户的个人信息
+                    NSMutableData *mData = [[NSMutableData alloc]init];
+                    NSKeyedArchiver *archiver=[[NSKeyedArchiver alloc] initForWritingWithMutableData:mData];
+                    [archiver encodeObject:ob forKey:@"objectVoInfo"];
+                    [archiver finishEncoding];
+                    NSString *objectVoInfoPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/objectVoInfo.txt"];
+                    [mData writeToFile:objectVoInfoPath atomically:YES];
+                    mData = nil;
+                    
+                }
                 NSString *ovo = [object valueForKey:@"ovo"];
                 NSDictionary *objectVoDic = [ovo JSONValue];
                 NSString *code = [objectVoDic valueForKey:@"code"];
-                //            NSLog(@"%@",[objectVoDic valueForKey:@"msg"]);
+                
                 if ([code intValue] == 0) {
                     [self.view LabelTitle:@"上传失败！"];
                 }
@@ -675,7 +728,6 @@ static int progressNum = 0;
 
 - (void)tableViewControllerReloadData
 {
-    //[self.table reloadData];
     ObjectVo *ob = [ObjectVo shareCurrentObjectVo];
     NSDictionary *baseData = [ob valueForKey:@"baseData"];
     NSArray *cells = [self.table visibleCells];
@@ -923,6 +975,26 @@ static int progressNum = 0;
         self.address.enabled = NO;
     }
     
+}
+
+//遍历类属性
+- (NSMutableArray *)properties_aps:(Class)aClass objc:(id)aObjc
+{
+    //NSMutableDictionary *props = [NSMutableDictionary dictionary];
+    NSMutableArray *props = [NSMutableArray array];
+    unsigned int outCount, i;
+    objc_property_t *properties = class_copyPropertyList(aClass, &outCount);
+    for (i = 0; i < outCount; i++)
+    {
+        objc_property_t property = properties[i];
+        const char* char_f =property_getName(property);
+        NSString *propertyName = [NSString stringWithUTF8String:char_f];
+        [props addObject:propertyName];
+        //        id propertyValue = [aObjc valueForKey:(NSString *)propertyName];
+        //        if (propertyValue) [props setObject:propertyValue forKey:propertyName];
+    }
+    free(properties);
+    return props;
 }
 
 @end

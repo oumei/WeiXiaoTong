@@ -16,7 +16,6 @@
     NSArray *_categorys;
     NSIndexPath *_lastIndexPath;
     TableViewController *_tableViewController;
-    NSArray *_categoryArr;
     NSIndexPath *_indexPath;
     NSString *_lx;
     NSString *_xb;         //适用人群
