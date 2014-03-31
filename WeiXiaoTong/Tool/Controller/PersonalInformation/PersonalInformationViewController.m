@@ -32,12 +32,12 @@
 {
     [super viewDidLoad];
     UserEntity *ue = [UserEntity shareCurrentUe];
-    NSArray *array;
-    if (ue.qx == 2) {
-        array = @[@" 关闭图片水印",@" 开启图片水印",@" 清理缓存垃圾",@" 上传产品到私有资源",@" 返回登录"];
-    }else{
-        array = @[@" 关闭图片水印",@" 开启图片水印",@" 清理缓存垃圾",@" 返回登录"];
-    }
+    NSArray *array = @[@" 关闭图片水印",@" 开启图片水印",@" 清理缓存垃圾",@" 返回登录"];
+//    if (ue.qx == 2) {
+//        array = @[@" 关闭图片水印",@" 开启图片水印",@" 清理缓存垃圾",@" 上传产品到私有资源",@" 返回登录"];
+//    }else{
+//        array = @[@" 关闭图片水印",@" 开启图片水印",@" 清理缓存垃圾",@" 返回登录"];
+//    }
     self.data = array;
     [self.table reloadData];
     
@@ -99,13 +99,13 @@
 
 }
 
-- (void)uploadAction:(id)sender
-{
-    UploadViewController *uploadViewController = [[UploadViewController alloc]initWithNibName:@"UploadViewController" bundle:nil];
-    [uploadViewController setHidesBottomBarWhenPushed:YES];
-    [self.navigationController pushViewController:uploadViewController animated:YES];
-    uploadViewController = nil;
-}
+//- (void)uploadAction:(id)sender
+//{
+//    UploadViewController *uploadViewController = [[UploadViewController alloc]initWithNibName:@"UploadViewController" bundle:nil];
+//    [uploadViewController setHidesBottomBarWhenPushed:YES];
+//    [self.navigationController pushViewController:uploadViewController animated:YES];
+//    uploadViewController = nil;
+//}
 
 #pragma mark - tableview delegate -
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -143,10 +143,10 @@
         [self clearCache:nil];
         return;
     }
-    if ([sender.titleLabel.text rangeOfString:@"上传产品到私有资源"].location != NSNotFound) {
-        [self uploadAction:nil];
-        return;
-    }
+//    if ([sender.titleLabel.text rangeOfString:@"上传产品到私有资源"].location != NSNotFound) {
+//        [self uploadAction:nil];
+//        return;
+//    }
     if ([sender.titleLabel.text rangeOfString:@"返回登录"].location != NSNotFound) {
         [ControlCenter makeKeyAndVisibleAgain];
     }

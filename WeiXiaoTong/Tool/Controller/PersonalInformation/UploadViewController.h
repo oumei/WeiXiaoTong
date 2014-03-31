@@ -40,7 +40,9 @@
     NSString *_bqs;        //产品品质
     NSString *_cts;        //服装类型
     NSString *_mts;        //彩妆类型
-    NSString *_shh;         //鞋跟高度
+    NSString *_shh;        //鞋跟高度
+    NSString *_pps;        //产品品牌
+
     
     NSMutableArray *_images;
     NSMutableArray *_bad;

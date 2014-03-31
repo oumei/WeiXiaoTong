@@ -86,7 +86,7 @@
             if ([[ovoDic valueForKey:@"code"] integerValue] == 0) {
                 [self.view endSynRequestSignal];
                 [UserEntity clearCurrrentUe];
-                [userModel setValue:self.uname.text forKey:@"uname"];
+                [userModel setValue:self.uname.text forKey:@"userName"];
                 [userModel setValue:self.psd.text forKey:@"psd"];
                 [userModel setValue:self.tell.text forKey:@"tell"];
                 

@@ -53,7 +53,7 @@
     cell.delegate = self;
     cell.indexPath = indexPath;
     ApplyFriend *af = [self.afs objectAtIndex:indexPath.row];
-    cell.userName.text = [NSString stringWithFormat:@"(%d)",af.applyId];
+    cell.userName.text = af.fname;
     cell.validationMsg.text = [NSString stringWithFormat:@"验证消息：%@",af.message];
     
     NSDate *date = [NSDate dateWithTimeIntervalSince1970:[af.date floatValue]/1000];
@@ -89,7 +89,7 @@
             return;
         }
         if (result.baseData) {
-            ob.baseData = [object valueForKey:@"baseData"];
+            ob.baseData = [[object valueForKey:@"baseData"] JSONValue];
             [ObjectVo clearCurrentObjectVo];
             // 将个人信息全部持久化到documents中，可通过objectVo的单例获取登录了的用户的个人信息
             NSMutableData *mData = [[NSMutableData alloc]init];

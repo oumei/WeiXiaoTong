@@ -55,20 +55,20 @@
     NSDictionary *baseData = [ob valueForKey:@"baseData"];
     _categorys = [baseData valueForKey:@"lxs"];
     
-    _all = @[@"选择适用人群",@"选择售后服务"];
-    _other = @[@"选择适用人群",@"选择售后服务"];
-    _shoes = @[@"选择适用人群",@"选择售后服务",@"选择鞋子类型"];
-    _watch = @[@"选择适用人群",@"选择售后服务",@"选择手表机芯",@"选择手表表带"];
-    _bag = @[@"选择适用人群",@"选择售后服务",@"选择包包类型",@"选择产品品质"];
-    _wallet = @[@"选择适用人群",@"选择售后服务"];
-    _silk = @[@"选择适用人群",@"选择售后服务"];
-    _belt = @[@"选择适用人群",@"选择售后服务",@"选择产品品质"];
-    _clothes = @[@"选择适用人群",@"选择售后服务",@"选择服装类型"];
-    _hat = @[@"选择适用人群",@"选择售后服务"];
-    _glasses = @[@"选择适用人群",@"选择售后服务"];
-    _jewelry = @[@"选择适用人群",@"选择售后服务"];
-    _cosmetics = @[@"选择适用人群",@"选择售后服务",@"选择彩妆类型"];
-    _gShoes = @[@"选择适用人群",@"选择售后服务",@"选择鞋子类型",@"选择鞋跟高度"];
+    _all = @[@"选择适用人群",@"选择售后服务",@"选择产品品牌"];
+    _other = @[@"选择适用人群",@"选择售后服务",@"选择产品品牌"];
+    _shoes = @[@"选择适用人群",@"选择售后服务",@"选择产品品牌",@"选择鞋子类型"];
+    _watch = @[@"选择适用人群",@"选择售后服务",@"选择产品品牌",@"选择手表机芯",@"选择手表表带"];
+    _bag = @[@"选择适用人群",@"选择售后服务",@"选择产品品牌",@"选择包包类型",@"选择产品品质"];
+    _wallet = @[@"选择适用人群",@"选择售后服务",@"选择产品品牌"];
+    _silk = @[@"选择适用人群",@"选择售后服务",@"选择产品品牌"];
+    _belt = @[@"选择适用人群",@"选择售后服务",@"选择产品品牌",@"选择产品品质"];
+    _clothes = @[@"选择适用人群",@"选择售后服务",@"选择产品品牌",@"选择服装类型"];
+    _hat = @[@"选择适用人群",@"选择售后服务",@"选择产品品牌"];
+    _glasses = @[@"选择适用人群",@"选择售后服务",@"选择产品品牌"];
+    _jewelry = @[@"选择适用人群",@"选择售后服务",@"选择产品品牌"];
+    _cosmetics = @[@"选择适用人群",@"选择售后服务",@"选择产品品牌",@"选择彩妆类型"];
+    _gShoes = @[@"选择适用人群",@"选择售后服务",@"选择产品品牌",@"选择鞋子类型",@"选择鞋跟高度"];
     
     _tableViewController = [[TableViewController alloc]initWithNibName:@"TableViewController" bundle:nil data:_all];
     _tableViewController.delegate = self;
@@ -114,7 +114,9 @@
             cell.categoryBtn.selected = NO;
         }
     }
-    
+    if (_indexPath == nil) {
+        _indexPath = indexPath;
+    }
     return cell;
 }
 
@@ -178,7 +180,7 @@
     ObjectVo *ob = [ObjectVo shareCurrentObjectVo];
     NSDictionary *baseData = [ob valueForKey:@"baseData"];
     NSArray *cells = [_tableViewController.table visibleCells];
-    if (_tableViewController.dataArr.count > 2) {
+    if (_tableViewController.dataArr.count > 3) {
         for (int i = 0; i < cells.count - 2; i ++) {
             TableCell *cell = [cells objectAtIndex:i + 2];
             NSLog(@"cell.text = %@",cell.btn.titleLabel.text);
@@ -283,6 +285,16 @@
             }
         }
     }
+    if (_pps != nil) {
+        TableCell *cell = [cells objectAtIndex:2];
+        NSArray *pps = [baseData valueForKey:@"pps"];
+        for (int i = 0; i < pps.count; i++) {
+            if ([[pps objectAtIndex:i] valueForKey:@"id"] == _pps && [_pps intValue] != -1) {
+                [cell.btn setTitle:[NSString stringWithFormat:@"  产品品牌：%@(%@)",[[pps objectAtIndex:i] valueForKey:@"ename"],[[pps objectAtIndex:i] valueForKey:@"cname"]] forState:0];
+            }
+        }
+    }
+
     
 }
 
@@ -316,8 +328,23 @@
         _contentsArr =[baseData valueForKey:@"mts"];
     }else if ([[_tableViewController.dataArr objectAtIndex:indexPath.row] isEqualToString:@"选择鞋跟高度"]){
         _contentsArr =[baseData valueForKey:@"shhs"];
+    }else if ([[_tableViewController.dataArr objectAtIndex:indexPath.row] isEqualToString:@"选择产品品牌"]){
+        _contentsArr =[baseData valueForKey:@"pps"];
+        for (int i = 0; i < _contentsArr.count; i++) {
+            NSString *str = [NSString stringWithFormat:@"%@(%@)",[[_contentsArr objectAtIndex:i] valueForKey:@"ename"],[[_contentsArr objectAtIndex:i] valueForKey:@"cname"]];
+            [contents addObject:str];
+        }
+//        NSLog(@"%d",contents.count);
+        ApplicablePeopleViewController *applicablePeopleViewController = [[ApplicablePeopleViewController alloc]initWithNibName:@"ApplicablePeopleViewController" bundle:nil data:contents indexPath:indexPath title:[_tableViewController.dataArr objectAtIndex:indexPath.row]];
+        [applicablePeopleViewController setHidesBottomBarWhenPushed:YES];
+        applicablePeopleViewController.delegate = self;
+        [self.navigationController pushViewController:applicablePeopleViewController animated:YES];
+        applicablePeopleViewController = nil;
+        return;
     }
     for (int i = 0; i < _contentsArr.count; i++) {
+        NSLog(@"dic = %@",[_contentsArr objectAtIndex:i]);
+        NSLog(@"name = %@",[[_contentsArr objectAtIndex:i] valueForKey:@"name"]);
         NSString *str = [[_contentsArr objectAtIndex:i] valueForKey:@"name"];
         [contents addObject:str];
     }
@@ -340,11 +367,14 @@
     if (_xb == nil) {
         _xb = @"-1";
     }
+    if (_pps == nil) {
+        _pps = @"-1";
+    }
     NSString *text = @"";
     if (_ss != nil && [_ss intValue] != -1) {
         text = [NSString stringWithFormat:@"6/_%@",_ss];
     }
-    if (_tableViewController.dataArr.count > 2) {
+    if (_tableViewController.dataArr.count > 3) {
         if (_sts != nil && [_sts intValue] != -1) {
             if ([text isEqualToString:@""]) {
                 text = [NSString stringWithFormat:@"9/_%@",_sts];
@@ -423,10 +453,10 @@
     NSDictionary *params;
 //    NSLog(@"%@",self.searchText.text);
     if (self.searchText.text == nil || [[self.searchText.text stringByReplacingOccurrencesOfString:@" " withString:@""] isEqualToString:@""]) {
-        params = @{@"interface": GET_CHANPIN,@"page": @"0",@"lx":_lx,@"xb": _xb,@"pp": @"-1",@"miaoshu": @"",@"text": text,@"uname": ue.userName,@"uuid": ue.uuid,@"dataVersions":ob.dataVersions};
+        params = @{@"interface": GET_CHANPIN,@"page": @"0",@"lx":_lx,@"xb": _xb,@"pp": _pps,@"miaoshu": @"",@"text": text,@"uname": ue.userName,@"uuid": ue.uuid,@"dataVersions":ob.dataVersions};
     }else{
         if ([self.searchText.text stringByTrimmingCharactersInSet:[NSCharacterSet decimalDigitCharacterSet]].length >0) {
-            params = @{@"interface": GET_CHANPIN,@"page": @"0",@"lx":_lx,@"xb": _xb,@"pp": @"-1",@"miaoshu": [self.searchText.text stringByReplacingOccurrencesOfString:@" " withString:@""],@"text": text,@"uname": ue.userName,@"uuid": ue.uuid,@"dataVersions":ob.dataVersions};
+            params = @{@"interface": GET_CHANPIN,@"page": @"0",@"lx":_lx,@"xb": _xb,@"pp": _pps,@"miaoshu": [self.searchText.text stringByReplacingOccurrencesOfString:@" " withString:@""],@"text": text,@"uname": ue.userName,@"uuid": ue.uuid,@"dataVersions":ob.dataVersions};
         }else{
             params = @{@"interface": GET_CHANPIN_BY_ID,@"page": @"0",@"cpid":self.searchText.text,@"uname": ue.userName,@"uuid": ue.uuid,@"dataVersions":ob.dataVersions};
         }
@@ -448,7 +478,7 @@
             return;
         }
         if (result.baseData) {
-            ob.baseData = [object valueForKey:@"baseData"];
+            ob.baseData = [[object valueForKey:@"baseData"] JSONValue];
             [ObjectVo clearCurrentObjectVo];
             // 将个人信息全部持久化到documents中，可通过objectVo的单例获取登录了的用户的个人信息
             NSMutableData *mData = [[NSMutableData alloc]init];
@@ -508,7 +538,8 @@
 
 - (void)upLoadImage:(id)sener suser:(NSDictionary *)suser
 {
-    UploadViewController *uploadViewController = [[UploadViewController alloc]initWithNibName:@"UploadViewController" bundle:nil address:@"123"];
+    ObjectVo *ob = [ObjectVo shareCurrentObjectVo];
+    UploadViewController *uploadViewController = [[UploadViewController alloc]initWithNibName:@"UploadViewController" bundle:nil address:[ob.suser valueForKey:@"dangkou"]];
     [self.navigationController pushViewController:uploadViewController animated:YES];
     uploadViewController = nil;
 }
@@ -538,6 +569,8 @@
             _cts = nil;
         }else if ([[_tableViewController.dataArr objectAtIndex:i] rangeOfString:@"彩妆类型"].location != NSNotFound){
             _mts = nil;
+        }else if ([[_tableViewController.dataArr objectAtIndex:i] rangeOfString:@"产品品牌"].location != NSNotFound){
+            _pps = nil;
         }
     }
     [_tableViewController.table reloadData];
@@ -551,16 +584,18 @@
         NSString *str = [[_contentsArr objectAtIndex:i] valueForKey:@"id"];
         [_ids addObject:str];
     }
-    NSString *lxStr = [[_categorys objectAtIndex:_indexPath.row - 1] valueForKey:@"id"];
-    if ([lxStr intValue] == 1) {
-        if ([lxStr intValue] == 1 && [aStr rangeOfString:@"女士"].location != NSNotFound) {
-            _tableViewController.dataArr = _gShoes;
-            [_tableViewController.table reloadData];
-            [NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(tableViewControllerReloadData) userInfo:nil repeats:NO];
-        }else{
-            _tableViewController.dataArr = _shoes;
-            [_tableViewController.table reloadData];
-            [NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(tableViewControllerReloadData) userInfo:nil repeats:NO];
+    if (_indexPath.row > 0) {
+        NSString *lxStr = [[_categorys objectAtIndex:_indexPath.row - 1] valueForKey:@"id"];
+        if ([lxStr intValue] == 1) {
+            if ([lxStr intValue] == 1 && [aStr rangeOfString:@"女士"].location != NSNotFound) {
+                _tableViewController.dataArr = _gShoes;
+                [_tableViewController.table reloadData];
+                [NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(tableViewControllerReloadData) userInfo:nil repeats:NO];
+            }else{
+                _tableViewController.dataArr = _shoes;
+                [_tableViewController.table reloadData];
+                [NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(tableViewControllerReloadData) userInfo:nil repeats:NO];
+            }
         }
     }
     
@@ -591,6 +626,8 @@
             title = @"  选择彩妆类型";
         }else if ([[[_contentsArr objectAtIndex:apIndexPath.row] valueForKey:@"name"] rangeOfString:@"鞋跟高度"].location != NSNotFound){
             title = @"  选择鞋跟高度";
+        }else if ([[[_contentsArr objectAtIndex:apIndexPath.row] valueForKey:@"name"] rangeOfString:@"产品品牌"].location != NSNotFound){
+            title = @"  选择产品品牌";
         }
         
         [cell.btn setTitle:title forState:0];
@@ -622,6 +659,8 @@
         _mts = [_ids objectAtIndex:apIndexPath.row];
     }else if ([cell.btn.titleLabel.text rangeOfString:@"鞋跟高度"].location != NSNotFound){
         _shh = [_ids objectAtIndex:apIndexPath.row];
+    }else if ([cell.btn.titleLabel.text rangeOfString:@"产品品牌"].location != NSNotFound){
+        _pps = [_ids objectAtIndex:apIndexPath.row];
     }
     
 }
@@ -654,6 +693,8 @@
         _mts = nil;
     }else if ([cell.btn.titleLabel.text rangeOfString:@"鞋跟高度"].location != NSNotFound){
         _shh = nil;
+    }else if ([cell.btn.titleLabel.text rangeOfString:@"产品品牌"].location != NSNotFound){
+        _pps = nil;
     }
 
 }

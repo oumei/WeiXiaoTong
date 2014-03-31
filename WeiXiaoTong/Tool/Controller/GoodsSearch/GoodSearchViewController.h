@@ -30,6 +30,7 @@
     NSString *_cts;        //服装类型
     NSString *_mts;        //彩妆类型
     NSString *_shh;        //鞋跟高度
+    NSString *_pps;        //产品品牌
     NSArray *_contentsArr;
     
     NSArray *_all;             //全部

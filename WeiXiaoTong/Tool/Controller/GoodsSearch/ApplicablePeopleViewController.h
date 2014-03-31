@@ -22,7 +22,7 @@
     NSTimer *_time;
 }
 @property (weak, nonatomic)id<ApplicablePeopleViewControllerDelegate> delegate;
-@property (strong, nonatomic) NSIndexPath *indexPath;
+@property (strong, nonatomic) NSIndexPath *tableVCindexPath;
 @property (weak, nonatomic) IBOutlet UITextField *searchText;
 @property (weak, nonatomic) IBOutlet UITableView *table;
 @property (weak, nonatomic) IBOutlet UIButton *back;

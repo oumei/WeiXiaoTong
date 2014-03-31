@@ -14,5 +14,6 @@
 @synthesize friendId = _friendId;
 @synthesize message = _message;
 @synthesize date = _date;
+@synthesize fname = _fname;
 
 @end

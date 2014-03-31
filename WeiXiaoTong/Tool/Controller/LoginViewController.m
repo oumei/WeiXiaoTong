@@ -68,10 +68,10 @@
         [mData writeToFile:userInfoPath atomically:YES];
     }
    
-//    [UserModel clearCurrrentUser];
-//    UserModel *userModel = [UserModel shareCurrentUser];
+//    [UserEntity clearCurrrentUe];
+//    UserEntity *userModel = [UserEntity shareCurrentUe];
 //    
-//    [userModel setValue:@"oumeil" forKey:@"uname"];
+//    [userModel setValue:@"oumeil" forKey:@"userName"];
 //    [userModel setValue:@"123456" forKey:@"psd"];
 //    [userModel setValue:@"18826483794" forKey:@"tell"];
 //    [userModel setValue:@"02508B0C-9059-498F-A8C0-BD9B5B8C7AF2" forKey:@"uuid"];

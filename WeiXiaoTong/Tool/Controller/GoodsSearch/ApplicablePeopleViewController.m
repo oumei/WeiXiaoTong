@@ -19,7 +19,7 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         _contents = data;
-        self.indexPath = indexPath;
+        self.tableVCindexPath = indexPath;
         self.title = title;
     }
     return self;
@@ -83,9 +83,13 @@
         str = @"  选择彩妆类型";
     }else if ([self.title isEqualToString:@"选择产品类型"]){
         str = @"  选择产品类型";
+    }else if ([self.title isEqualToString:@"选择鞋跟高度"]){
+        str = @"  选择鞋跟高度";
+    }else if ([self.title isEqualToString:@"选择产品品牌"]){
+        str = @"  选择产品品牌";
     }
     if (self.delegate && [self.delegate respondsToSelector:@selector(clear:indexPath:)]) {
-        [self.delegate performSelector:@selector(clear:indexPath:) withObject:str withObject:self.indexPath];
+        [self.delegate performSelector:@selector(clear:indexPath:) withObject:str withObject:self.tableVCindexPath];
     }
     [self.navigationController popViewControllerAnimated:YES];
 }
@@ -161,9 +165,11 @@
         str = [NSString stringWithFormat:@"  产品类型：%@",[_contents objectAtIndex:indexPath.row]];
     }else if ([self.title isEqualToString:@"选择鞋跟高度"]){
         str = [NSString stringWithFormat:@"  鞋跟高度：%@",[_contents objectAtIndex:indexPath.row]];
+    }else if ([self.title isEqualToString:@"选择产品品牌"]){
+        str = [NSString stringWithFormat:@"  产品品牌：%@",[_contents objectAtIndex:indexPath.row]];
     }
     if (self.delegate && [self.delegate respondsToSelector:@selector(changeTitle:indexPath:apIndexPath:)]) {
-        [self.delegate changeTitle:str indexPath:self.indexPath apIndexPath:indexPath];
+        [self.delegate changeTitle:str indexPath:self.tableVCindexPath apIndexPath:indexPath];
     }
     [self.navigationController popViewControllerAnimated:YES];
 }

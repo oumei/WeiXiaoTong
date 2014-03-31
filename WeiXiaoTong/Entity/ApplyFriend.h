@@ -15,11 +15,13 @@
     int _friendId;
     NSString *_message;
     NSString *_date;
+    NSString *_fname;
 }
 @property(nonatomic,assign)int Id;
 @property(nonatomic,assign)int applyId;
 @property(nonatomic,assign)int friendId;
 @property(nonatomic,copy)NSString *message;
 @property(nonatomic,copy)NSString *date;
+@property(nonatomic,copy)NSString *fname;
 
 @end

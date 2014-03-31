@@ -65,7 +65,7 @@
                 return;
             }
             if (result.baseData) {
-                ob.baseData = [object valueForKey:@"baseData"];
+                ob.baseData = [[object valueForKey:@"baseData"] JSONValue];
                 [ObjectVo clearCurrentObjectVo];
                 // 将个人信息全部持久化到documents中，可通过objectVo的单例获取登录了的用户的个人信息
                 NSMutableData *mData = [[NSMutableData alloc]init];
