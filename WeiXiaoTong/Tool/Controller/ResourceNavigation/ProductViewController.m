@@ -45,7 +45,7 @@ static int pn = 0;
     if (self.cpsArr.count >= 50) {
         UIView *footview = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 50)];
         UIButton *downMore = [UIButton buttonWithType:UIButtonTypeCustom];
-        downMore.frame = CGRectMake(2, 2, 316, 46);
+        downMore.frame = CGRectMake(2, 2, [UIScreen mainScreen].bounds.size.width - 4, 46);
         [downMore setTitle:@"点击获取更多数据" forState:0];
         [downMore setTitleColor:[UIColor blackColor] forState:0];
         [downMore setBackgroundImage:[UIImage imageNamed:@"list_bg.png"] forState:0];
@@ -903,6 +903,37 @@ static int pn = 0;
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)dealloc
+{
+    alertView = nil;
+    textMsg = nil;
+    targetIndexPath = nil;
+    _spinner = nil;
+    html = nil;
+    self.cpsArr = nil;
+    self.lx = nil;
+    self.xb = nil;
+    self.text = nil;
+    self.isSelf = nil;
+    [self setView:nil];
+//    {
+//        UIView *alertView;
+//        UITextField *textMsg;
+//        NSIndexPath *targetIndexPath;
+//        NSIndexPath *shareIndexPath;
+//        UILabel *_spinner;
+//        NSString *html;
+//    }
+//    @property (weak, nonatomic) IBOutlet UITableView *table;
+//    @property (strong, nonatomic) NSMutableArray *cpsArr;
+//    @property (strong, nonatomic) NSString *lx;
+//    @property (strong, nonatomic) NSString *xb;
+//    @property (strong, nonatomic) NSString *text;
+//    @property (strong, nonatomic) NSString *isSelf;
+//    //@property (strong, nonatomic) NSMutableArray *imageArr;
+//    @property (assign, nonatomic) int imageCount;
 }
 
 @end

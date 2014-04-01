@@ -39,6 +39,8 @@
 {
     [super viewDidLoad];
     
+    self.searchText.frame = CGRectMake(self.searchText.frame.origin.x, self.searchText.frame.origin.y, [UIScreen mainScreen].bounds.size.width - 84 - 45, self.searchText.frame.size.height);
+    
     UIView *leftView = [[UIView alloc]initWithFrame:CGRectMake(0, 5, 30, 30)];
     UIImageView *icon = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 30, 30)];
     icon.image = [UIImage imageNamed:@"up_icon.png"];
@@ -71,6 +73,7 @@
     _gShoes = @[@"选择适用人群",@"选择售后服务",@"选择产品品牌",@"选择鞋子类型",@"选择鞋跟高度"];
     
     _tableViewController = [[TableViewController alloc]initWithNibName:@"TableViewController" bundle:nil data:_all];
+//    _tableViewController.table.frame = CGRectMake(_tableViewController.table.frame.origin.x, _tableViewController.table.frame.origin.y, [UIScreen mainScreen].bounds.size.width - 84, _tableViewController.table.frame.size.height);
     _tableViewController.delegate = self;
     [self.view insertSubview:_tableViewController.view atIndex:0];
 
@@ -743,6 +746,40 @@
 }
 
 
-
+- (void)dealloc
+{
+    _categorys = nil;
+    _lastIndexPath = nil;
+    _tableViewController = nil;
+    _indexPath = nil;
+    _lx = nil;
+    _xb = nil;
+    _ss = nil;
+    _sts = nil;
+    _cs = nil;
+    _ws = nil;
+    _bts = nil;
+    _bqs = nil;
+    _cts = nil;
+    _mts = nil;
+    _shh = nil;
+    _pps = nil;
+    _contentsArr = nil;
+    _all = nil;
+    _other = nil;
+    _shoes = nil;
+    _watch = nil;
+    _bag = nil;
+    _wallet = nil;
+    _silk = nil;
+    _belt = nil;
+    _clothes = nil;
+    _hat = nil;
+    _glasses = nil;
+    _jewelry = nil;
+    _cosmetics = nil;
+    _gShoes = nil;
+    [self setView:nil];
+}
 
 @end

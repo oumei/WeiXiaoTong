@@ -18,6 +18,7 @@
     }
     return self;
 }
+
 - (IBAction)btnAction:(id)sender
 {
     if (self.delegate && [self.delegate respondsToSelector:@selector(seletedAction:IndexPath:)]) {

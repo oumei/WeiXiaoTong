@@ -180,6 +180,10 @@
     self.table.delegate = nil;
     self.table.dataSource = nil;
     self.table = nil;
+    _time = nil;
+    _changeData = nil;
+    self.linksArr = nil;
+    [self setView:nil];
 }
 
 //遍历类属性

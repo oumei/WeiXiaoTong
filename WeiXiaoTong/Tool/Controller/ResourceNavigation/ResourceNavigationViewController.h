@@ -12,6 +12,6 @@
 {
     NSArray *_bazaars;
 }
-@property (copy, nonatomic) NSArray *bazaars;
+@property (strong, nonatomic) NSArray *bazaars;
 @property (weak, nonatomic) IBOutlet UITableView *table;
 @end

@@ -52,7 +52,7 @@
     UILabel *_spinner;
 }
 @property (weak, nonatomic) IBOutlet UITableView *table;
-@property (copy, nonatomic) NSArray *data;
+@property (strong, nonatomic) NSArray *data;
 @property (strong, nonatomic) CDTextView *describeText;
 @property (strong, nonatomic) UITextField *address;
 @property (strong, nonatomic) UITextField *price;        //进货价

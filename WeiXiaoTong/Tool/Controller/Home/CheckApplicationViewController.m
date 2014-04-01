@@ -186,4 +186,10 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (void)dealloc
+{
+    self.afs = nil;
+    [self setView:nil];
+}
+
 @end

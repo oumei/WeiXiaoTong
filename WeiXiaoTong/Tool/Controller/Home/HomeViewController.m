@@ -167,8 +167,17 @@
                 for (int i = 0; i < afs.count; i++) {
                     NSDictionary *dic = [afs objectAtIndex:i];
                     ApplyFriend *af = [[ApplyFriend alloc]init];
+                    NSArray *afArray = [self properties_aps:[ApplyFriend class] objc:af];
                     for (NSString *key in [dic allKeys]) {
-                        [af setValue:[dic valueForKey:key] forKey:key];
+                        for (NSString *afKey in afArray) {
+                            if ([key isEqualToString:afKey]) {
+                                [af setValue:[dic valueForKey:key] forKey:key];
+                            }
+                            if ([key isEqualToString:@"id"]) {
+                                [af setValue:[dic valueForKey:key] forKey:@"Id"];
+                                break;
+                            }
+                        }
                     }
                     [mutArr addObject:af];
                     af = nil;
@@ -692,6 +701,12 @@
 
 - (void)dealloc
 {
+    _friendsMutArr = nil;
+    _lastIndexPath = nil;
+    _targetIndexPath = nil;
+    _friendIndexPath = nil;
+    alertView = nil;
+    textMsg = nil;
     [self setView:nil];
 }
 

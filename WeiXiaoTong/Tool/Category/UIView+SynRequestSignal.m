@@ -123,9 +123,9 @@ static UIView *spinner = nil;
         label.text = aTitle;
         CGSize size = [label.text sizeWithFont:label.font];
         if (size.width < 250) {
-            label.frame = CGRectMake((320 - size.width)/2, 300, size.width, 30);
+            label.frame = CGRectMake(([UIScreen mainScreen].bounds.size.width - size.width)/2, 300, size.width, 30);
         }else{
-            label.frame = CGRectMake(60, 300, 250, 30);
+            label.frame = CGRectMake(([UIScreen mainScreen].bounds.size.width - 250)/2, 300, 250, 30);
         }
         label.textColor = [UIColor whiteColor];
         label.textAlignment = NSTextAlignmentCenter;

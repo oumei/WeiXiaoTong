@@ -159,6 +159,12 @@
     // Dispose of any resources that can be recreated.
 }
 
+ -(void)dealloc
+{
+    self.data = nil;
+    [self setView:nil];
+}
+
 -(NSString *)syPath
 {
     NSString *homePath=NSHomeDirectory();

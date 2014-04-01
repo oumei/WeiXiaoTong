@@ -14,8 +14,8 @@
     NSArray *_changeData;
 }
 
-@property (copy, nonatomic) NSString *title;
-@property (copy, nonatomic) NSArray *linksArr;
+//@property (strong, nonatomic) NSString *title;
+@property (strong, nonatomic) NSArray *linksArr;
 @property (weak, nonatomic) IBOutlet UITableView *table;
 @property (weak, nonatomic) IBOutlet UITextField *searchText;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil links:(NSArray *)linksArr;

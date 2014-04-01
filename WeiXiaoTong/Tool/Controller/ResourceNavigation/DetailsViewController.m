@@ -77,19 +77,18 @@
     [self.sPageControl setSelectedThumbImage:[UIImage imageNamed:@"feature_point_cur.png"]];
     [self.sPageControl setNumberOfPages:_chanpin.pics];
     
-    self.HeaderScrollView.contentSize = CGSizeMake(320 * (_chanpin.pics + 2), self.HeaderScrollView.frame.size.height);
+    self.HeaderScrollView.contentSize = CGSizeMake([UIScreen mainScreen].bounds.size.width * (_chanpin.pics + 2), self.HeaderScrollView.frame.size.height);
     self.HeaderScrollView.delegate = self;
     self.HeaderScrollView.pagingEnabled = YES;
     self.HeaderScrollView.showsHorizontalScrollIndicator = NO;
     self.HeaderScrollView.showsVerticalScrollIndicator = NO;
-    self.HeaderScrollView.contentOffset = CGPointMake(320, self.HeaderScrollView.frame.origin.y);
-    CGFloat h = 240*2;
+    self.HeaderScrollView.contentOffset = CGPointMake([UIScreen mainScreen].bounds.size.width, self.HeaderScrollView.frame.origin.y);
+    CGFloat h = [UIScreen mainScreen].bounds.size.height;
     CGFloat w = [UIScreen mainScreen].bounds.size.width*2;
-    
     
     ObjectVo *ob = [ObjectVo shareCurrentObjectVo];
     for (int i = 0; i < (_chanpin.pics + 2); i++) {
-        UIImageView *imageView = [[UIImageView alloc]initWithFrame:CGRectMake(1+(320*i), 0, 318, self.HeaderScrollView.frame.size.height)];
+        UIImageView *imageView = [[UIImageView alloc]initWithFrame:CGRectMake(1+([UIScreen mainScreen].bounds.size.width*i), 0, [UIScreen mainScreen].bounds.size.width - 2, [UIScreen mainScreen].bounds.size.height/2)];
         imageView.image = [UIImage imageNamed:@"loading.png"];
         if (i == 0) {
             if (_chanpin.address) {
@@ -250,11 +249,11 @@
     describe.lineBreakMode = UILineBreakModeCharacterWrap;
     describe.text = _chanpin.miaoshu;
     CGFloat hight = [self getHightFromText:describe.text];
-    describe.frame = CGRectMake(5, 5, 310, hight);
+    describe.frame = CGRectMake(5, 5, [UIScreen mainScreen].bounds.size.width - 10, hight);
     [headerView addSubview:describe];
     describe = nil;
     
-    UILabel *price = [[UILabel alloc]initWithFrame:CGRectMake(5, hight + 10, 310, 30)];
+    UILabel *price = [[UILabel alloc]initWithFrame:CGRectMake(5, hight + 10, [UIScreen mainScreen].bounds.size.width - 10, 30)];
     price.backgroundColor = [UIColor clearColor];
     price.font = [UIFont boldSystemFontOfSize:18];
     price.text = [NSString stringWithFormat:@"代理价格：¥%d",_chanpin.price];
@@ -271,7 +270,7 @@
     }
     
     UIButton *copy = [UIButton buttonWithType:UIButtonTypeCustom];
-    copy.frame = CGRectMake(0, hight + 40, 320, 40);
+    copy.frame = CGRectMake(0, hight + 40, [UIScreen mainScreen].bounds.size.width, 40);
     if (weixin) {
         [copy setTitle:[NSString stringWithFormat:@" 点击复制供货商%@",weixin] forState:0];
     }else{
@@ -291,15 +290,15 @@
     if (ue.qx == 2 && self.chanPin.address == nil) {
         [headerView addSubview:copy];
         copy = nil;
-        headerView.frame = CGRectMake(0, 0, 320, hight + 40 + 40);
+        headerView.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, hight + 40 + 40);
         
     }else if([copy.titleLabel.text rangeOfString:@"点击删除此款商产品"].location != NSNotFound){
         [headerView addSubview:copy];
         copy = nil;
-        headerView.frame = CGRectMake(0, 0, 320, hight + 40 + 40);
+        headerView.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, hight + 40 + 40);
     }else{
         copy = nil;
-        headerView.frame = CGRectMake(0, 0, 320, hight + 40);
+        headerView.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, hight + 40);
     }
     self.table.tableHeaderView = headerView;
     headerView = nil;
@@ -390,10 +389,10 @@
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
     if (scrollView.tag == 2000) {
-        if (scrollView.contentOffset.x == scrollView.contentSize.width - 320) {
-            [scrollView setContentOffset:CGPointMake(320, scrollView.frame.origin.y) animated:NO];
+        if (scrollView.contentOffset.x == scrollView.contentSize.width - [UIScreen mainScreen].bounds.size.width) {
+            [scrollView setContentOffset:CGPointMake([UIScreen mainScreen].bounds.size.width, scrollView.frame.origin.y) animated:NO];
         }else if (scrollView.contentOffset.x == 0){
-            [scrollView setContentOffset:CGPointMake(scrollView.contentSize.width - 320 * 2, scrollView.frame.origin.y) animated:NO];
+            [scrollView setContentOffset:CGPointMake(scrollView.contentSize.width - [UIScreen mainScreen].bounds.size.width * 2, scrollView.frame.origin.y) animated:NO];
         }
          _sPageControl.currentPage=fabs(scrollView.contentOffset.x/scrollView.frame.size.width) - 1;
     }
@@ -443,6 +442,14 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)dealloc
+{
+    _contents = nil;
+    _chanpin = nil;
+    [self setView:nil];
+    
 }
 
 @end

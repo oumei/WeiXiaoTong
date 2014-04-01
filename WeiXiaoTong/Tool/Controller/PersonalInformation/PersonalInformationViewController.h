@@ -16,6 +16,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *level;
 @property (weak, nonatomic) IBOutlet UILabel *mersNum;
 @property (weak, nonatomic) IBOutlet UITableView *table;
-@property (copy, nonatomic) NSArray *data;
+@property (strong, nonatomic) NSArray *data;
 
 @end

@@ -21,6 +21,7 @@
 
 - (void)layoutSubviews
 {
+    [super layoutSubviews];
     CGSize size = [self.userName.text sizeWithFont:self.userName.font];
     self.userName.frame = CGRectMake(5, 3, size.width, 20);
     self.uLabel.frame = CGRectMake(10 + size.width, 3, self.uLabel.frame.size.width, 20);

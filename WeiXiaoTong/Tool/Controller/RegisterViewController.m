@@ -125,8 +125,15 @@
     return result;
 }
 
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    [textField endEditing:YES];
+    return YES;
+}
+
 - (void)dealloc
 {
+    self.st = nil;
     [self setView:nil];
 }
 

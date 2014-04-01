@@ -139,6 +139,8 @@
     self.table.delegate = nil;
     self.table.dataSource = nil;
     self.table = nil;
+    _bazaars = nil;
+    [self setView:nil];
 }
 
 @end

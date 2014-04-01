@@ -58,7 +58,7 @@ static int progressNum = 0;
     UIView *headerView = [[UIView alloc]init];
     headerView.backgroundColor = [UIColor clearColor];
     
-    self.describeText = [[CDTextView alloc]initWithFrame:CGRectMake(5, 5, 310, 50)];
+    self.describeText = [[CDTextView alloc]initWithFrame:CGRectMake(5, 5, [UIScreen mainScreen].bounds.size.width - 10, 50)];
     self.describeText.backgroundColor = [UIColor clearColor];
     self.describeText.font = [UIFont systemFontOfSize:15];
     self.describeText.delegate = self;
@@ -66,18 +66,18 @@ static int progressNum = 0;
     self.describeText.placeholder = @"请在这里填写产品描述...";
     [headerView addSubview:self.describeText];
     
-    self.lineOne = [[UIView alloc]initWithFrame:CGRectMake(5, 55, 310, 1)];
+    self.lineOne = [[UIView alloc]initWithFrame:CGRectMake(5, 55, [UIScreen mainScreen].bounds.size.width - 10, 1)];
     self.lineOne.backgroundColor = [UIColor lightGrayColor];
     [headerView addSubview:self.lineOne];
 
-    headerView.frame = CGRectMake(0, 0, 320, 60);
+    headerView.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 60);
     self.table.tableHeaderView = headerView;
     
     //************************tableFooterView**************************//
     UIView *footerView = [[UIView alloc]init];
     footerView.backgroundColor = [UIColor clearColor];
     
-    self.address = [[UITextField alloc]initWithFrame:CGRectMake(10, 10, 300, 30)];
+    self.address = [[UITextField alloc]initWithFrame:CGRectMake(10, 10, [UIScreen mainScreen].bounds.size.width - 20, 30)];
     self.address.font = [UIFont systemFontOfSize:15];
     self.address.tag = 1000;
     self.address.delegate = self;
@@ -85,11 +85,11 @@ static int progressNum = 0;
     self.address.placeholder = @"请在这里记录货源地址";
     [footerView addSubview:self.address];
     
-    self.lineTwo = [[UIView alloc]initWithFrame:CGRectMake(5, 40, 310, 1)];
+    self.lineTwo = [[UIView alloc]initWithFrame:CGRectMake(5, 40, [UIScreen mainScreen].bounds.size.width - 10, 1)];
     self.lineTwo.backgroundColor = [UIColor lightGrayColor];
     [footerView addSubview:self.lineTwo];
     
-    self.price = [[UITextField alloc]initWithFrame:CGRectMake(10, 45, 140, 30)];
+    self.price = [[UITextField alloc]initWithFrame:CGRectMake(10, 45, [UIScreen mainScreen].bounds.size.width/2 - 20, 30)];
     self.price.font = [UIFont systemFontOfSize:15];
     self.price.delegate = self;
     self.price.tag = 1001;
@@ -98,11 +98,11 @@ static int progressNum = 0;
     //self.price.keyboardType = UIKeyboardTypeNumberPad;
     [footerView addSubview:self.price];
     
-    self.lineThree = [[UIView alloc]initWithFrame:CGRectMake(5, 75, 148, 1)];
+    self.lineThree = [[UIView alloc]initWithFrame:CGRectMake(5, 75, self.price.frame.size.width + 8, 1)];
     self.lineThree.backgroundColor = [UIColor lightGrayColor];
     [footerView addSubview:self.lineThree];
     
-    self.agentPrice = [[UITextField alloc]initWithFrame:CGRectMake(167, 45, 140, 30)];
+    self.agentPrice = [[UITextField alloc]initWithFrame:CGRectMake(self.price.frame.size.width + 27, 45, [UIScreen mainScreen].bounds.size.width/2 - 20, 30)];
     self.agentPrice.font = [UIFont systemFontOfSize:15];
     self.agentPrice.delegate = self;
     self.agentPrice.tag = 1002;
@@ -111,12 +111,12 @@ static int progressNum = 0;
     //self.agentPrice.keyboardType = UIKeyboardTypeNumberPad;
     [footerView addSubview:self.agentPrice];
     
-    self.lineFour = [[UIView alloc]initWithFrame:CGRectMake(162, 75, 148, 1)];
+    self.lineFour = [[UIView alloc]initWithFrame:CGRectMake(self.agentPrice.frame.origin.x - 5, 75, self.agentPrice.frame.size.width + 8, 1)];
     self.lineFour.backgroundColor = [UIColor lightGrayColor];
     [footerView addSubview:self.lineFour];
     
     UIButton *uploadBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    uploadBtn.frame = CGRectMake(5, 77, 310, 35);
+    uploadBtn.frame = CGRectMake(5, 77, [UIScreen mainScreen].bounds.size.width - 10, 35);
     [uploadBtn setTitle:@"        开始上传" forState:0];
     [uploadBtn setTitleColor:[UIColor blackColor] forState:0];
     [uploadBtn setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
@@ -997,6 +997,57 @@ static int progressNum = 0;
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)dealloc
+{
+    _lx = nil;
+    _xb = nil;
+    _ss = nil;
+    _sts = nil;
+    _cs = nil;
+    _ws = nil;
+    _bts = nil;
+    _bqs = nil;
+    _cts = nil;
+    _mts = nil;
+    _shh = nil;
+    _pps = nil;
+    _contentsArr = nil;
+    _all = nil;
+    _other = nil;
+    _shoes = nil;
+    _watch = nil;
+    _bag = nil;
+    _wallet = nil;
+    _silk = nil;
+    _belt = nil;
+    _clothes = nil;
+    _hat = nil;
+    _glasses = nil;
+    _jewelry = nil;
+    _cosmetics = nil;
+    _gShoes = nil;
+    
+    _images = nil;
+    _bad = nil;
+    _well = nil;
+    cpid = nil;
+    _spinner = nil;
+    
+    self.data = nil;
+    self.describeText = nil;
+    self.address = nil;
+    self.price = nil;
+    self.agentPrice = nil;
+    self.lineOne = nil;
+    self.lineTwo = nil;
+    self.lineThree = nil;
+    self.lineFour = nil;
+    self.chooseBtn = nil;
+    self.addressText = nil;
+    
+    [self setView:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated

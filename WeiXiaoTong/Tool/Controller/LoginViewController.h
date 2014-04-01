@@ -13,7 +13,7 @@
     NSString *_registerText;
 }
 
-@property(nonatomic,copy)NSString *registerText;
+@property(nonatomic,strong)NSString *registerText;
 @property (weak, nonatomic) IBOutlet UITextField *uname;
 @property (weak, nonatomic) IBOutlet UITextField *psd;
 @property (weak, nonatomic) IBOutlet UIWebView *loginWebView;

@@ -180,4 +180,13 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (void)dealloc
+{
+    _contents = nil;
+    _changeData = nil;
+    _time = nil;
+    self.tableVCindexPath = nil;
+    [self setView:nil];
+}
+
 @end
