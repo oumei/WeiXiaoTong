@@ -99,7 +99,7 @@
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 
     if (indexPath.row == 0) {
-        //
+        [self.view LabelTitle:@"暂无数据！"];
     }else{
         NSString *title = [[self.bazaars objectAtIndex:indexPath.row - 1] valueForKey:@"name"];
         NSArray *links = [[[ObjectVo shareCurrentObjectVo] valueForKey:@"baseData"] valueForKey:@"links"];

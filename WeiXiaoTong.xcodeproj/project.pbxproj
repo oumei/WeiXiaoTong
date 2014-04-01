@@ -116,7 +116,6 @@
 		35A77FA418C621220028D391 /* CheckApplicationViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 35A77FA218C621220028D391 /* CheckApplicationViewController.xib */; };
 		35A77FA718C622620028D391 /* CheckApplicationCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 35A77FA618C622620028D391 /* CheckApplicationCell.m */; };
 		35A77FAB18C6227C0028D391 /* CheckApplicationCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 35A77FAA18C6227C0028D391 /* CheckApplicationCell.xib */; };
-		35A8255918D19CF70036C1CC /* index.htm in Resources */ = {isa = PBXBuildFile; fileRef = 35A8255818D19CF70036C1CC /* index.htm */; };
 		35A878F518BDAF5000EDC246 /* CommonViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 35A878DD18BDAF5000EDC246 /* CommonViewController.m */; };
 		35A878F618BDAF5000EDC246 /* HWConnect.m in Sources */ = {isa = PBXBuildFile; fileRef = 35A878DF18BDAF5000EDC246 /* HWConnect.m */; };
 		35A878F718BDAF5000EDC246 /* IO.m in Sources */ = {isa = PBXBuildFile; fileRef = 35A878E418BDAF5000EDC246 /* IO.m */; };
@@ -428,7 +427,6 @@
 		35A77FA518C622620028D391 /* CheckApplicationCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CheckApplicationCell.h; sourceTree = "<group>"; };
 		35A77FA618C622620028D391 /* CheckApplicationCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CheckApplicationCell.m; sourceTree = "<group>"; };
 		35A77FAA18C6227C0028D391 /* CheckApplicationCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CheckApplicationCell.xib; sourceTree = "<group>"; };
-		35A8255818D19CF70036C1CC /* index.htm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = index.htm; sourceTree = "<group>"; };
 		35A878DC18BDAF5000EDC246 /* CommonViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommonViewController.h; sourceTree = "<group>"; };
 		35A878DD18BDAF5000EDC246 /* CommonViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommonViewController.m; sourceTree = "<group>"; };
 		35A878DE18BDAF5000EDC246 /* HWConnect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HWConnect.h; sourceTree = "<group>"; };
@@ -966,7 +964,6 @@
 			isa = PBXGroup;
 			children = (
 				35AF080818DC75C50042923D /* image */,
-				35A8255818D19CF70036C1CC /* index.htm */,
 				35A879B218BE31A900EDC246 /* Http */,
 				35A1F97318BB8B4500702B74 /* Category */,
 				35A1F93618BB2D7A00702B74 /* Controller */,
@@ -1309,7 +1306,6 @@
 				35AF084F18DC75C50042923D /* clear_icon.png in Resources */,
 				35AF085118DC75C50042923D /* exit_on.png in Resources */,
 				35AF086718DC75C50042923D /* list_bg.png in Resources */,
-				35A8255918D19CF70036C1CC /* index.htm in Resources */,
 				35AF084E18DC75C50042923D /* clazz_title.png in Resources */,
 				35AF086318DC75C50042923D /* input_psd.png in Resources */,
 				35A894AE18BF82BA005F6538 /* ProductCell.xib in Resources */,

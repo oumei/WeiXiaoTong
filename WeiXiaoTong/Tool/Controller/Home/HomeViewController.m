@@ -258,7 +258,9 @@
             [self.view endSynRequestSignal];
             [self.view LabelTitle:[ovoDic valueForKey:@"msg"]];
         }
-        [self.view LabelTitle:@"刷新完成"];
+        if (sender) {
+            [self.view LabelTitle:@"刷新完成"];
+        }
     } failureBlock:^(NSError *error, NSString *responseString) {
         [self.view endSynRequestSignal];
     }];
@@ -418,7 +420,7 @@
     alertView = [[UIView alloc]initWithFrame:[UIScreen mainScreen].bounds];
     alertView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"bg_transparent.png"]];
     
-    UIView *backgroundView = [[UIView alloc]initWithFrame:CGRectMake(20, 70, 280, 120)];
+    UIView *backgroundView = [[UIView alloc]initWithFrame:CGRectMake(([UIScreen mainScreen].bounds.size.width - 280)/2, 70, 280, 120)];
     backgroundView.layer.borderWidth = 1.0;
     backgroundView.layer.borderColor = [UIColor lightGrayColor].CGColor;
     backgroundView.layer.cornerRadius = 6.0;

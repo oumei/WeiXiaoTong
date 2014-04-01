@@ -394,7 +394,7 @@
         }else if (scrollView.contentOffset.x == 0){
             [scrollView setContentOffset:CGPointMake(scrollView.contentSize.width - [UIScreen mainScreen].bounds.size.width * 2, scrollView.frame.origin.y) animated:NO];
         }
-         _sPageControl.currentPage=fabs(scrollView.contentOffset.x/scrollView.frame.size.width) - 1;
+         _sPageControl.currentPage=fabs(scrollView.contentOffset.x/[UIScreen mainScreen].bounds.size.width) - 1;
     }
 }
 
