@@ -36,7 +36,7 @@
     ObjectVo *ob = [ObjectVo shareCurrentObjectVo];
     
     //*******************************headerView*****************************//
-    NSLog(@"%f,%f",self.table.frame.size.width,[UIScreen mainScreen].bounds.size.width);
+//    NSLog(@"%f,%f",self.table.frame.size.width,[UIScreen mainScreen].bounds.size.width);
     UIView *headerView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width - 84, 35)];
     UIButton *headerBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     headerBtn.frame = CGRectMake(0, 0, headerView.frame.size.width, 35);

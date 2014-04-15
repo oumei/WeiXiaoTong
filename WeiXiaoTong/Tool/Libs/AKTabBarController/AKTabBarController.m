@@ -66,8 +66,22 @@ static const float kPushAnimationDuration = 0.35;
     
     // Setting the default tab bar height
     tabBarHeight = kDefaultTabBarHeight;
-    
+    [self addObserver:self forKeyPath:@"selectedIndex"
+              options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld
+              context:nil];
+    NSNotificationCenter *center=[NSNotificationCenter defaultCenter];
+    [center addObserver:self selector:@selector(change:) name:@"change" object:nil];
     return self;
+}
+
+- (void)change:(id)sender
+{
+    [NSTimer scheduledTimerWithTimeInterval:0.7 target:self selector:@selector(timer:) userInfo:nil repeats:NO];
+}
+
+- (void)timer:(NSTimer *)timer
+{
+    [self tabBar:nil didSelectTabAtIndex:1];
 }
 
 - (id)initWithTabBarHeight:(NSUInteger)height
@@ -76,7 +90,11 @@ static const float kPushAnimationDuration = 0.35;
     if (!self) return nil;
     
     tabBarHeight = height;
-    
+    [self addObserver:self forKeyPath:@"selectedIndex"
+              options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld
+              context:nil];
+    NSNotificationCenter *center=[NSNotificationCenter defaultCenter];
+    [center addObserver:self selector:@selector(change:) name:@"change" object:nil];
     return self;
 }
 

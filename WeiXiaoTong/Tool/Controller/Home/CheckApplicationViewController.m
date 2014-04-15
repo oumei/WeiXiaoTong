@@ -113,7 +113,7 @@
             arr = nil;
             
             [self.view LabelTitle:@"操作成功"];
-            
+            [NSTimer scheduledTimerWithTimeInterval:2 target:self selector:@selector(popAction:) userInfo:nil repeats:NO];
         }else{
             [self.view endSynRequestSignal];
             [self.view LabelTitle:[ovoDic valueForKey:@"msg"]];
@@ -131,7 +131,7 @@
     UserEntity *ue = [UserEntity shareCurrentUe];
     ObjectVo *ob= [ObjectVo shareCurrentObjectVo];
     [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": ALLOW_FRIEND,@"afid":[NSString stringWithFormat:@"%d",af.Id],@"uname":ue.userName,@"uuid":ue.uuid,@"dataVersions":ob.dataVersions} completionBlock:^(id object) {
-        NSLog(@"ob = %@",object);
+//        NSLog(@"ob = %@",object);
         NSString *ovo = [object valueForKey:@"ovo"];
         NSDictionary *ovoDic = [ovo JSONValue];
         if ([[ovoDic valueForKey:@"code"] intValue] == 0) {
@@ -143,6 +143,7 @@
             arr = nil;
             
             [self.view LabelTitle:@"操作成功"];
+            [NSTimer scheduledTimerWithTimeInterval:1.2 target:self selector:@selector(popAction:) userInfo:nil repeats:NO];
             
         }else{
             [self.view endSynRequestSignal];
@@ -153,6 +154,16 @@
         [self.view endSynRequestSignal];
     }];
 
+}
+
+- (void)popAction:(id)sender
+{
+    if (self.afs.count == 0) {
+        if (self.delegate && [self .delegate respondsToSelector:@selector(refresh)]) {
+            [self.delegate performSelector:@selector(refresh)];
+        }
+        [self.navigationController popViewControllerAnimated:YES];
+    }
 }
 
 //- (void)reloadTableData:(NSIndexPath *)indexPath

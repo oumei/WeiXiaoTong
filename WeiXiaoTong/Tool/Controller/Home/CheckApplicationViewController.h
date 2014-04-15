@@ -8,9 +8,14 @@
 
 #import "CommonViewController.h"
 #import "CheckApplicationCell.h"
+@protocol  CheckApplicationViewControllerDelegate <NSObject>
 
+- (void)refresh;
+
+@end
 @interface CheckApplicationViewController : CommonViewController<UITableViewDataSource,UITableViewDelegate,CheckApplicationCellDelegate>
 @property (strong, nonatomic) __block NSMutableArray *afs;
 @property (weak, nonatomic) IBOutlet UITableView *table;
+@property (weak, nonatomic) id<CheckApplicationCellDelegate>delegate;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil afs:(NSMutableArray *)afs;
 @end

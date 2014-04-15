@@ -12,7 +12,7 @@
 #import "CDTextView.h"
 #import "ZYQAssetPickerController.h"
 
-@interface UploadViewController : CommonViewController<UITableViewDataSource,UITableViewDelegate,ApplicablePeopleCellDelegate,UITextFieldDelegate,UITextViewDelegate,ApplicablePeopleViewControllerDelegate,ZYQAssetPickerControllerDelegate,UINavigationControllerDelegate>
+@interface UploadViewController : CommonViewController<UITableViewDataSource,UITableViewDelegate,ApplicablePeopleCellDelegate,UITextFieldDelegate,UITextViewDelegate,ApplicablePeopleViewControllerDelegate,ZYQAssetPickerControllerDelegate,UINavigationControllerDelegate,UIAlertViewDelegate>
 {
     NSArray *_all;             //全部
     NSArray *_other;           //其他
@@ -50,6 +50,7 @@
     
     NSString *cpid;
     UILabel *_spinner;
+    NSOperationQueue *queue;
 }
 @property (weak, nonatomic) IBOutlet UITableView *table;
 @property (strong, nonatomic) NSArray *data;

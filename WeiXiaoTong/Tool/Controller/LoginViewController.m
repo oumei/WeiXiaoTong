@@ -39,7 +39,7 @@
 {
     [super viewDidLoad];
     self.loginWebView.scrollView.bounces = NO;
-    //[self.navigationController.navigationBar setBackgroundImage:[self image]];
+//    [self.navigationController.navigationBar setBackgroundImage:[self image]];
     self.psd.secureTextEntry = YES;
     
     UIView *leftView = [[UIView alloc]initWithFrame:CGRectMake(0, 5, 150, 30)];
@@ -83,6 +83,27 @@
 //    [archiver finishEncoding];
 //    NSString *userModelInfoPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/userModelInfo.txt"];
 //    [mData writeToFile:userModelInfoPath atomically:YES];
+    
+    
+    //lishiming ipad
+    //uuid=18441404-C6B0-45CD-9148-705E438DB9BC,ue.name = 6666666,ue.pw=339829222
+    
+//    [UserEntity clearCurrrentUe];
+//    UserEntity *userModel = [UserEntity shareCurrentUe];
+//    
+//    [userModel setValue:@"6666666" forKey:@"userName"];
+//    [userModel setValue:@"339829222" forKey:@"psd"];
+//    [userModel setValue:@"18441404-C6B0-45CD-9148-705E438DB9BC" forKey:@"uuid"];
+//    
+//    // 将个人信息全部持久化到documents中，可通过config的单例获取登录了的用户的个人信息
+//    NSMutableData *mData = [[NSMutableData alloc]init];
+//    NSKeyedArchiver *archiver=[[NSKeyedArchiver alloc] initForWritingWithMutableData:mData];
+//    [archiver encodeObject:userModel forKey:@"userModelInfo"];
+//    [archiver finishEncoding];
+//    NSString *userModelInfoPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/userModelInfo.txt"];
+//    [mData writeToFile:userModelInfoPath atomically:YES];
+
+    
 
     [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": CONFIG} completionBlock:^(id object) {
         [Config clearCurrentConfig];
@@ -177,6 +198,9 @@
             //204220CE-384B-4D31-8834-FF39365A8E77
             //02508B0C-9059-498F-A8C0-BD9B5B8C7AF2
             
+            //lishiming ipad
+            //uuid=18441404-C6B0-45CD-9148-705E438DB9BC,ue.name = 6666666,ue.pw=339829222
+            
             [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": USER_LOGIN,@"psd": self.psd.text,@"uname": self.uname.text,@"uuid": user.uuid} completionBlock:^(id object) {
                 ResultsModel *result = [[ResultsModel alloc]init];
                 NSArray *properties = [self properties_aps:[ResultsModel class] objc:result];
@@ -223,7 +247,6 @@
                                             }
                                             
                                         }
-
                                         // 将个人信息全部持久化到documents中，可通过ue的单例获取登录了的用户的个人信息
                                         NSMutableData *mData = [[NSMutableData alloc]init];
                                         NSKeyedArchiver *archiver=[[NSKeyedArchiver alloc] initForWritingWithMutableData:mData];
@@ -259,15 +282,19 @@
                 }
             } failureBlock:^(NSError *error, NSString *responseString) {
                 [self.view endSynRequestSignal];
+                if ([error.description rangeOfString:@"Code=-1001"].location != NSNotFound) {
+                    [self.view LabelTitle:@"请求超时"];
+                }else if ([error.description rangeOfString:@"Code=-1004"].location != NSNotFound){
+                    [self.view LabelTitle:@"未连接服务器"];
+                }else{
+                    [self.view LabelTitle:@"网络异常"];
+                }
             }];
         }
     }
     else{
-        
-        [self.view LabelTitle:@"注册信息不完整，请继续填写！"];
+        [self.view LabelTitle:@"登录信息不完整，请继续填写！"];
     }
-    
-    
 }
 
 

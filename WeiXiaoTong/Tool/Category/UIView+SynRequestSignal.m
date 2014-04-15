@@ -37,7 +37,7 @@ static UIView *spinner = nil;
         [tip addSubview:icon];
         icon = nil;
         
-        UILabel *title = [[UILabel alloc] initWithFrame:CGRectMake(70, 15, 130, 40)];
+        UILabel *title = [[UILabel alloc] initWithFrame:CGRectMake(70, 15, 125, 40)];
         title.backgroundColor = [UIColor clearColor];
         title.font = [UIFont systemFontOfSize:16];
         title.lineBreakMode = UILineBreakModeWordWrap;
@@ -85,7 +85,7 @@ static UIView *spinner = nil;
         [spinner addSubview:icon];
         icon = nil;
         
-        UILabel *title = [[UILabel alloc] initWithFrame:CGRectMake(70, 15, 130, 40)];
+        UILabel *title = [[UILabel alloc] initWithFrame:CGRectMake(70, 15, 125, 40)];
         title.backgroundColor = [UIColor clearColor];
         title.font = [UIFont systemFontOfSize:16];
         title.lineBreakMode = UILineBreakModeWordWrap;
@@ -117,15 +117,18 @@ static UIView *spinner = nil;
     if (!label) {
         
         label = [[UILabel alloc] init];
-        label.layer.cornerRadius = 6.0;
+        label.clipsToBounds = YES;
         label.backgroundColor = [UIColor grayColor];
+        label.layer.cornerRadius = 6.0;
         label.font = [UIFont systemFontOfSize:14];
         label.text = aTitle;
+        label.numberOfLines = 2;
+        label.lineBreakMode = UILineBreakModeWordWrap;
         CGSize size = [label.text sizeWithFont:label.font];
         if (size.width < 250) {
-            label.frame = CGRectMake(([UIScreen mainScreen].bounds.size.width - size.width)/2, 300, size.width, 30);
+            label.frame = CGRectMake(([UIScreen mainScreen].bounds.size.width - size.width)/2, 300, size.width+10, 20);
         }else{
-            label.frame = CGRectMake(([UIScreen mainScreen].bounds.size.width - 250)/2, 300, 250, 30);
+            label.frame = CGRectMake(([UIScreen mainScreen].bounds.size.width - 250)/2, 300, 250, 40);
         }
         label.textColor = [UIColor whiteColor];
         label.textAlignment = NSTextAlignmentCenter;

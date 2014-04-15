@@ -10,7 +10,7 @@
 #import "UIViewController+AKTabBarController.h"
 #import "ControlCenter.h"
 #import "UserEntity.h"
-#import "UploadViewController.h"
+#import "AboutWXTViewController.h"
 
 
 @interface PersonalInformationViewController ()
@@ -32,7 +32,7 @@
 {
     [super viewDidLoad];
     UserEntity *ue = [UserEntity shareCurrentUe];
-    NSArray *array = @[@" 关闭图片水印",@" 开启图片水印",@" 清理缓存垃圾",@" 返回登录"];
+    NSArray *array = @[@" 关闭图片水印",@" 开启图片水印",@" 清理缓存垃圾",@" 如何使用微销通",@" 返回登录"];
 //    if (ue.qx == 2) {
 //        array = @[@" 关闭图片水印",@" 开启图片水印",@" 清理缓存垃圾",@" 上传产品到私有资源",@" 返回登录"];
 //    }else{
@@ -99,13 +99,13 @@
 
 }
 
-//- (void)uploadAction:(id)sender
-//{
-//    UploadViewController *uploadViewController = [[UploadViewController alloc]initWithNibName:@"UploadViewController" bundle:nil];
-//    [uploadViewController setHidesBottomBarWhenPushed:YES];
-//    [self.navigationController pushViewController:uploadViewController animated:YES];
-//    uploadViewController = nil;
-//}
+- (void)aboutWXT:(id)sender
+{
+    AboutWXTViewController *aboutWXTViewController = [[AboutWXTViewController alloc]initWithNibName:@"AboutWXTViewController" bundle:nil];
+    [aboutWXTViewController setHidesBottomBarWhenPushed:YES];
+    [self.navigationController pushViewController:aboutWXTViewController animated:YES];
+    aboutWXTViewController = nil;
+}
 
 #pragma mark - tableview delegate -
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -143,10 +143,9 @@
         [self clearCache:nil];
         return;
     }
-//    if ([sender.titleLabel.text rangeOfString:@"上传产品到私有资源"].location != NSNotFound) {
-//        [self uploadAction:nil];
-//        return;
-//    }
+    if ([sender.titleLabel.text rangeOfString:@"如何使用微销通"].location != NSNotFound) {
+        [self aboutWXT:nil];
+    }
     if ([sender.titleLabel.text rangeOfString:@"返回登录"].location != NSNotFound) {
         [ControlCenter makeKeyAndVisibleAgain];
     }

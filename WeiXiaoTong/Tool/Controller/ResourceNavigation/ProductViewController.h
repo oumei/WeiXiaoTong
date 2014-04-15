@@ -24,6 +24,7 @@
 @property (strong, nonatomic) NSMutableArray *cpsArr;
 @property (strong, nonatomic) NSString *lx;
 @property (strong, nonatomic) NSString *xb;
+@property (strong, nonatomic) NSString *pp;
 @property (strong, nonatomic) NSString *text;
 @property (strong, nonatomic) NSString *isSelf;
 //@property (strong, nonatomic) NSMutableArray *imageArr;

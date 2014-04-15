@@ -38,6 +38,7 @@
 #define REMARK_FRIENDS                @"remarkFriends"           /**修改备注*/
 #define UPDATE_DESCRIPTION            @"updateDescription"       /**修改描述*/
 #define DOWNLOAD                      @"download"                /**下载*/
+#define FIND_SOURCE_USERS             @"findSourceUsers"         /**查询合作商用户*/
 
 //url
 #define DEFAULT_URL                   @"http://115.28.17.18:8080/service/interface.do"

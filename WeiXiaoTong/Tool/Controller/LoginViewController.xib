@@ -75,7 +75,7 @@
                     </connections>
                 </button>
                 <webView contentMode="scaleToFill" id="HkP-OJ-v2T">
-                    <rect key="frame" x="10" y="144.00000095367432" width="300" height="324"/>
+                    <rect key="frame" x="10" y="144" width="300" height="324"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES"/>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>

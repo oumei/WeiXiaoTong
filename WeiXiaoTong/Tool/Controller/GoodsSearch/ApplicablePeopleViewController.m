@@ -56,6 +56,15 @@
     return cell;
 }
 
+//- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+//{
+//    if ([[UIDevice currentDevice].model rangeOfString:@"iPhone"].location != NSNotFound) {
+//        return 35;
+//    }else{
+//        return 70;
+//    }
+//}
+
 - (IBAction)backAction:(id)sender
 {
     NSString *str;

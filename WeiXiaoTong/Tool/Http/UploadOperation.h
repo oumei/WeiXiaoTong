@@ -14,6 +14,7 @@
     SEL _action;
     NSString *_url;
     UIImage *_image;
+//    NSLock *lock;
 }
 @property(nonatomic,strong)id target;
 @property(nonatomic,assign)SEL action;

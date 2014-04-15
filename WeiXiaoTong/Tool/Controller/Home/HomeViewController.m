@@ -14,11 +14,9 @@
 #import "HttpService.h"
 #import "JSON.h"
 #import "Friend.h"
-#import "CheckApplicationViewController.h"
 #import "AddMerchantsViewController.h"
 #import "ApplyFriend.h"
 #import "UploadViewController.h"
-#import "CustomAlertView.h"
 #import "ObjectVo.h"
 #import "ResultsModel.h"
 #import <objc/runtime.h>
@@ -41,6 +39,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    height = self.table.frame.size.height;
     
     UIView *leftView = [[UIView alloc]initWithFrame:CGRectMake(0, 5, 30, 30)];
     UIImageView *icon = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 30, 30)];
@@ -51,6 +50,19 @@
     leftView = nil;
     icon = nil;
     leftBarButton = nil;
+    
+    UIView *rightView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 100, 30)];
+    rightLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 5, 100, 20)];
+    rightLabel.backgroundColor = [UIColor clearColor];
+    rightLabel.textAlignment = NSTextAlignmentRight;
+    rightLabel.textColor = [UIColor blackColor];
+    rightLabel.font = [UIFont systemFontOfSize:14];
+    [rightView addSubview:rightLabel];
+    UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc]initWithCustomView:rightView];
+    self.navigationItem.rightBarButtonItem = rightBarButton;
+    //rightView = nil;
+    //rightLabel = nil;
+    //rightBarButton = nil;
     
     self.title = @"我的商家";
     UIImageView *refreshImage = [[UIImageView alloc]initWithFrame:CGRectMake(10, 5, 20, 20)];
@@ -65,6 +77,7 @@
     addImage.image = [UIImage imageNamed:@"seach_icon.png"];
     [self.addFriend addSubview:addImage];
 
+    _changeData = [[NSMutableArray alloc]init];
     _friendsMutArr = [[NSMutableArray alloc]init];
     UserEntity *user = [UserEntity shareCurrentUe];
     ObjectVo *ob= [ObjectVo shareCurrentObjectVo];
@@ -104,15 +117,26 @@
             NSMutableArray *mutArr = [[NSMutableArray alloc]init];
             for (int i = 0; i < friends.count; i++) {
                 NSDictionary *dic = [friends objectAtIndex:i];
-                NSLog(@"d = %@",dic);
+//                NSLog(@"d = %@",dic);
                 Friend *friend = [[Friend alloc]init];
+                NSArray *fs = [self properties_aps:[Friend class] objc:friend];
                 for (NSString *key in [dic allKeys]) {
-                    [friend setValue:[dic valueForKey:key] forKey:key];
+                    for (NSString *fsKey in fs) {
+                        if ([key isEqualToString:fsKey]) {
+                            [friend setValue:[dic valueForKey:key] forKey:key];
+                        }
+                        if ([key isEqualToString:@"id"]) {
+                            [friend setValue:[dic valueForKey:key] forKey:@"Id"];
+                            break;
+                        }
+                    }
                 }
                 [mutArr addObject:friend];
                 friend = nil;
             }
             _friendsMutArr = mutArr;
+            _changeData = mutArr;
+            rightLabel.text = [NSString stringWithFormat:@"商家：%d",mutArr.count];
             [self.table reloadData];
         }else{
             [self.view LabelTitle:[ovoDic valueForKey:@"msg"]];
@@ -121,7 +145,6 @@
     } failureBlock:^(NSError *error, NSString *responseString) {
         //
     }];
-    
 }
 
 - (IBAction)checkApplicantList:(id)sender
@@ -183,6 +206,7 @@
                     af = nil;
                 }
                 CheckApplicationViewController *checkApplicationViewController = [[CheckApplicationViewController alloc]initWithNibName:@"CheckApplicationViewController" bundle:nil afs:mutArr];
+                checkApplicationViewController.delegate = self;
                 [checkApplicationViewController setHidesBottomBarWhenPushed:YES];
                 [self.navigationController pushViewController:checkApplicationViewController animated:YES];
                 [self.view endSynRequestSignal];
@@ -243,15 +267,27 @@
             NSArray *friends = [ovoDic valueForKey:@"friends"];
             NSMutableArray *mutArr = [[NSMutableArray alloc]init];
             for (int i = 0; i < friends.count; i++) {
-                NSDictionary *dic = [friends objectAtIndex:i];
+                NSDictionary *dic = [NSDictionary dictionaryWithDictionary:[friends objectAtIndex:i]];
                 Friend *friend = [[Friend alloc]init];
+                NSArray *fs = [self properties_aps:[Friend class] objc:friend];
                 for (NSString *key in [dic allKeys]) {
-                    [friend setValue:[dic valueForKey:key] forKey:key];
+                    for (NSString *fsKey in fs) {
+                        if ([key isEqualToString:fsKey]) {
+                            [friend setValue:[dic valueForKey:key] forKey:key];
+                        }
+                        if ([key isEqualToString:@"id"]) {
+                            [friend setValue:[dic valueForKey:key] forKey:@"Id"];
+                            break;
+                        }
+                    }
                 }
                 [mutArr addObject:friend];
                 friend = nil;
             }
-            _friendsMutArr = mutArr;
+            _friendsMutArr = nil;
+            _friendsMutArr = [[NSMutableArray alloc]initWithArray:mutArr];
+            _changeData = mutArr;
+            rightLabel.text = [NSString stringWithFormat:@"商家：%d",mutArr.count];
             [self.table reloadData];
             [self.view endSynRequestSignal];
         }else{
@@ -293,25 +329,44 @@
     cell.indexPath = indexPath;
     Friend *friend = [_friendsMutArr objectAtIndex:indexPath.row];
     cell.signature.text = [NSString stringWithFormat:@"签名：%@",friend.description];
-    cell.name.text = [NSString stringWithFormat:@"ID:%d    %@",friend.fid,friend.fname];
+    
     if (ue.tableName == friend.fid) {
         cell.name.textColor = [UIColor redColor];
         if (_lastIndexPath == nil) {
             _lastIndexPath = indexPath;
         }
+    }else{
+        cell.name.textColor = [UIColor blackColor];
     }
     if (![friend.remark isEqualToString:@""]) {
         cell.name.text = [NSString stringWithFormat:@"ID:%d    %@(%@)",friend.fid,friend.fname,friend.remark];
-    }
-    if ([friend.fname isEqualToString:@"阿里九九"]) {
-        cell.deleteBtn.hidden = YES;
-        cell.noteBtn.hidden = YES;
+    }else{
+        cell.name.text = [NSString stringWithFormat:@"ID:%d    %@",friend.fid,friend.fname];
     }
     if ([friend.fname isEqualToString:friend.uname]) {
         [cell.deleteBtn setTitle:@"上传" forState:0];
         [cell.noteBtn setTitle:@"签名" forState:0];
+    }else{
+        [cell.deleteBtn setTitle:@"删除" forState:0];
+        [cell.noteBtn setTitle:@"备注" forState:0];
+    }
+    if ([friend.fname isEqualToString:@"阿里九九"]) {
+        cell.deleteBtn.hidden = YES;
+        cell.noteBtn.hidden = YES;
+    }else{
+        cell.deleteBtn.hidden = NO;
+        cell.noteBtn.hidden = NO;
     }
     return cell;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if ([[UIDevice currentDevice].model rangeOfString:@"iPhone"].location != NSNotFound) {
+        return 60;
+    }else{
+        return 100;
+    }
 }
 
 - (void)deleted:(UIButton *)sender IndexPath:(NSIndexPath *)indexPath
@@ -320,6 +375,7 @@
     Friend *friend = [_friendsMutArr objectAtIndex:indexPath.row];
     if ([friend.fname isEqualToString:friend.uname]) {
         UploadViewController *uploadViewController = [[UploadViewController alloc]initWithNibName:@"UploadViewController" bundle:nil];
+        [uploadViewController setHidesBottomBarWhenPushed:YES];
         [self.navigationController pushViewController:uploadViewController animated:YES];
         uploadViewController = nil;
     }else{
@@ -401,7 +457,9 @@
             NSString *ueInfoPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/ueInfo.txt"];
             [mData writeToFile:ueInfoPath atomically:YES];
             mData = nil;
-            self.tabBarController.selectedIndex = 1;
+            //self.tabBarController.selectedIndex = 1;
+            NSNotificationCenter *center=[NSNotificationCenter defaultCenter];
+            [center postNotificationName:@"change" object:nil];
         }else{
             [self.view endSynRequestSignal];
             [self.view LabelTitle:[ovoDic valueForKey:@"msg"]];
@@ -540,6 +598,7 @@
             if ([[ovoDic valueForKey:@"code"] intValue] == 0) {
                 [self.view endSynRequestSignal];
                 [self.view LabelTitle:@"修改成功！"];
+                [self refreshAction:nil];
             }else{
                 [self.view endSynRequestSignal];
                 [self.view LabelTitle:[ovoDic valueForKey:@"msg"]];
@@ -585,6 +644,7 @@
             if ([[ovoDic valueForKey:@"code"] intValue] == 0) {
                 [self.view endSynRequestSignal];
                 [self.view LabelTitle:@"修改成功！"];
+                [self refreshAction:nil];
                 textMsg = nil;
             }else{
                 [self.view endSynRequestSignal];
@@ -596,15 +656,44 @@
             textMsg = nil;
         }];
     }
-    [self refreshAction:nil];
+    
     alertView = nil;
 }
 
+#pragma mark - textField delegate -
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
+    [_time invalidate];
     [textField endEditing:YES];
     return YES;
 }
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+{
+    if ([textField isEqual:self.searchText]) {
+        _time = [NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(changedata) userInfo:nil repeats:NO];
+    }
+   
+    return YES;
+}
+
+- (void)changedata
+{
+    if ([[self.searchText.text stringByReplacingOccurrencesOfString:@" " withString:@""] isEqualToString:@""]) {
+        _friendsMutArr = _changeData;
+    }else{
+        NSMutableArray *data = [[NSMutableArray alloc]init];
+        for (int i = 0; i < _changeData.count; i++) {
+            Friend *friend = [_changeData objectAtIndex:i];
+            if ([friend.fname rangeOfString:self.searchText.text].location != NSNotFound || [friend.remark rangeOfString:self.searchText.text].location != NSNotFound || [friend.description rangeOfString:self.searchText.text].location != NSNotFound || [[NSString stringWithFormat:@"%d",friend.fid] rangeOfString:self.searchText.text].location != NSNotFound) {
+                [data addObject:[_changeData objectAtIndex:i]];
+            }
+        }
+        _friendsMutArr = data;
+    }
+    [self.table reloadData];
+}
+
 
 #pragma mark - alert delegate -
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
@@ -649,6 +738,7 @@
                 NSMutableArray *arr = [[NSMutableArray alloc]initWithArray:_friendsMutArr];
                 [arr removeObjectAtIndex:_friendIndexPath.row];
                 _friendsMutArr = arr;
+                rightLabel.text = [NSString stringWithFormat:@"商家：%d",arr.count];
                 [self.table reloadData];
                 [self.view endSynRequestSignal];
                 [self.view LabelTitle:@"删除成功"];
@@ -661,6 +751,11 @@
             [self.view endSynRequestSignal];
         }];
     }
+}
+
+- (void)refresh
+{
+    [self refreshAction:nil];
 }
 
 #pragma mark - Private Methods
@@ -700,6 +795,18 @@
     return props;
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:YES];
+    if ([UIScreen mainScreen].bounds.size.width == 320 && [[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0) {
+        if ([UIScreen mainScreen].bounds.size.height > 500) {
+            self.table.frame = CGRectMake(self.table.frame.origin.x, self.table.frame.origin.y, self.table.frame.size.width, height);
+        }else{
+            self.table.frame = CGRectMake(self.table.frame.origin.x, self.table.frame.origin.y, self.table.frame.size.width, 290);
+        }
+    }
+    
+}
 
 - (void)dealloc
 {

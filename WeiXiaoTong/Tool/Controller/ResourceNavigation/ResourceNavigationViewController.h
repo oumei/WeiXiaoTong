@@ -11,6 +11,7 @@
 @interface ResourceNavigationViewController : CommonViewController<UITableViewDataSource,UITableViewDelegate>
 {
     NSArray *_bazaars;
+    CGFloat height;
 }
 @property (strong, nonatomic) NSArray *bazaars;
 @property (weak, nonatomic) IBOutlet UITableView *table;

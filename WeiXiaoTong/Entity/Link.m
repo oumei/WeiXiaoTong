@@ -12,4 +12,5 @@
 @synthesize Id = _Id;
 @synthesize name = _name;
 @synthesize link = _link;
+@synthesize description = _description;
 @end

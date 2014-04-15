@@ -56,12 +56,17 @@
     }
     cell.selectionStyle = UITableViewCellSelectionStyleBlue;
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-//    cell.detailTextLabel.numberOfLines = 2;
-//    cell.detailTextLabel.lineBreakMode = UILineBreakModeWordWrap;
+    cell.textLabel.numberOfLines = 2;
+    cell.textLabel.lineBreakMode = UILineBreakModeWordWrap;
+    cell.detailTextLabel.numberOfLines = 2;
+    cell.detailTextLabel.lineBreakMode = UILineBreakModeWordWrap;
     Link *link = [self.linksArr objectAtIndex:indexPath.row];
     cell.textLabel.text = link.name;
-    cell.detailTextLabel.text = @"暂未提供任何厂商描述！";
-    
+    if (link.description) {
+        cell.detailTextLabel.text = link.description;
+    }else{
+        cell.detailTextLabel.text = @"暂未提供任何厂商描述！";
+    }
     return cell;
 }
 

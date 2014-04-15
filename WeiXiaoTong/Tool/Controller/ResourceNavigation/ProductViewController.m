@@ -55,7 +55,9 @@ static int pn = 0;
         downMore = nil;
         footview = nil;
     }
-    
+//    NSLog(@"+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++%d",[self supportEmoji]);
+//    [self valueControl:NO];
+//    NSLog(@"+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++%d",[self supportEmoji]);
     [self.table reloadData];
 }
 
@@ -65,7 +67,7 @@ static int pn = 0;
     [self.view showWithType:0 Title:@"正在加载..."];
     ObjectVo *ob = [ObjectVo shareCurrentObjectVo];
     if (self.title == nil) {
-        [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": GET_CHANPIN,@"page": [NSString stringWithFormat:@"%d",page],@"lx":self.lx,@"xb": self.xb,@"pp": @"-1",@"text": self.text,@"uname": user.userName,@"uuid": user.uuid,@"dataVersions":ob.dataVersions} completionBlock:^(id object) {
+        [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": GET_CHANPIN,@"page": [NSString stringWithFormat:@"%d",page],@"lx":self.lx,@"xb": self.xb,@"pp": self.pp,@"text": self.text,@"uname": user.userName,@"uuid": user.uuid,@"dataVersions":ob.dataVersions} completionBlock:^(id object) {
             ResultsModel *result = [[ResultsModel alloc]init];
             NSArray *properties = [self properties_aps:[ResultsModel class] objc:result];
             for (NSString *resultKey in [object allKeys]) {
@@ -136,7 +138,7 @@ static int pn = 0;
             [self.view endSynRequestSignal];
         }];
     }else if (self.isSelf != nil && self.title == nil){
-        [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": GET_CHANPIN,@"page": [NSString stringWithFormat:@"%d",page],@"lx":self.lx,@"xb": self.xb,@"pp": @"-1",@"text": self.text,@"isSelf": @"1",@"uname": user.userName,@"uuid": user.uuid,@"dataVersions":ob.dataVersions} completionBlock:^(id object) {
+        [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": GET_CHANPIN,@"page": [NSString stringWithFormat:@"%d",page],@"lx":self.lx,@"xb": self.xb,@"pp": self.pp,@"text": self.text,@"isSelf": @"1",@"uname": user.userName,@"uuid": user.uuid,@"dataVersions":ob.dataVersions} completionBlock:^(id object) {
             ResultsModel *result = [[ResultsModel alloc]init];
             NSArray *properties = [self properties_aps:[ResultsModel class] objc:result];
             for (NSString *resultKey in [object allKeys]) {
@@ -208,6 +210,7 @@ static int pn = 0;
             [self.view endSynRequestSignal];
         }];
     }else{
+        //@{@"interface": GET_CHANPIN_BY_DANGKOU,@"page":@"0",@"dangkou":link.name,@"uname": user.userName,@"uuid": user.uuid,@"dataVersions":ob.dataVersions}
         [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": GET_CHANPIN_BY_DANGKOU,@"page":[NSString stringWithFormat:@"%d",page],@"dangkou":self.title,@"uname": user.userName,@"uuid": user.uuid,@"dataVersions":ob.dataVersions} completionBlock:^(id object) {
             ResultsModel *result = [[ResultsModel alloc]init];
             NSArray *properties = [self properties_aps:[ResultsModel class] objc:result];
@@ -266,7 +269,6 @@ static int pn = 0;
                 self.cpsArr = nil;
                 self.cpsArr = cpsArr;
                 cpsArr = nil;
-                arr = nil;
                 if (arr.count == 0) {
                     [self.view LabelTitle:@"没有更多数据"];
                 }
@@ -350,6 +352,15 @@ static int pn = 0;
     return cell;
 }
 
+//- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+//{
+//    if ([[UIDevice currentDevice].model rangeOfString:@"iPhone"].location != NSNotFound) {
+//        return 90;
+//    }else{
+//        return 160;
+//    }
+//}
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if ([Reachability reachabilityForInternetConnection].currentReachabilityStatus == NotReachable && [Reachability reachabilityForLocalWiFi].currentReachabilityStatus == NotReachable)
@@ -360,7 +371,7 @@ static int pn = 0;
     UserEntity *ue = [UserEntity shareCurrentUe];
     ChanPin *chanPin = [self.cpsArr objectAtIndex:indexPath.row];
     ObjectVo *ob = [ObjectVo shareCurrentObjectVo];
-    _spinner = [self.view showSpinner:0 Title:[NSString stringWithFormat:@"正在下载 0/%d",chanPin.pics]];
+    _spinner = [self.view showSpinner:0 Title:[NSString stringWithFormat:@"正在存储图片到相机胶卷 0/%d",chanPin.pics]];
 //    NSFileManager *fm = [NSFileManager defaultManager];
 //    NSString *upload_id = [NSString stringWithFormat:@"%d_%d",chanPin.upload,chanPin.Id];
 //    if ([fm fileExistsAtPath:[self sharePath]]) {
@@ -381,7 +392,7 @@ static int pn = 0;
     shareIndexPath = indexPath;
     
     self.imageCount = chanPin.pics;
-    NSLog(@"pics = %d",chanPin.pics);
+//    NSLog(@"pics = %d",chanPin.pics);
     if (chanPin.pics > 0) {
         
         [[HttpService sharedInstance] postRequestWithUrl:DEFAULT_URL params:@{@"interface": DOWNLOAD,@"cpid": [NSString stringWithFormat:@"%d",chanPin.Id],@"uname":ue.userName,@"uuid":ue.uuid,@"dataVersions":ob.dataVersions} completionBlock:^(id object) {
@@ -468,7 +479,7 @@ static int pn = 0;
 {
     if (data) {
         progressNum = progressNum + 1;
-        _spinner.text = [NSString stringWithFormat:@"正在下载 %d/%d",progressNum,self.imageCount];
+        _spinner.text = [NSString stringWithFormat:@"正在存储图片到相机胶卷 %d/%d",progressNum,self.imageCount];
         [self performSelectorOnMainThread:@selector(saveTheImage:) withObject:[UIImage imageWithData:data] waitUntilDone:NO];
     }else{
         progressNum = 0;
@@ -493,13 +504,13 @@ static int pn = 0;
     NSString *msg = nil ;
     if(error != NULL){
         msg = @"保存图片失败" ;
-        NSLog(@"msg= %@",error.description);
+//        NSLog(@"msg= %@",error.description);
         [self performSelectorOnMainThread:@selector(saveTheImage:) withObject:image waitUntilDone:NO];
     }
     else {
         pn = pn + 1;
         msg = @"保存图片成功" ;
-        NSLog(@"msg= %@",msg);
+//        NSLog(@"msg= %@",msg);
         if (pn == self.imageCount) {
             ChanPin *chanPin = [self.cpsArr objectAtIndex:shareIndexPath.row];
             NSFileManager *fm = [NSFileManager defaultManager];
@@ -878,7 +889,6 @@ static int pn = 0;
     return YES;
 }
 
-
 //遍历类属性
 - (NSMutableArray *)properties_aps:(Class)aClass objc:(id)aObjc
 {
@@ -918,22 +928,6 @@ static int pn = 0;
     self.text = nil;
     self.isSelf = nil;
     [self setView:nil];
-//    {
-//        UIView *alertView;
-//        UITextField *textMsg;
-//        NSIndexPath *targetIndexPath;
-//        NSIndexPath *shareIndexPath;
-//        UILabel *_spinner;
-//        NSString *html;
-//    }
-//    @property (weak, nonatomic) IBOutlet UITableView *table;
-//    @property (strong, nonatomic) NSMutableArray *cpsArr;
-//    @property (strong, nonatomic) NSString *lx;
-//    @property (strong, nonatomic) NSString *xb;
-//    @property (strong, nonatomic) NSString *text;
-//    @property (strong, nonatomic) NSString *isSelf;
-//    //@property (strong, nonatomic) NSMutableArray *imageArr;
-//    @property (assign, nonatomic) int imageCount;
 }
 
 @end

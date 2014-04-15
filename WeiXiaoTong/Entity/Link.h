@@ -13,8 +13,10 @@
     int _Id;
     NSString *_name;
     NSString *_link;
+    NSString *_description;
 }
 @property(nonatomic,assign)int Id;
 @property(nonatomic,copy)NSString *name;
 @property(nonatomic,copy)NSString *link;
+@property(nonatomic,copy)NSString *description;
 @end

@@ -48,6 +48,8 @@
     NSArray *_cosmetics;       //护肤彩妆
     NSArray *_gShoes;          //女鞋
     
+    CGFloat height;
+    
 }
 @property (weak, nonatomic) IBOutlet UITableView *table;
 @property (weak, nonatomic) IBOutlet UITextField *searchText;

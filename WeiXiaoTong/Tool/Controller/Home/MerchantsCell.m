@@ -18,6 +18,21 @@
     }
     return self;
 }
+
+- (void)layoutSubviews
+{
+    [super layoutSubviews];
+    CGSize size = [self.signature.text sizeWithFont:self.signature.font];
+    if ([UIScreen mainScreen].bounds.size.width == 320) {
+        if (size.width < 250) {
+            self.signature.frame = CGRectMake(self.signature.frame.origin.x, self.signature.frame.origin.y, self.signature.frame.size.width, 18);
+        }else{
+            self.signature.frame = CGRectMake(self.signature.frame.origin.x, self.signature.frame.origin.y, 250, 30);
+        }
+        self.name.frame = CGRectMake(self.name.frame.origin.x, self.name.frame.origin.y, 250, self.name.frame.size.height);
+    }
+}
+
 - (IBAction)deletedAction:(id)sender
 {
     if (self.delegate && [self.delegate respondsToSelector:@selector(deleted:IndexPath:)]) {

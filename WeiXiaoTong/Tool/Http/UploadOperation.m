@@ -28,23 +28,32 @@
 
 - (void)main
 {
+    
     //分界线的标识符
     NSString *TWITTERFON_FORM_BOUNDARY = @"AaB03x";
     //根据url初始化request
-    NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:self.url] cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:10];
+    NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:self.url] cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:1000];
     //分界线 --AaB03x
     NSString *MPboundary=[[NSString alloc]initWithFormat:@"--%@",TWITTERFON_FORM_BOUNDARY];
     //结束符 AaB03x--
     NSString *endMPboundary=[[NSString alloc]initWithFormat:@"%@--",MPboundary];
     //得到图片的data
 
-    NSData *data = UIImagePNGRepresentation(self.image);
-    //NSLog(@"le1 = %d",data.length);
-    while (data.length > 1024*300) {
-        UIImage *image = [UIImage imageWithData:data];
-        data = UIImageJPEGRepresentation(image, 0.9);
+    NSData *data = UIImageJPEGRepresentation(self.image,1.0);
+//    NSLog(@"1=%d",data.length);
+    CGFloat max = 1024 * 300;
+    CGFloat oneM = 1024 * 1000;
+    CGFloat length = data.length;
+    if ( length > max) {
+        if (length > oneM) {
+            CGFloat f = max/length;
+//            NSLog(@"%f",f);
+            data = UIImageJPEGRepresentation(self.image, f);
+        }else{
+            data = UIImageJPEGRepresentation(self.image, 0.75);
+        }
     }
-    //NSLog(@"le2 = %d",data.length);
+//    NSLog(@"2=%d",data.length);
     //http body的字符串
     NSMutableString *body=[[NSMutableString alloc]init];
     
@@ -80,7 +89,7 @@
     NSError *error = nil;
     NSData *reqData = [NSURLConnection sendSynchronousRequest:request returningResponse:&resp error:&error];
     NSString *req = [[NSString alloc]initWithData:reqData encoding:NSUTF8StringEncoding];
-    NSLog(@"s=%@",req);
+    NSLog(@"errorreq=%@",req);
     if (self.target != nil)
     {
         [self.target performSelectorOnMainThread:self.action withObject:reqData waitUntilDone:NO];
